@@ -1,0 +1,964 @@
+import androidx.compose.runtime.*
+import org.jetbrains.compose.web.attributes.*
+import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.dom.*
+import org.jetbrains.compose.web.renderComposable
+import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.builtins.ListSerializer
+import models.*
+import transport.HttpTransport
+import org.w3c.dom.HTMLDivElement
+import org.w3c.dom.Element
+import io.ktor.client.request.*
+import io.ktor.client.call.*
+
+fun main() {
+    renderComposable(rootElementId = "root") {
+        App()
+    }
+}
+
+@Composable
+fun App() {
+    val scope = rememberCoroutineScope()
+    val viewModel = remember { ChatViewModel(scope) }
+    
+    // Load theme from localStorage on startup
+    var theme by remember { 
+        mutableStateOf(
+            try {
+                val stored = js("window.localStorage.getItem('theme')") as? String
+                if (stored != null && stored.isNotEmpty() && (stored == "light" || stored == "dark")) stored else "light"
+            } catch (e: Exception) {
+                "light"
+            }
+        )
+    }
+    
+    // Save theme to localStorage when it changes
+    LaunchedEffect(theme) {
+        try {
+            val localStorage = js("window.localStorage")
+            localStorage.setItem("theme", theme)
+        } catch (e: Exception) {
+            // Ignore localStorage errors
+        }
+    }
+    
+    LaunchedEffect(Unit) {
+        // Load conversations on startup
+        viewModel.loadConversations()
+    }
+    
+    Style(AppStylesheet)
+    
+    Div(attrs = {
+        attr("data-theme", theme)
+        style {
+            width(100.percent)
+            height(100.vh)
+            display(DisplayStyle.Flex)
+        }
+    }) {
+        Sidebar(
+            conversations = viewModel.conversations,
+            currentConversationId = viewModel.currentConversationId,
+            onSelectConversation = { id -> viewModel.loadConversation(id) },
+            onNewChat = { viewModel.createNewChat() },
+            onDeleteConversation = { id -> viewModel.deleteConversation(id) },
+            isLoading = viewModel.isLoadingConversations
+        )
+        
+        Div(attrs = {
+            style {
+                flex(1)
+                display(DisplayStyle.Flex)
+                flexDirection(FlexDirection.Column)
+                height(100.vh)
+                property("overflow", "hidden")
+            }
+        }) {
+            TopBar(
+                theme = theme,
+                onThemeToggle = { theme = if (theme == "light") "dark" else "light" },
+                onExport = { viewModel.exportMessages() }
+            )
+            
+            if (viewModel.messages.isEmpty() && !viewModel.isLoading && viewModel.currentConversationId == null) {
+                Div(attrs = {
+                    classes(AppStylesheet.emptyState)
+                }) {
+                    Text("Welcome! Click 'New Chat' to start a conversation.")
+                }
+            } else {
+                ChatThread(
+                    messages = viewModel.messages,
+                    toolCalls = viewModel.toolCalls,
+                    isLoading = viewModel.isLoading
+                )
+            }
+            
+            ChatInput(
+                onSend = { text -> viewModel.sendMessage(text) },
+                isLoading = viewModel.isLoading
+            )
+        }
+    }
+}
+
+@Composable
+fun Sidebar(
+    conversations: List<Conversation>,
+    currentConversationId: String?,
+    onSelectConversation: (String) -> Unit,
+    onNewChat: () -> Unit,
+    onDeleteConversation: (String) -> Unit,
+    isLoading: Boolean
+) {
+    Div(attrs = {
+        classes(AppStylesheet.sidebar)
+    }) {
+        Div(attrs = {
+            classes(AppStylesheet.sidebarHeader)
+        }) {
+            Button(attrs = {
+                classes(AppStylesheet.button, AppStylesheet.newChatButton)
+                onClick { onNewChat() }
+            }) {
+                Text("+ New Chat")
+            }
+        }
+        
+        Div(attrs = {
+            classes(AppStylesheet.conversationList)
+        }) {
+            if (isLoading) {
+                Div(attrs = {
+                    classes(AppStylesheet.conversationItem)
+                }) {
+                    Text("Loading...")
+                }
+            } else if (conversations.isEmpty()) {
+                Div(attrs = {
+                    classes(AppStylesheet.conversationItem)
+                }) {
+                    Text("No conversations yet")
+                }
+            } else {
+                conversations.forEach { conversation ->
+                    ConversationItem(
+                        conversation = conversation,
+                        isSelected = conversation.id == currentConversationId,
+                        onSelect = { onSelectConversation(conversation.id) },
+                        onDelete = { onDeleteConversation(conversation.id) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ConversationItem(
+    conversation: Conversation,
+    isSelected: Boolean,
+    onSelect: () -> Unit,
+    onDelete: () -> Unit
+) {
+    Div(attrs = {
+        classes(
+            AppStylesheet.conversationItem,
+            *if (isSelected) arrayOf(AppStylesheet.conversationItemSelected) else emptyArray()
+        )
+        onClick { onSelect() }
+    }) {
+        Span(attrs = {
+            classes(AppStylesheet.conversationTitle)
+            onClick { onSelect() }
+        }) {
+            Text(conversation.title)
+        }
+        Button(attrs = {
+            classes(AppStylesheet.deleteButton)
+            onClick { 
+                onDelete() 
+            }
+        }) {
+            Text("×")
+        }
+    }
+}
+
+@Composable
+fun TopBar(
+    theme: String,
+    onThemeToggle: () -> Unit,
+    onExport: () -> Unit
+) {
+    Div(attrs = {
+        classes(AppStylesheet.topBar)
+    }) {
+        H1(attrs = {
+            classes(AppStylesheet.title)
+        }) {
+            Text("KMP AI Chat")
+        }
+        
+        Div(attrs = {
+            classes(AppStylesheet.topBarActions)
+        }) {
+            Button(attrs = {
+                classes(AppStylesheet.button, AppStylesheet.iconButton)
+                onClick { onThemeToggle() }
+            }) {
+                Text(if (theme == "light") "🌙" else "☀️")
+            }
+            
+            Button(attrs = {
+                classes(AppStylesheet.button, AppStylesheet.iconButton)
+                onClick { onExport() }
+            }) {
+                Text("📥")
+            }
+        }
+    }
+}
+
+@Composable
+fun ChatThread(
+    messages: List<ChatMessage>,
+    toolCalls: Map<String, List<ToolCall>>,
+    isLoading: Boolean
+) {
+    var scrollContainer by remember { mutableStateOf<org.w3c.dom.HTMLDivElement?>(null) }
+    
+    // Auto-scroll to bottom when messages change or loading state changes
+    LaunchedEffect(messages.size, isLoading) {
+        scrollContainer?.let { container ->
+            kotlinx.coroutines.delay(50) // Small delay to ensure DOM is updated
+            container.scrollTop = container.scrollHeight.toDouble()
+        }
+    }
+    
+    Div(attrs = {
+        classes(AppStylesheet.chatThread)
+        ref { element ->
+            scrollContainer = element?.unsafeCast<org.w3c.dom.HTMLDivElement>()
+            onDispose { }
+        }
+    }) {
+        messages.forEach { message ->
+            MessageBubble(
+                message = message,
+                toolCalls = toolCalls[message.timestamp.toString()] ?: emptyList()
+            )
+        }
+        
+        if (isLoading) {
+            TypingIndicator()
+        }
+    }
+}
+
+@Composable
+fun MessageBubble(
+    message: ChatMessage,
+    toolCalls: List<ToolCall>
+) {
+    val isUser = message.role == "user"
+    val isAssistant = message.role == "assistant"
+    
+    Div(attrs = {
+        classes(
+            AppStylesheet.messageBubble,
+            if (isUser) AppStylesheet.messageUser else AppStylesheet.messageAssistant
+        )
+    }) {
+        Div(attrs = {
+            classes(AppStylesheet.messageContent)
+            if (isAssistant) {
+                classes("markdown-content")
+            }
+        }) {
+            if (isAssistant) {
+                // Render markdown for assistant messages
+                MarkdownText(message.content)
+            } else {
+                // Plain text for user messages
+                Text(message.content)
+            }
+        }
+        
+        if (toolCalls.isNotEmpty()) {
+            toolCalls.forEach { toolCall ->
+                ToolCallCard(toolCall = toolCall)
+            }
+        }
+        
+        Div(attrs = {
+            classes(AppStylesheet.messageTime)
+        }) {
+            Text(formatTimestamp(message.timestamp))
+        }
+    }
+}
+
+@Composable
+fun ToolCallCard(toolCall: ToolCall) {
+    Div(attrs = {
+        classes(AppStylesheet.toolCallCard)
+    }) {
+        Div(attrs = {
+            classes(AppStylesheet.toolCallHeader)
+        }) {
+            Text("🔧 ${toolCall.name}")
+        }
+        Div(attrs = {
+            classes(AppStylesheet.toolCallInput)
+        }) {
+            Text("Input: ${toolCall.input}")
+        }
+        if (toolCall.result != null) {
+            Div(attrs = {
+                classes(AppStylesheet.toolCallResult)
+            }) {
+                Text("Result: ${toolCall.result}")
+            }
+        }
+    }
+}
+
+@Composable
+fun TypingIndicator() {
+    Div(attrs = {
+        classes(AppStylesheet.typingIndicator)
+    }) {
+        Span(attrs = {
+            classes("typing-dot")
+            style {
+                property("animation-delay", "0s")
+            }
+        }) {
+            Text("●")
+        }
+        Span(attrs = {
+            classes("typing-dot")
+            style {
+                property("animation-delay", "0.2s")
+            }
+        }) {
+            Text("●")
+        }
+        Span(attrs = {
+            classes("typing-dot")
+            style {
+                property("animation-delay", "0.4s")
+            }
+        }) {
+            Text("●")
+        }
+    }
+}
+
+@Composable
+fun ChatInput(onSend: (String) -> Unit, isLoading: Boolean = false) {
+    var inputValue by remember { mutableStateOf("") }
+    
+    Div(attrs = {
+        classes(AppStylesheet.chatInput)
+    }) {
+        Input(type = InputType.Text, attrs = {
+            classes(AppStylesheet.input)
+            placeholder("Type a message...")
+            value(inputValue)
+            if (isLoading) disabled()
+            onInput {
+                inputValue = it.value
+            }
+            onKeyDown {
+                if (it.key == "Enter" && !it.shiftKey && !isLoading) {
+                    it.preventDefault()
+                    val text = inputValue.trim()
+                    if (text.isNotEmpty()) {
+                        onSend(text)
+                        inputValue = ""
+                    }
+                }
+            }
+        })
+        
+        Button(attrs = {
+            classes(AppStylesheet.button, AppStylesheet.sendButton)
+            if (isLoading) disabled()
+            onClick { 
+                val text = inputValue.trim()
+                if (text.isNotEmpty() && !isLoading) {
+                    onSend(text)
+                    inputValue = ""
+                }
+            }
+        }) {
+            Text(if (isLoading) "..." else "Send")
+        }
+    }
+}
+
+class ChatViewModel(private val scope: CoroutineScope) {
+    var messages by mutableStateOf<List<ChatMessage>>(emptyList())
+    var toolCalls by mutableStateOf<Map<String, List<ToolCall>>>(emptyMap())
+    var isLoading by mutableStateOf(false)
+    var conversations by mutableStateOf<List<Conversation>>(emptyList())
+    var currentConversationId: String? by mutableStateOf(null)
+    var isLoadingConversations by mutableStateOf(false)
+    
+    private val transport = HttpTransport("http://localhost:8081")
+    
+    fun loadConversations() {
+        if (isLoadingConversations) return
+        isLoadingConversations = true
+        scope.launch {
+            try {
+                conversations = transport.listConversations()
+                if (conversations.isEmpty()) {
+                    createNewChat()
+                } else if (currentConversationId == null) {
+                    loadConversation(conversations.first().id)
+                }
+            } catch (e: Exception) {
+                println("Error loading conversations: ${e.message}")
+            } finally {
+                isLoadingConversations = false
+            }
+        }
+    }
+    
+    fun loadConversation(id: String) {
+        // Prevent reloading if already loading the same conversation
+        if (isLoading && currentConversationId == id) return
+        
+        isLoading = true
+        scope.launch {
+            try {
+                val conversation = transport.getConversation(id)
+                messages = conversation.messages
+                toolCalls = conversation.toolCalls.groupBy { it.timestamp.toString() }
+                currentConversationId = id
+            } catch (e: Exception) {
+                messages = listOf(ChatMessage("assistant", "Error loading conversation: ${e.message}"))
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+    
+    fun createNewChat() {
+        scope.launch {
+            try {
+                val newConversation = transport.createConversation()
+                currentConversationId = newConversation.id
+                messages = emptyList()
+                toolCalls = emptyMap()
+                loadConversations() // Refresh list
+            } catch (e: Exception) {
+                println("Error creating conversation: ${e.message}")
+            }
+        }
+    }
+    
+    fun deleteConversation(id: String) {
+        scope.launch {
+            try {
+                transport.deleteConversation(id)
+                if (currentConversationId == id) {
+                    currentConversationId = null
+                    messages = emptyList()
+                    toolCalls = emptyMap()
+                }
+                loadConversations() // Refresh list
+            } catch (e: Exception) {
+                println("Error deleting conversation: ${e.message}")
+            }
+        }
+    }
+    
+    fun sendMessage(text: String) {
+        if (currentConversationId == null) {
+            createNewChat()
+            // Wait a bit for the conversation to be created
+            scope.launch {
+                kotlinx.coroutines.delay(100)
+                sendMessageInternal(text)
+            }
+        } else {
+            sendMessageInternal(text)
+        }
+    }
+    
+    private var isSendingMessage = false
+    
+    private fun sendMessageInternal(text: String) {
+        // Prevent duplicate sends
+        if (isSendingMessage || isLoading) return
+        isSendingMessage = true
+        
+        val userMessage = ChatMessage("user", text)
+        val currentMessages = messages
+        messages = currentMessages + userMessage
+        isLoading = true
+        
+        scope.launch {
+            try {
+                val request = AgentRequest(messages = messages, conversationId = currentConversationId)
+                val response = transport.send(request)
+                
+                // Only add response if we're still on the same conversation
+                if (currentConversationId != null) {
+                    messages = messages + response.message
+                    if (response.toolCalls.isNotEmpty()) {
+                        toolCalls = toolCalls + (response.message.timestamp.toString() to response.toolCalls)
+                    }
+                }
+                
+                // Refresh conversation list to update titles (non-blocking, don't reload current conversation)
+                scope.launch {
+                    try {
+                        val updatedList = transport.listConversations()
+                        conversations = updatedList
+                    } catch (e: Exception) {
+                        // Ignore errors when refreshing list
+                    }
+                }
+            } catch (e: Exception) {
+                // Only add error if we're still on the same conversation
+                if (currentConversationId != null) {
+                    messages = messages + ChatMessage("assistant", "Error: ${e.message}")
+                }
+            } finally {
+                isLoading = false
+                isSendingMessage = false
+            }
+        }
+    }
+    
+    fun exportMessages() {
+        val json = Json { prettyPrint = true }.encodeToString(ListSerializer(ChatMessage.serializer()), messages)
+        val timestamp = js("Date.now()").toString()
+        val blob = js("new Blob([json], { type: 'application/json' })")
+        val url = js("URL.createObjectURL(blob)")
+        val a = js("document.createElement('a')")
+        a.href = url
+        a.download = "chat-export-$timestamp.json"
+        js("document.body.appendChild(a)")
+        a.click()
+        js("document.body.removeChild(a)")
+        js("URL.revokeObjectURL(url)")
+    }
+}
+
+fun formatTimestamp(timestamp: Long): String {
+    val date = js("new Date(timestamp)")
+    return date.toLocaleTimeString()
+}
+
+/**
+ * Converts markdown text to HTML and renders it
+ */
+@Composable
+fun MarkdownText(text: String) {
+    val htmlContent = remember(text) {
+        markdownToHtml(text)
+    }
+    
+    Div(attrs = {
+        ref { element ->
+            val div = element?.unsafeCast<HTMLDivElement>()
+            if (div != null) {
+                div.innerHTML = htmlContent
+            }
+            onDispose { }
+        }
+    })
+}
+
+/**
+ * Simple markdown-to-HTML converter
+ * Handles: headers, bold, italic, lists, code blocks, links
+ */
+fun markdownToHtml(markdown: String): String {
+    var html = markdown
+    
+    // Protect code blocks first (they shouldn't be processed)
+    val codeBlockPlaceholder = "___CODE_BLOCK___"
+    val codeBlocks = mutableListOf<String>()
+    var codeBlockIndex = 0
+    html = html.replace(Regex("```([\\s\\S]*?)```")) { matchResult ->
+        val placeholder = "$codeBlockPlaceholder$codeBlockIndex"
+        codeBlocks.add("<pre><code>${escapeHtml(matchResult.groupValues[1])}</code></pre>")
+        codeBlockIndex++
+        placeholder
+    }
+    
+    // Protect inline code
+    val inlineCodePlaceholder = "___INLINE_CODE___"
+    val inlineCodes = mutableListOf<String>()
+    var inlineCodeIndex = 0
+    html = html.replace(Regex("`([^`]+)`")) { matchResult ->
+        val placeholder = "$inlineCodePlaceholder$inlineCodeIndex"
+        inlineCodes.add("<code>${escapeHtml(matchResult.groupValues[1])}</code>")
+        inlineCodeIndex++
+        placeholder
+    }
+    
+    // Split into lines for processing
+    val lines = html.split("\n")
+    val processedLines = mutableListOf<String>()
+    var inList = false
+    var listItems = mutableListOf<String>()
+    
+    for (line in lines) {
+        val trimmed = line.trim()
+        
+        // Headers
+        when {
+            trimmed.startsWith("### ") -> {
+                if (inList) {
+                    processedLines.add("</ul>")
+                    inList = false
+                }
+                processedLines.add("<h3>${escapeHtml(trimmed.substring(4))}</h3>")
+            }
+            trimmed.startsWith("## ") -> {
+                if (inList) {
+                    processedLines.add("</ul>")
+                    inList = false
+                }
+                processedLines.add("<h2>${escapeHtml(trimmed.substring(3))}</h2>")
+            }
+            trimmed.startsWith("# ") -> {
+                if (inList) {
+                    processedLines.add("</ul>")
+                    inList = false
+                }
+                processedLines.add("<h1>${escapeHtml(trimmed.substring(2))}</h1>")
+            }
+            // Unordered list items
+            trimmed.matches(Regex("^[-*] (.+)$")) -> {
+                if (!inList) {
+                    inList = true
+                }
+                val content = trimmed.substring(2)
+                listItems.add("<li>${processInlineMarkdown(content)}</li>")
+            }
+            // Ordered list items
+            trimmed.matches(Regex("^\\d+\\. (.+)$")) -> {
+                if (!inList) {
+                    inList = true
+                }
+                val content = trimmed.replaceFirst(Regex("^\\d+\\. "), "")
+                listItems.add("<li>${processInlineMarkdown(content)}</li>")
+            }
+            // Empty line
+            trimmed.isEmpty() -> {
+                if (inList && listItems.isNotEmpty()) {
+                    processedLines.add("<ul>${listItems.joinToString("")}</ul>")
+                    listItems.clear()
+                    inList = false
+                }
+                processedLines.add("<p></p>")
+            }
+            // Regular line
+            else -> {
+                if (inList && listItems.isNotEmpty()) {
+                    processedLines.add("<ul>${listItems.joinToString("")}</ul>")
+                    listItems.clear()
+                    inList = false
+                }
+                processedLines.add("<p>${processInlineMarkdown(trimmed)}</p>")
+            }
+        }
+    }
+    
+    // Close any remaining list
+    if (inList && listItems.isNotEmpty()) {
+        processedLines.add("<ul>${listItems.joinToString("")}</ul>")
+    }
+    
+    html = processedLines.joinToString("\n")
+    
+    // Restore code blocks
+    codeBlocks.forEachIndexed { index, code ->
+        html = html.replace("$codeBlockPlaceholder$index", code)
+    }
+    
+    // Restore inline code
+    inlineCodes.forEachIndexed { index, code ->
+        html = html.replace("$inlineCodePlaceholder$index", code)
+    }
+    
+    return html
+}
+
+/**
+ * Process inline markdown (bold, italic, links) - but not headers or code
+ */
+fun processInlineMarkdown(text: String): String {
+    var html = text
+    
+    // Links [text](url) - process before bold/italic
+    html = html.replace(Regex("\\[([^\\]]+)\\]\\(([^)]+)\\)")) { 
+        "<a href=\"${escapeHtml(it.groupValues[2])}\" target=\"_blank\" rel=\"noopener noreferrer\">${escapeHtml(it.groupValues[1])}</a>"
+    }
+    
+    // Bold (**text** or __text__) - must come before italic
+    html = html.replace(Regex("\\*\\*([^*]+)\\*\\*")) { "<strong>${escapeHtml(it.groupValues[1])}</strong>" }
+    html = html.replace(Regex("__([^_]+)__")) { "<strong>${escapeHtml(it.groupValues[1])}</strong>" }
+    
+    // Italic (*text* or _text_) - after bold to avoid conflicts
+    html = html.replace(Regex("\\*([^*]+)\\*")) { "<em>${escapeHtml(it.groupValues[1])}</em>" }
+    html = html.replace(Regex("_([^_]+)_")) { "<em>${escapeHtml(it.groupValues[1])}</em>" }
+    
+    // Escape remaining HTML
+    html = escapeHtml(html)
+    
+    // Restore our HTML tags
+    html = html.replace("&lt;strong&gt;", "<strong>")
+    html = html.replace("&lt;/strong&gt;", "</strong>")
+    html = html.replace("&lt;em&gt;", "<em>")
+    html = html.replace("&lt;/em&gt;", "</em>")
+    html = html.replace("&lt;a ", "<a ")
+    html = html.replace("&lt;/a&gt;", "</a>")
+    
+    return html
+}
+
+/**
+ * Escape HTML entities
+ */
+fun escapeHtml(text: String): String {
+    return text
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace("\"", "&quot;")
+        .replace("'", "&#39;")
+}
+
+object AppStylesheet : StyleSheet() {
+    val topBar by style {
+        display(DisplayStyle.Flex)
+        justifyContent(JustifyContent.SpaceBetween)
+        alignItems(AlignItems.Center)
+        padding(16.px)
+        backgroundColor(Color("var(--surface)"))
+        property("border-bottom", "1px solid var(--border)")
+    }
+    
+    val title by style {
+        fontSize(20.px)
+        fontWeight(600)
+        color(Color("var(--text)"))
+    }
+    
+    val topBarActions by style {
+        display(DisplayStyle.Flex)
+        gap(8.px)
+    }
+    
+    val chatThread by style {
+        flex(1)
+        property("overflow-y", "auto")
+        padding(16.px)
+        display(DisplayStyle.Flex)
+        flexDirection(FlexDirection.Column)
+        gap(12.px)
+        backgroundColor(Color("var(--background)"))
+    }
+    
+    val messageBubble by style {
+        maxWidth(70.percent)
+        padding(12.px, 16.px)
+        borderRadius(12.px)
+        marginBottom(8.px)
+        property("word-wrap", "break-word")
+        property("overflow-wrap", "break-word")
+    }
+    
+    val messageUser by style {
+        alignSelf(AlignSelf.FlexEnd)
+        backgroundColor(Color("var(--primary)"))
+        color(Color.white)
+    }
+    
+    val messageAssistant by style {
+        alignSelf(AlignSelf.FlexStart)
+        backgroundColor(Color("var(--surface)"))
+        color(Color("var(--text)"))
+        border(1.px, LineStyle.Solid, Color("var(--border)"))
+    }
+    
+    val messageContent by style {
+        marginBottom(4.px)
+    }
+    
+    
+    val messageTime by style {
+        fontSize(11.px)
+        opacity(0.6)
+        marginTop(4.px)
+    }
+    
+    val toolCallCard by style {
+        marginTop(8.px)
+        padding(8.px)
+        borderRadius(8.px)
+        backgroundColor(Color("rgba(0,0,0,0.05)"))
+        fontSize(12.px)
+    }
+    
+    val toolCallHeader by style {
+        fontWeight(600)
+        marginBottom(4.px)
+    }
+    
+    val toolCallInput by style {
+        marginBottom(2.px)
+        opacity(0.8)
+    }
+    
+    val toolCallResult by style {
+        fontWeight(500)
+    }
+    
+    val typingIndicator by style {
+        display(DisplayStyle.Flex)
+        gap(4.px)
+        padding(12.px, 16.px)
+        fontSize(20.px)
+        color(Color("var(--text)"))
+        opacity(0.6)
+    }
+    
+    val chatInput by style {
+        display(DisplayStyle.Flex)
+        gap(8.px)
+        padding(16.px)
+        backgroundColor(Color("var(--surface)"))
+        property("border-top", "1px solid var(--border)")
+    }
+    
+    val input by style {
+        flex(1)
+        padding(12.px, 16.px)
+        borderRadius(8.px)
+        border(1.px, LineStyle.Solid, Color("var(--border)"))
+        backgroundColor(Color("var(--surface)"))
+        color(Color("var(--text)"))
+        fontSize(14.px)
+        property("outline", "0px")
+        
+        property(":disabled", "opacity: 0.6; cursor: not-allowed;")
+    }
+    
+    val button by style {
+        padding(12.px, 24.px)
+        borderRadius(8.px)
+        border(0.px)
+        backgroundColor(Color("var(--primary)"))
+        color(Color.white)
+        fontSize(14.px)
+        fontWeight(500)
+        cursor("pointer")
+        property("transition", "background-color 0.2s")
+        
+        property(":disabled", "opacity: 0.6; cursor: not-allowed;")
+    }
+    
+    val iconButton by style {
+        padding(8.px, 12.px)
+        minWidth(40.px)
+    }
+    
+    val sendButton by style {
+        minWidth(80.px)
+    }
+    
+    val sidebar by style {
+        width(280.px)
+        height(100.vh)
+        backgroundColor(Color("var(--surface)"))
+        property("border-right", "1px solid var(--border)")
+        display(DisplayStyle.Flex)
+        flexDirection(FlexDirection.Column)
+        property("overflow-y", "auto")
+    }
+    
+    val sidebarHeader by style {
+        padding(16.px)
+        property("border-bottom", "1px solid var(--border)")
+    }
+    
+    val newChatButton by style {
+        width(100.percent)
+        justifyContent(JustifyContent.Center)
+    }
+    
+    val conversationList by style {
+        flex(1)
+        property("overflow-y", "auto")
+        padding(8.px)
+    }
+    
+    val conversationItem by style {
+        padding(12.px, 16.px)
+        borderRadius(8.px)
+        marginBottom(4.px)
+        cursor("pointer")
+        display(DisplayStyle.Flex)
+        justifyContent(JustifyContent.SpaceBetween)
+        alignItems(AlignItems.Center)
+        property("transition", "background-color 0.2s")
+        property(":hover", "background-color: rgba(0, 0, 0, 0.05)")
+    }
+    
+    val conversationItemSelected by style {
+        backgroundColor(Color("var(--primary)"))
+        color(Color.white)
+    }
+    
+    val conversationTitle by style {
+        flex(1)
+        property("overflow", "hidden")
+        property("text-overflow", "ellipsis")
+        property("white-space", "nowrap")
+        fontSize(14.px)
+    }
+    
+    val deleteButton by style {
+        padding(4.px, 8.px)
+        minWidth(24.px)
+        fontSize(18.px)
+        backgroundColor(Color.transparent)
+        border(0.px)
+        color(Color("inherit"))
+        cursor("pointer")
+        opacity(0.6)
+        property(":hover", "opacity: 1")
+    }
+    
+    val emptyState by style {
+        flex(1)
+        display(DisplayStyle.Flex)
+        alignItems(AlignItems.Center)
+        justifyContent(JustifyContent.Center)
+        color(Color("var(--text)"))
+        fontSize(16.px)
+        opacity(0.6)
+        padding(32.px)
+        textAlign("center")
+    }
+    
+}
+

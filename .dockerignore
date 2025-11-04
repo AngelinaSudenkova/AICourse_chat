@@ -1,0 +1,13 @@
+.gradle
+build
+.idea
+*.iml
+.git
+.gitignore
+README.md
+.env
+.env.local
+node_modules
+web/build
+web/node_modules
+

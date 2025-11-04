@@ -1,0 +1,19 @@
+build:
+  maxIssues: 10
+  weights:
+    complexity: 2
+    LongParameterList: 1
+    style: 1
+
+complexity:
+  LongMethod:
+    threshold: 50
+  LongParameterList:
+    threshold: 8
+
+style:
+  MaxLineLength:
+    maxLineLength: 120
+  MagicNumber:
+    ignoreNumbers: ['-1', '0', '1', '2']
+
