@@ -17,6 +17,7 @@ import models.AgentRequest
 import models.AgentResponse
 import models.Conversation
 import models.ConversationWithMessages
+import structured.ReadingSummary
 
 class HttpTransport(
     private val baseUrl: String
@@ -64,5 +65,12 @@ class HttpTransport(
     suspend fun deleteConversation(id: String): Boolean {
         val response = client.delete("/api/conversations/$id")
         return response.status.value == 200
+    }
+    
+    suspend fun summarize(text: String): ReadingSummary {
+        return client.post("/api/summarize") {
+            contentType(ContentType.Text.Plain)
+            setBody(text)
+        }.body()
     }
 }

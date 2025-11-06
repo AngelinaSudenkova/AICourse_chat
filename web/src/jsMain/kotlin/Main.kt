@@ -10,6 +10,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.builtins.ListSerializer
 import models.*
 import transport.HttpTransport
+import structured.ReadingSummary
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.Element
 import io.ktor.client.request.*
@@ -97,7 +98,8 @@ fun App() {
                 ChatThread(
                     messages = viewModel.messages,
                     toolCalls = viewModel.toolCalls,
-                    isLoading = viewModel.isLoading
+                    isLoading = viewModel.isLoading,
+                    readingSummaries = viewModel.readingSummaries
                 )
             }
             
@@ -231,7 +233,8 @@ fun TopBar(
 fun ChatThread(
     messages: List<ChatMessage>,
     toolCalls: Map<String, List<ToolCall>>,
-    isLoading: Boolean
+    isLoading: Boolean,
+    readingSummaries: Map<String, ReadingSummary> = emptyMap()
 ) {
     var scrollContainer by remember { mutableStateOf<org.w3c.dom.HTMLDivElement?>(null) }
     
@@ -255,6 +258,11 @@ fun ChatThread(
                 message = message,
                 toolCalls = toolCalls[message.timestamp.toString()] ?: emptyList()
             )
+            
+            // Show reading summary if available for this message
+            readingSummaries[message.timestamp.toString()]?.let { summary ->
+                ReadingSummaryCard(summary)
+            }
         }
         
         if (isLoading) {
@@ -326,6 +334,120 @@ fun ToolCallCard(toolCall: ToolCall) {
                 classes(AppStylesheet.toolCallResult)
             }) {
                 Text("Result: ${toolCall.result}")
+            }
+        }
+    }
+}
+
+@Composable
+fun ReadingSummaryCard(data: ReadingSummary) {
+    Div(attrs = {
+        style {
+            borderRadius(16.px)
+            border(1.px, LineStyle.Solid, Color("var(--border)"))
+            padding(20.px)
+            backgroundColor(Color("var(--surface)"))
+            marginTop(12.px)
+            marginBottom(12.px)
+            property("box-shadow", "0 2px 8px rgba(0, 0, 0, 0.1)")
+            property("transition", "all 0.3s ease")
+        }
+        classes("reading-summary-card")
+    }) {
+        // Title (header) - prominent
+        H2(attrs = {
+            style {
+                fontSize(24.px)
+                fontWeight(700)
+                color(Color("var(--text)"))
+                marginBottom(12.px)
+                marginTop(0.px)
+                lineHeight("1.3")
+            }
+        }) { 
+            Text(data.title) 
+        }
+        
+        // Time to read + Source (same row, compact)
+        Div(attrs = {
+            style {
+                display(DisplayStyle.Flex)
+                justifyContent(JustifyContent.SpaceBetween)
+                alignItems(AlignItems.Center)
+                marginBottom(16.px)
+                paddingBottom(12.px)
+                property("border-bottom", "1px solid var(--border)")
+            }
+        }) {
+            Div(attrs = {
+                style {
+                    display(DisplayStyle.Flex)
+                    alignItems(AlignItems.Center)
+                    gap(8.px)
+                }
+            }) {
+                Span(attrs = {
+                    style {
+                        fontSize(14.px)
+                        color(Color("var(--text)"))
+                        opacity(0.7)
+                    }
+                }) {
+                    Text("⏱️")
+                }
+                B(attrs = {
+                    style {
+                        fontSize(14.px)
+                        color(Color("var(--text)"))
+                        opacity(0.9)
+                    }
+                }) { 
+                    Text(data.timeOfReading) 
+                }
+            }
+            Span(attrs = {
+                style {
+                    fontSize(13.px)
+                    color(Color("var(--text)"))
+                    opacity(0.6)
+                    property("font-style", "italic")
+                }
+            }) {
+                Text(data.theSourceOfTheText)
+            }
+        }
+        
+        // Summary with markdown/lists support
+        Div(attrs = {
+            style {
+                borderRadius(12.px)
+                padding(16.px, 18.px)
+                backgroundColor(Color("var(--summary-bg)"))
+                border(1.px, LineStyle.Solid, Color("var(--summary-border)"))
+                property("color", "var(--text)")
+                lineHeight("1.7")
+            }
+            classes("reading-summary-box", "summary-markdown")
+        }) {
+            Div(attrs = {
+                style {
+                    fontSize(14.px)
+                    fontWeight(600)
+                    marginBottom(10.px)
+                    color(Color("var(--text)"))
+                    opacity(0.9)
+                }
+            }) {
+                Text("📝 Summary")
+            }
+            Div(attrs = {
+                style {
+                    fontSize(15.px)
+                    color(Color("var(--text)"))
+                    opacity(0.95)
+                }
+            }) {
+                MarkdownText(data.summary)
             }
         }
     }
@@ -409,6 +531,7 @@ fun ChatInput(onSend: (String) -> Unit, isLoading: Boolean = false) {
 class ChatViewModel(private val scope: CoroutineScope) {
     var messages by mutableStateOf<List<ChatMessage>>(emptyList())
     var toolCalls by mutableStateOf<Map<String, List<ToolCall>>>(emptyMap())
+    var readingSummaries by mutableStateOf<Map<String, ReadingSummary>>(emptyMap())
     var isLoading by mutableStateOf(false)
     var conversations by mutableStateOf<List<Conversation>>(emptyList())
     var currentConversationId: String? by mutableStateOf(null)
@@ -445,6 +568,7 @@ class ChatViewModel(private val scope: CoroutineScope) {
                 val conversation = transport.getConversation(id)
                 messages = conversation.messages
                 toolCalls = conversation.toolCalls.groupBy { it.timestamp.toString() }
+                readingSummaries = emptyMap() // Clear summaries when loading conversation
                 currentConversationId = id
             } catch (e: Exception) {
                 messages = listOf(ChatMessage("assistant", "Error loading conversation: ${e.message}"))
@@ -461,6 +585,7 @@ class ChatViewModel(private val scope: CoroutineScope) {
                 currentConversationId = newConversation.id
                 messages = emptyList()
                 toolCalls = emptyMap()
+                readingSummaries = emptyMap()
                 loadConversations() // Refresh list
             } catch (e: Exception) {
                 println("Error creating conversation: ${e.message}")
@@ -476,6 +601,7 @@ class ChatViewModel(private val scope: CoroutineScope) {
                     currentConversationId = null
                     messages = emptyList()
                     toolCalls = emptyMap()
+                    readingSummaries = emptyMap()
                 }
                 loadConversations() // Refresh list
             } catch (e: Exception) {
@@ -485,6 +611,23 @@ class ChatViewModel(private val scope: CoroutineScope) {
     }
     
     fun sendMessage(text: String) {
+        // Check if this is a /summarize command
+        if (text.startsWith("/summarize") || text.startsWith("/summarize ")) {
+            val textToSummarize = text.removePrefix("/summarize").trim()
+            if (textToSummarize.isNotEmpty()) {
+                summarizeText(textToSummarize)
+            } else {
+                // If no text provided, summarize the last assistant message
+                val lastAssistantMessage = messages.lastOrNull { it.role == "assistant" }
+                if (lastAssistantMessage != null) {
+                    summarizeText(lastAssistantMessage.content)
+                } else {
+                    messages = messages + ChatMessage("assistant", "No text to summarize. Please provide text after /summarize or have an assistant message.")
+                }
+            }
+            return
+        }
+        
         if (currentConversationId == null) {
             createNewChat()
             // Wait a bit for the conversation to be created
@@ -494,6 +637,30 @@ class ChatViewModel(private val scope: CoroutineScope) {
             }
         } else {
             sendMessageInternal(text)
+        }
+    }
+    
+    private fun summarizeText(text: String) {
+        if (isLoading) return
+        isLoading = true
+        
+        // Only show "/summarize" in the UI, not the full text
+        val userMessage = ChatMessage("user", "/summarize")
+        messages = messages + userMessage
+        
+        scope.launch {
+            try {
+                val summary = transport.summarize(text)
+                val summaryMessage = ChatMessage("assistant", "Summary generated for: ${summary.title}")
+                messages = messages + summaryMessage
+                
+                // Store summary with the summary message timestamp
+                readingSummaries = readingSummaries + (summaryMessage.timestamp.toString() to summary)
+            } catch (e: Exception) {
+                messages = messages + ChatMessage("assistant", "Error generating summary: ${e.message}")
+            } finally {
+                isLoading = false
+            }
         }
     }
     

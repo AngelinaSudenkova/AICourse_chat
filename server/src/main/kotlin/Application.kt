@@ -107,6 +107,7 @@ fun Application.module() {
     
     routing {
         route("/api") {
+            summaryRoutes()
             conversationRoutes()
             chatRoutes()
             agentRoutes()
