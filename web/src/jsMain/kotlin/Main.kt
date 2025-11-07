@@ -11,6 +11,8 @@ import kotlinx.serialization.builtins.ListSerializer
 import models.*
 import transport.HttpTransport
 import structured.ReadingSummary
+import structured.JournalResponse
+import structured.Journal
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.Element
 import io.ktor.client.request.*
@@ -39,6 +41,18 @@ fun App() {
         )
     }
     
+    // Load mode from localStorage on startup
+    var mode by remember { 
+        mutableStateOf(
+            try {
+                val stored = js("window.localStorage.getItem('mode')") as? String
+                if (stored != null && stored.isNotEmpty() && (stored == "chat" || stored == "journal")) stored else "chat"
+            } catch (e: Exception) {
+                "chat"
+            }
+        )
+    }
+    
     // Save theme to localStorage when it changes
     LaunchedEffect(theme) {
         try {
@@ -49,9 +63,21 @@ fun App() {
         }
     }
     
+    // Save mode to localStorage when it changes
+    LaunchedEffect(mode) {
+        try {
+            val localStorage = js("window.localStorage")
+            localStorage.setItem("mode", mode)
+        } catch (e: Exception) {
+            // Ignore localStorage errors
+        }
+    }
+    
     LaunchedEffect(Unit) {
-        // Load conversations on startup
-        viewModel.loadConversations()
+        // Load conversations on startup (only for chat mode)
+        if (mode == "chat") {
+            viewModel.loadConversations()
+        }
     }
     
     Style(AppStylesheet)
@@ -64,14 +90,16 @@ fun App() {
             display(DisplayStyle.Flex)
         }
     }) {
-        Sidebar(
-            conversations = viewModel.conversations,
-            currentConversationId = viewModel.currentConversationId,
-            onSelectConversation = { id -> viewModel.loadConversation(id) },
-            onNewChat = { viewModel.createNewChat() },
-            onDeleteConversation = { id -> viewModel.deleteConversation(id) },
-            isLoading = viewModel.isLoadingConversations
-        )
+        if (mode == "chat") {
+            Sidebar(
+                conversations = viewModel.conversations,
+                currentConversationId = viewModel.currentConversationId,
+                onSelectConversation = { id -> viewModel.loadConversation(id) },
+                onNewChat = { viewModel.createNewChat() },
+                onDeleteConversation = { id -> viewModel.deleteConversation(id) },
+                isLoading = viewModel.isLoadingConversations
+            )
+        }
         
         Div(attrs = {
             style {
@@ -84,28 +112,42 @@ fun App() {
         }) {
             TopBar(
                 theme = theme,
+                mode = mode,
                 onThemeToggle = { theme = if (theme == "light") "dark" else "light" },
+                onModeToggle = { mode = if (mode == "chat") "journal" else "chat" },
                 onExport = { viewModel.exportMessages() }
             )
             
-            if (viewModel.messages.isEmpty() && !viewModel.isLoading && viewModel.currentConversationId == null) {
-                Div(attrs = {
-                    classes(AppStylesheet.emptyState)
-                }) {
-                    Text("Welcome! Click 'New Chat' to start a conversation.")
-                }
+            if (mode == "journal") {
+                JournalView(viewModel)
             } else {
-                ChatThread(
-                    messages = viewModel.messages,
-                    toolCalls = viewModel.toolCalls,
-                    isLoading = viewModel.isLoading,
-                    readingSummaries = viewModel.readingSummaries
-                )
+                if (viewModel.messages.isEmpty() && !viewModel.isLoading && viewModel.currentConversationId == null) {
+                    Div(attrs = {
+                        classes(AppStylesheet.emptyState)
+                    }) {
+                        Text("Welcome! Click 'New Chat' to start a conversation.")
+                    }
+                } else {
+                    ChatThread(
+                        messages = viewModel.messages,
+                        toolCalls = viewModel.toolCalls,
+                        isLoading = viewModel.isLoading,
+                        readingSummaries = viewModel.readingSummaries,
+                        journalResponses = emptyMap() // Not used in chat mode
+                    )
+                }
             }
             
             ChatInput(
-                onSend = { text -> viewModel.sendMessage(text) },
-                isLoading = viewModel.isLoading
+                onSend = { text -> 
+                    if (mode == "journal") {
+                        viewModel.sendJournalMessage(text)
+                    } else {
+                        viewModel.sendMessage(text)
+                    }
+                },
+                isLoading = viewModel.isLoading,
+                placeholder = if (mode == "journal") "Share your thoughts..." else "Type a message..."
             )
         }
     }
@@ -197,7 +239,9 @@ fun ConversationItem(
 @Composable
 fun TopBar(
     theme: String,
+    mode: String,
     onThemeToggle: () -> Unit,
+    onModeToggle: () -> Unit,
     onExport: () -> Unit
 ) {
     Div(attrs = {
@@ -206,12 +250,19 @@ fun TopBar(
         H1(attrs = {
             classes(AppStylesheet.title)
         }) {
-            Text("KMP AI Chat")
+            Text(if (mode == "journal") "Personal Journal" else "KMP AI Chat")
         }
         
         Div(attrs = {
             classes(AppStylesheet.topBarActions)
         }) {
+            Button(attrs = {
+                classes(AppStylesheet.button, AppStylesheet.modeButton)
+                onClick { onModeToggle() }
+            }) {
+                Text(if (mode == "journal") "💬 Chat" else "📔 Journal")
+            }
+            
             Button(attrs = {
                 classes(AppStylesheet.button, AppStylesheet.iconButton)
                 onClick { onThemeToggle() }
@@ -219,11 +270,13 @@ fun TopBar(
                 Text(if (theme == "light") "🌙" else "☀️")
             }
             
-            Button(attrs = {
-                classes(AppStylesheet.button, AppStylesheet.iconButton)
-                onClick { onExport() }
-            }) {
-                Text("📥")
+            if (mode == "chat") {
+                Button(attrs = {
+                    classes(AppStylesheet.button, AppStylesheet.iconButton)
+                    onClick { onExport() }
+                }) {
+                    Text("📥")
+                }
             }
         }
     }
@@ -234,7 +287,8 @@ fun ChatThread(
     messages: List<ChatMessage>,
     toolCalls: Map<String, List<ToolCall>>,
     isLoading: Boolean,
-    readingSummaries: Map<String, ReadingSummary> = emptyMap()
+    readingSummaries: Map<String, ReadingSummary> = emptyMap(),
+    journalResponses: Map<String, JournalResponse> = emptyMap()
 ) {
     var scrollContainer by remember { mutableStateOf<org.w3c.dom.HTMLDivElement?>(null) }
     
@@ -262,6 +316,19 @@ fun ChatThread(
             // Show reading summary if available for this message
             readingSummaries[message.timestamp.toString()]?.let { summary ->
                 ReadingSummaryCard(summary)
+            }
+            
+            // Show journal response if available for this message
+            journalResponses[message.timestamp.toString()]?.let { journalResponse ->
+                if (journalResponse.status == "ready") {
+                    journalResponse.journal?.let { journal ->
+                        JournalCard(journal)
+                    }
+                } else if (journalResponse.status == "collecting" && journalResponse.missing.isNotEmpty()) {
+                    // Note: The missing array should contain actual questions, which are already displayed
+                    // as assistant messages. This section is kept for backward compatibility but shouldn't
+                    // show redundant information.
+                }
             }
         }
         
@@ -486,7 +553,311 @@ fun TypingIndicator() {
 }
 
 @Composable
-fun ChatInput(onSend: (String) -> Unit, isLoading: Boolean = false) {
+fun JournalView(viewModel: ChatViewModel) {
+    var scrollContainer by remember { mutableStateOf<org.w3c.dom.HTMLDivElement?>(null) }
+    
+    // Auto-scroll to bottom when messages change or loading state changes
+    LaunchedEffect(viewModel.journalMessages.size, viewModel.isLoading) {
+        scrollContainer?.let { container ->
+            kotlinx.coroutines.delay(50)
+            container.scrollTop = container.scrollHeight.toDouble()
+        }
+    }
+    
+    Div(attrs = {
+        classes(AppStylesheet.chatThread)
+        ref { element ->
+            scrollContainer = element?.unsafeCast<org.w3c.dom.HTMLDivElement>()
+            onDispose { }
+        }
+    }) {
+        if (viewModel.journalMessages.isEmpty() && !viewModel.isLoading) {
+            Div(attrs = {
+                classes(AppStylesheet.emptyState)
+            }) {
+                Text("Welcome to your Personal Journal! 🌙\n\nShare your thoughts and reflections about your day. I'll help you create a beautiful journal entry.")
+            }
+        }
+        
+        viewModel.journalMessages.forEach { message ->
+            MessageBubble(
+                message = message,
+                toolCalls = emptyList()
+            )
+            
+            // Show journal response if available for this message
+            viewModel.journalResponses[message.timestamp.toString()]?.let { journalResponse ->
+                if (journalResponse.status == "ready") {
+                    journalResponse.journal?.let { journal ->
+                        JournalCard(journal)
+                    }
+                } else if (journalResponse.status == "collecting" && journalResponse.missing.isNotEmpty()) {
+                    // Note: The missing array should contain actual questions, which are already displayed
+                    // as assistant messages. This section is kept for backward compatibility but shouldn't
+                    // show redundant information.
+                }
+            }
+        }
+        
+        if (viewModel.isLoading) {
+            TypingIndicator()
+        }
+    }
+}
+
+@Composable
+fun JournalCard(journal: Journal) {
+    fun getMoodEmoji(mood: String): String {
+        return when (mood) {
+            "very_bad" -> "😞"
+            "bad" -> "😟"
+            "neutral" -> "😐"
+            "good" -> "😊"
+            "very_good" -> "😄"
+            else -> "😊"
+        }
+    }
+    
+    Div(attrs = {
+        style {
+            borderRadius(16.px)
+            border(1.px, LineStyle.Solid, Color("var(--border)"))
+            padding(24.px)
+            backgroundColor(Color("var(--surface)"))
+            marginTop(12.px)
+            marginBottom(12.px)
+            property("box-shadow", "0 2px 8px rgba(0, 0, 0, 0.1)")
+        }
+        classes("journal-card")
+    }) {
+        // Title with date
+        H2(attrs = {
+            style {
+                fontSize(26.px)
+                fontWeight(700)
+                color(Color("var(--text)"))
+                marginBottom(16.px)
+                marginTop(0.px)
+                lineHeight("1.3")
+            }
+        }) {
+            Text("${getMoodEmoji(journal.mood)} ${journal.title}")
+        }
+        
+        // Date and Mood on same line
+        Div(attrs = {
+            style {
+                display(DisplayStyle.Flex)
+                justifyContent(JustifyContent.SpaceBetween)
+                alignItems(AlignItems.Center)
+                marginBottom(20.px)
+                paddingBottom(12.px)
+                property("border-bottom", "1px solid var(--border)")
+            }
+        }) {
+            B(attrs = {
+                style {
+                    fontSize(14.px)
+                    color(Color("var(--text)"))
+                    opacity(0.9)
+                }
+            }) {
+                Text(journal.date)
+            }
+            Span(attrs = {
+                style {
+                    fontSize(14.px)
+                    color(Color("var(--text)"))
+                    opacity(0.9)
+                }
+            }) {
+                Text("${getMoodEmoji(journal.mood)} ${journal.mood.replace("_", " ").replaceFirstChar { it.uppercaseChar() }} (${journal.moodScore}/5)")
+            }
+        }
+        
+        // Key Moments
+        if (journal.keyMoments.isNotEmpty()) {
+            Div(attrs = {
+                style {
+                    marginBottom(20.px)
+                }
+            }) {
+                H3(attrs = {
+                    style {
+                        fontSize(16.px)
+                        fontWeight(600)
+                        marginBottom(8.px)
+                        color(Color("var(--text)"))
+                    }
+                }) {
+                    Text("✨ Key Moments")
+                }
+                Ul(attrs = {
+                    style {
+                        marginLeft(20.px)
+                    }
+                }) {
+                    journal.keyMoments.forEach { moment ->
+                        Li(attrs = {
+                            style {
+                                marginBottom(4.px)
+                                lineHeight("1.6")
+                            }
+                        }) {
+                            Text(moment)
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Lessons
+        if (journal.lessons.isNotEmpty()) {
+            Div(attrs = {
+                style {
+                    marginBottom(20.px)
+                }
+            }) {
+                H3(attrs = {
+                    style {
+                        fontSize(16.px)
+                        fontWeight(600)
+                        marginBottom(8.px)
+                        color(Color("var(--text)"))
+                    }
+                }) {
+                    Text("📚 Lessons")
+                }
+                Ul(attrs = {
+                    style {
+                        marginLeft(20.px)
+                    }
+                }) {
+                    journal.lessons.forEach { lesson ->
+                        Li(attrs = {
+                            style {
+                                marginBottom(4.px)
+                                lineHeight("1.6")
+                            }
+                        }) {
+                            Text(lesson)
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Gratitude
+        if (journal.gratitude.isNotEmpty()) {
+            Div(attrs = {
+                style {
+                    marginBottom(20.px)
+                }
+            }) {
+                H3(attrs = {
+                    style {
+                        fontSize(16.px)
+                        fontWeight(600)
+                        marginBottom(8.px)
+                        color(Color("var(--text)"))
+                    }
+                }) {
+                    Text("🙏 Gratitude")
+                }
+                Ul(attrs = {
+                    style {
+                        marginLeft(20.px)
+                    }
+                }) {
+                    journal.gratitude.forEach { item ->
+                        Li(attrs = {
+                            style {
+                                marginBottom(4.px)
+                                lineHeight("1.6")
+                            }
+                        }) {
+                            Text(item)
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Next Steps
+        if (journal.nextSteps.isNotEmpty()) {
+            Div(attrs = {
+                style {
+                    marginBottom(20.px)
+                }
+            }) {
+                H3(attrs = {
+                    style {
+                        fontSize(16.px)
+                        fontWeight(600)
+                        marginBottom(8.px)
+                        color(Color("var(--text)"))
+                    }
+                }) {
+                    Text("🚀 Next Steps")
+                }
+                Ul(attrs = {
+                    style {
+                        marginLeft(20.px)
+                    }
+                }) {
+                    journal.nextSteps.forEach { step ->
+                        Li(attrs = {
+                            style {
+                                marginBottom(4.px)
+                                lineHeight("1.6")
+                            }
+                        }) {
+                            Text(step)
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Reflection Summary in a box
+        Div(attrs = {
+            style {
+                borderRadius(12.px)
+                padding(16.px, 18.px)
+                backgroundColor(Color("var(--summary-bg)"))
+                border(1.px, LineStyle.Solid, Color("var(--summary-border)"))
+                marginTop(16.px)
+            }
+        }) {
+            Div(attrs = {
+                style {
+                    fontSize(14.px)
+                    fontWeight(600)
+                    marginBottom(10.px)
+                    color(Color("var(--text)"))
+                    opacity(0.9)
+                }
+            }) {
+                Text("🪞 Reflection")
+            }
+            Div(attrs = {
+                style {
+                    fontSize(15.px)
+                    color(Color("var(--text)"))
+                    opacity(0.95)
+                    lineHeight("1.7")
+                    property("border-top", "1px solid var(--summary-border)")
+                    paddingTop(12.px)
+                }
+            }) {
+                Text(journal.reflectionSummary)
+            }
+        }
+    }
+}
+
+@Composable
+fun ChatInput(onSend: (String) -> Unit, isLoading: Boolean = false, placeholder: String = "Type a message...") {
     var inputValue by remember { mutableStateOf("") }
     
     Div(attrs = {
@@ -494,7 +865,7 @@ fun ChatInput(onSend: (String) -> Unit, isLoading: Boolean = false) {
     }) {
         Input(type = InputType.Text, attrs = {
             classes(AppStylesheet.input)
-            placeholder("Type a message...")
+            placeholder(placeholder)
             value(inputValue)
             if (isLoading) disabled()
             onInput {
@@ -536,6 +907,11 @@ class ChatViewModel(private val scope: CoroutineScope) {
     var conversations by mutableStateOf<List<Conversation>>(emptyList())
     var currentConversationId: String? by mutableStateOf(null)
     var isLoadingConversations by mutableStateOf(false)
+    
+    // Journal mode state
+    var journalMessages by mutableStateOf<List<ChatMessage>>(emptyList())
+    var journalResponses by mutableStateOf<Map<String, JournalResponse>>(emptyMap())
+    var journalConversationHistory by mutableStateOf<List<String>>(emptyList())
     
     private val transport = HttpTransport("http://localhost:8081")
     
@@ -722,6 +1098,53 @@ class ChatViewModel(private val scope: CoroutineScope) {
         a.click()
         js("document.body.removeChild(a)")
         js("URL.revokeObjectURL(url)")
+    }
+    
+    fun sendJournalMessage(text: String) {
+        if (isLoading) return
+        isLoading = true
+        
+        val userMessage = ChatMessage("user", text)
+        journalMessages = journalMessages + userMessage
+        journalConversationHistory = journalConversationHistory + text
+        
+        scope.launch {
+            try {
+                val response = transport.journal(text, journalConversationHistory)
+                
+                // Store the journal response
+                journalResponses = journalResponses + (userMessage.timestamp.toString() to response)
+                
+                // If status is collecting, show assistant message with questions
+                if (response.status == "collecting") {
+                    val questionText = if (response.missing.isNotEmpty()) {
+                        // The missing array should now contain actual questions, not field names
+                        response.missing.joinToString("\n\n")
+                    } else {
+                        "Tell me more about your day..."
+                    }
+                    val assistantMessage = ChatMessage("assistant", questionText)
+                    journalMessages = journalMessages + assistantMessage
+                } else if (response.status == "ready" && response.journal != null) {
+                    // Journal is ready, show a completion message
+                    val assistantMessage = ChatMessage(
+                        "assistant",
+                        "✨ Your journal entry is ready! Here's your reflection:"
+                    )
+                    journalMessages = journalMessages + assistantMessage
+                }
+            } catch (e: Exception) {
+                journalMessages = journalMessages + ChatMessage("assistant", "Error: ${e.message}")
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+    
+    fun resetJournal() {
+        journalMessages = emptyList()
+        journalResponses = emptyMap()
+        journalConversationHistory = emptyList()
     }
 }
 
@@ -1041,6 +1464,22 @@ object AppStylesheet : StyleSheet() {
         property("transition", "background-color 0.2s")
         
         property(":disabled", "opacity: 0.6; cursor: not-allowed;")
+    }
+    
+    val modeButton by style {
+        padding(8.px, 16.px)
+        backgroundColor(Color("var(--primary)"))
+        color(Color.white)
+        border(0.px)
+        borderRadius(6.px)
+        cursor("pointer")
+        fontSize(14.px)
+        fontWeight(500)
+        property("transition", "background-color 0.2s")
+    }
+    
+    val modeButtonHover by style {
+        backgroundColor(Color("var(--primary-dark)"))
     }
     
     val iconButton by style {

@@ -18,6 +18,7 @@ import models.AgentResponse
 import models.Conversation
 import models.ConversationWithMessages
 import structured.ReadingSummary
+import structured.JournalResponse
 
 class HttpTransport(
     private val baseUrl: String
@@ -73,4 +74,16 @@ class HttpTransport(
             setBody(text)
         }.body()
     }
+    
+    suspend fun journal(message: String, conversationHistory: List<String> = emptyList()): JournalResponse {
+        return client.post("/api/journal") {
+            setBody(JournalRequest(message, conversationHistory))
+        }.body()
+    }
+    
+    @kotlinx.serialization.Serializable
+    private data class JournalRequest(
+        val message: String,
+        val conversationHistory: List<String> = emptyList()
+    )
 }

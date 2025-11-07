@@ -298,4 +298,197 @@ class GeminiClient(
         systemInstruction: String = "You must output ONLY JSON matching the given schema.",
         model: String = "gemini-1.5-flash-latest"
     ): T = generateStructured(userText, responseSchema, systemInstruction, model, kotlinx.serialization.serializer<T>())
+    
+    /**
+     * Generate a journal entry using structured output
+     * Conducts a calm dialogue about the user's day and returns a structured journal response
+     */
+    suspend fun generateJournalEntry(
+        conversationHistory: List<String>,
+        responseSchema: JsonObject
+    ): structured.JournalResponse {
+        if (apiKey.isEmpty()) {
+            throw IllegalStateException("GEMINI_API_KEY not configured")
+        }
+        
+        val systemInstruction = """
+            You are a calm, supportive journaling assistant. Your role is to conduct a short, thoughtful dialogue 
+            about the user's day to help them reflect. You should:
+            
+            1. Ask gentle, open-ended questions to understand their day
+            2. Collect information about their mood, key moments, lessons learned, gratitude, and next steps
+            3. When you have enough information (typically 2-4 exchanges), set status to "ready" and provide the journal entry
+            4. If you need more information, set status to "collecting" and in the "missing" array, provide ACTUAL CONVERSATIONAL QUESTIONS 
+               that you would ask the user (NOT just field names). For example:
+               - Instead of "date", write "What date is today?"
+               - Instead of "mood", write "How was your mood today? Would you rate it as very bad, bad, neutral, good, or very good?"
+               - Instead of "keyMoments", write "What were the most significant moments of your day?"
+               - Instead of "lessons", write "What did you learn today?"
+               - Instead of "gratitude", write "What are you grateful for today?"
+               - Instead of "nextSteps", write "What would you like to focus on tomorrow or in the coming days?"
+               - Instead of "reflectionSummary", write questions that help synthesize their day
+            5. Use the mood scale: very_bad (1), bad (2), neutral (3), good (4), very_good (5)
+            6. For dates, use YYYY-MM-DD format
+            7. Keep questions brief, natural, and conversational - ask one or two questions at a time
+            8. Make the questions feel warm and supportive, not like a form to fill out
+            9. Output ONLY valid JSON matching the schema - no additional text or explanations
+        """.trimIndent()
+        
+        // Build conversation context
+        val conversationText = conversationHistory.joinToString("\n") { msg ->
+            if (msg.startsWith("User: ") || msg.startsWith("Assistant: ")) {
+                msg
+            } else {
+                "User: $msg"
+            }
+        }
+        
+        val userText = if (conversationHistory.isEmpty()) {
+            "Hi, I'd like to reflect on my day. Can you help me with a journal entry?"
+        } else {
+            conversationText
+        }
+        
+        // Try v1beta endpoint first (structured output works best here)
+        val attempts = listOf(
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+            "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent"
+        )
+        
+        val fieldNameCombos = listOf(
+            Triple("generationConfig", "response_mime_type", "response_json_schema"),
+            Triple("generationConfig", "response_mime_type", "response_schema"),
+            Triple("generationConfig", "responseMimeType", "responseSchema")
+        )
+        
+        for (url in attempts) {
+            for ((genConfigName, mimeTypeName, schemaName) in fieldNameCombos) {
+                try {
+                    val body = buildJsonObject {
+                        put("contents", buildJsonArray {
+                            add(buildJsonObject {
+                                put("role", "user")
+                                put("parts", buildJsonArray {
+                                    add(buildJsonObject {
+                                        put("text", "$systemInstruction\n\n$userText")
+                                    })
+                                })
+                            })
+                        })
+                        put(genConfigName, buildJsonObject {
+                            put(mimeTypeName, JsonPrimitive("application/json"))
+                            put(schemaName, responseSchema)
+                            put("stop_sequences", buildJsonArray {
+                                add(JsonPrimitive("<END_JOURNAL>"))
+                            })
+                        })
+                    }
+                    
+                    // Print pretty-printed request
+                    println("=== JOURNAL REQUEST ===")
+                    println("URL: $url")
+                    println("Body:")
+                    println(prettyJson.encodeToString(JsonObject.serializer(), body))
+                    println()
+                    
+                    val res: HttpResponse = http.post(url) {
+                        parameter("key", apiKey)
+                        contentType(ContentType.Application.Json)
+                        setBody(body.toString())
+                    }
+                    
+                    // Print pretty-printed response
+                    val responseBody = res.bodyAsText()
+                    println("=== JOURNAL RESPONSE ===")
+                    println("Status: ${res.status.value}")
+                    println("Body:")
+                    try {
+                        val responseJson = Json.parseToJsonElement(responseBody)
+                        when (responseJson) {
+                            is JsonObject -> println(prettyJson.encodeToString(JsonObject.serializer(), responseJson))
+                            is JsonArray -> println(prettyJson.encodeToString(JsonArray.serializer(), responseJson))
+                            else -> println(responseBody)
+                        }
+                    } catch (e: Exception) {
+                        println(responseBody)
+                    }
+                    println()
+                    
+                    if (res.status.value == 200) {
+                        val root = Json.parseToJsonElement(responseBody).jsonObject
+                        val jsonPayload = root["candidates"]?.jsonArray?.firstOrNull()
+                            ?.jsonObject?.get("content")?.jsonObject
+                            ?.get("parts")?.jsonArray?.firstOrNull()
+                            ?.jsonObject?.get("text")?.jsonPrimitive?.content
+                        
+                        if (jsonPayload != null) {
+                            // Print the extracted JSON payload (pretty printed)
+                            println("=== JOURNAL EXTRACTED JSON PAYLOAD ===")
+                            try {
+                                val payloadJson = Json.parseToJsonElement(jsonPayload)
+                                when (payloadJson) {
+                                    is JsonObject -> println(prettyJson.encodeToString(JsonObject.serializer(), payloadJson))
+                                    is JsonArray -> println(prettyJson.encodeToString(JsonArray.serializer(), payloadJson))
+                                    else -> println(jsonPayload)
+                                }
+                            } catch (e: Exception) {
+                                println(jsonPayload)
+                            }
+                            println()
+                            
+                            val decoded = json.decodeFromString<structured.JournalResponse>(jsonPayload)
+                            return decoded
+                        }
+                    }
+                } catch (e: Exception) {
+                    // Continue to next combination
+                    continue
+                }
+            }
+        }
+        
+        // Fallback: use regular generate with JSON prompt if structured output fails
+        val jsonPrompt = """
+            $systemInstruction
+            
+            You must output ONLY valid JSON matching this exact schema:
+            ${responseSchema.toString()}
+            
+            $userText
+            
+            Output ONLY the JSON object, no markdown, no code blocks, no explanations.
+        """.trimIndent()
+        
+        println("=== JOURNAL FALLBACK: Using regular generate method ===")
+        println("Prompt:")
+        println(jsonPrompt)
+        println()
+        
+        val textResponse = generate(jsonPrompt)
+        
+        // Extract JSON from response (might be wrapped in markdown code blocks)
+        val jsonText = textResponse
+            .removePrefix("```json")
+            .removePrefix("```")
+            .removeSuffix("```")
+            .trim()
+        
+        // Print the extracted JSON (pretty printed)
+        println("=== JOURNAL FALLBACK RESPONSE ===")
+        try {
+            val payloadJson = Json.parseToJsonElement(jsonText)
+            when (payloadJson) {
+                is JsonObject -> println(prettyJson.encodeToString(JsonObject.serializer(), payloadJson))
+                is JsonArray -> println(prettyJson.encodeToString(JsonArray.serializer(), payloadJson))
+                else -> println(jsonText)
+            }
+        } catch (e: Exception) {
+            println(jsonText)
+        }
+        println()
+        
+        val decoded = json.decodeFromString<structured.JournalResponse>(jsonText)
+        return decoded
+    }
 }
