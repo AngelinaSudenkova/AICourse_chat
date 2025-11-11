@@ -17,6 +17,10 @@ import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.Element
 import io.ktor.client.request.*
 import io.ktor.client.call.*
+import ReasoningLabViewModel
+import ReasoningLabView
+import TemperatureLabViewModel
+import TemperatureLabView
 
 fun main() {
     renderComposable(rootElementId = "root") {
@@ -46,12 +50,15 @@ fun App() {
         mutableStateOf(
             try {
                 val stored = js("window.localStorage.getItem('mode')") as? String
-                if (stored != null && stored.isNotEmpty() && (stored == "chat" || stored == "journal")) stored else "chat"
+                if (stored != null && stored.isNotEmpty() && (stored == "chat" || stored == "journal" || stored == "reasoning" || stored == "temperature")) stored else "chat"
             } catch (e: Exception) {
                 "chat"
             }
         )
     }
+    
+    val reasoningViewModel = remember { ReasoningLabViewModel(scope) }
+    val temperatureViewModel = remember { TemperatureLabViewModel(scope) }
     
     // Save theme to localStorage when it changes
     LaunchedEffect(theme) {
@@ -114,12 +121,27 @@ fun App() {
                 theme = theme,
                 mode = mode,
                 onThemeToggle = { theme = if (theme == "light") "dark" else "light" },
-                onModeToggle = { mode = if (mode == "chat") "journal" else "chat" },
+                onModeToggle = { 
+                    mode = when (mode) {
+                        "chat" -> "journal"
+                        else -> "chat"
+                    }
+                },
+                onTemperatureToggle = {
+                    mode = "temperature"
+                },
+                onReasoningToggle = {
+                    mode = "reasoning"
+                },
                 onExport = { viewModel.exportMessages() }
             )
             
             if (mode == "journal") {
                 JournalView(viewModel)
+            } else if (mode == "reasoning") {
+                ReasoningLabView(reasoningViewModel)
+            } else if (mode == "temperature") {
+                TemperatureLabView(temperatureViewModel)
             } else {
                 if (viewModel.messages.isEmpty() && !viewModel.isLoading && viewModel.currentConversationId == null) {
                     Div(attrs = {
@@ -138,17 +160,19 @@ fun App() {
                 }
             }
             
-            ChatInput(
-                onSend = { text -> 
-                    if (mode == "journal") {
-                        viewModel.sendJournalMessage(text)
-                    } else {
-                        viewModel.sendMessage(text)
-                    }
-                },
-                isLoading = viewModel.isLoading,
-                placeholder = if (mode == "journal") "Share your thoughts..." else "Type a message..."
-            )
+            if (mode == "chat" || mode == "journal") {
+                ChatInput(
+                    onSend = { text -> 
+                        if (mode == "journal") {
+                            viewModel.sendJournalMessage(text)
+                        } else {
+                            viewModel.sendMessage(text)
+                        }
+                    },
+                    isLoading = viewModel.isLoading,
+                    placeholder = if (mode == "journal") "Share your thoughts..." else "Type a message..."
+                )
+            }
         }
     }
 }
@@ -242,6 +266,8 @@ fun TopBar(
     mode: String,
     onThemeToggle: () -> Unit,
     onModeToggle: () -> Unit,
+    onTemperatureToggle: () -> Unit,
+    onReasoningToggle: () -> Unit,
     onExport: () -> Unit
 ) {
     Div(attrs = {
@@ -250,7 +276,14 @@ fun TopBar(
         H1(attrs = {
             classes(AppStylesheet.title)
         }) {
-            Text(if (mode == "journal") "Personal Journal" else "KMP AI Chat")
+            Text(
+                when (mode) {
+                    "journal" -> "Personal Journal"
+                    "reasoning" -> "Reasoning Lab"
+                    "temperature" -> "Temperature Lab"
+                    else -> "KMP AI Chat"
+                }
+            )
         }
         
         Div(attrs = {
@@ -260,7 +293,32 @@ fun TopBar(
                 classes(AppStylesheet.button, AppStylesheet.modeButton)
                 onClick { onModeToggle() }
             }) {
-                Text(if (mode == "journal") "💬 Chat" else "📔 Journal")
+                Text(
+                    when (mode) {
+                        "journal" -> "💬 Chat"
+                        "reasoning" -> "💬 Chat"
+                        "temperature" -> "💬 Chat"
+                        else -> "📔 Journal"
+                    }
+                )
+            }
+            
+            if (mode != "temperature") {
+                Button(attrs = {
+                    classes(AppStylesheet.button, AppStylesheet.modeButton)
+                    onClick { onTemperatureToggle() }
+                }) {
+                    Text("🔥 Temperature Lab")
+                }
+            }
+
+            if (mode != "reasoning") {
+                Button(attrs = {
+                    classes(AppStylesheet.button, AppStylesheet.modeButton)
+                    onClick { onReasoningToggle() }
+                }) {
+                    Text("🧪 Reasoning Lab")
+                }
             }
             
             Button(attrs = {
@@ -1485,6 +1543,21 @@ object AppStylesheet : StyleSheet() {
     val iconButton by style {
         padding(8.px, 12.px)
         minWidth(40.px)
+    }
+    
+    val reasoningButton by style {
+        padding(10.px, 16.px)
+        backgroundColor(Color("var(--primary)"))
+        color(Color.white)
+        border(0.px)
+        borderRadius(6.px)
+        cursor("pointer")
+        fontSize(14.px)
+        fontWeight(500)
+        property("transition", "background-color 0.2s")
+        
+        property(":hover:not(:disabled)", "background-color: var(--primary-dark);")
+        property(":disabled", "opacity: 0.6; cursor: not-allowed;")
     }
     
     val sendButton by style {

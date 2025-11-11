@@ -7,7 +7,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.koin.ktor.ext.getKoin
+import org.koin.core.context.GlobalContext
 import kotlinx.serialization.json.*
 import kotlinx.serialization.Serializable
 
@@ -19,7 +19,7 @@ data class JournalRequest(
 
 fun Route.journalRoutes() {
     post("/journal") {
-        val koin = application.getKoin()
+        val koin = GlobalContext.get()
         val gemini: GeminiClient = koin.get()
         
         val request = runCatching {

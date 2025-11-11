@@ -49,7 +49,7 @@ class GeminiClient(
         }
     }
 
-    suspend fun generate(prompt: String): String {
+    suspend fun generate(prompt: String, temperature: Double? = null): String {
         if (apiKey.isEmpty()) {
             return "Error: GEMINI_API_KEY not configured"
         }
@@ -67,20 +67,27 @@ class GeminiClient(
         
         for (url in attempts) {
             try {
-                val res: HttpResponse = http.post(url) {
-                    parameter("key", apiKey)
-                    contentType(ContentType.Application.Json)
-                    setBody(buildJsonObject {
-                        put("contents", buildJsonArray {
-                            add(buildJsonObject {
-                                put("parts", buildJsonArray { 
-                                    add(buildJsonObject { 
-                                        put("text", prompt) 
-                                    }) 
+                val body = buildJsonObject {
+                    put("contents", buildJsonArray {
+                        add(buildJsonObject {
+                            put("parts", buildJsonArray {
+                                add(buildJsonObject {
+                                    put("text", prompt)
                                 })
                             })
                         })
-                    }.toString())
+                    })
+                    if (temperature != null) {
+                        put("generationConfig", buildJsonObject {
+                            put("temperature", JsonPrimitive(temperature))
+                        })
+                    }
+                }
+
+                val res: HttpResponse = http.post(url) {
+                    parameter("key", apiKey)
+                    contentType(ContentType.Application.Json)
+                    setBody(body.toString())
                 }
                 
                 val statusCode = res.status.value

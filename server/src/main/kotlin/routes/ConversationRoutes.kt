@@ -4,10 +4,11 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.koin.ktor.ext.getKoin
+import org.koin.core.context.GlobalContext
+import models.Conversation
 
 fun Route.conversationRoutes() {
-    val koin = application.getKoin()
+    val koin = GlobalContext.get()
     val chatService: ChatService = koin.get()
     
     get("/conversations") {

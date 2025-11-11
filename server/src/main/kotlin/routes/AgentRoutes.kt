@@ -7,13 +7,13 @@ import io.ktor.server.routing.*
 import models.*
 import tools.ToolRegistry
 import ai.GeminiClient
-import org.koin.ktor.ext.getKoin
+import org.koin.core.context.GlobalContext
 import platform.currentTimeMillis
 import kotlinx.coroutines.withTimeout
 
 fun Route.agentRoutes() {
     post("/agent") {
-        val koin = application.getKoin()
+        val koin = GlobalContext.get()
         val toolRegistry: ToolRegistry = koin.get()
         val geminiClient: GeminiClient = koin.get()
         val chatService: ChatService = koin.get()

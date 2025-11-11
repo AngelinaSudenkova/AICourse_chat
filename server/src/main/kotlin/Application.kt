@@ -20,6 +20,7 @@ import ai.GeminiClient
 import tools.ToolRegistry
 import models.*
 import platform.currentTimeMillis
+import org.koin.core.context.GlobalContext
 
 fun main(args: Array<String>) {
     val port = System.getenv("PORT")?.toIntOrNull() ?: 8081
@@ -107,8 +108,12 @@ fun Application.module() {
     
     routing {
         route("/api") {
+            val gemini: GeminiClient = GlobalContext.get().get()
+            temperatureRoutes(gemini)
+            temperatureCompareRoutes(gemini)
             summaryRoutes()
             journalRoutes()
+            reasoningRoutes() // Added reasoning lab route
             conversationRoutes()
             chatRoutes()
             agentRoutes()

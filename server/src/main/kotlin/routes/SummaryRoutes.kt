@@ -7,12 +7,12 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.koin.ktor.ext.getKoin
+import org.koin.core.context.GlobalContext
 import kotlinx.serialization.json.*
 
 fun Route.summaryRoutes() {
     post("/summarize") {
-        val koin = application.getKoin()
+        val koin = GlobalContext.get()
         val gemini: GeminiClient = koin.get()
 
         // Accepts plain text or JSON { "text": "..." }

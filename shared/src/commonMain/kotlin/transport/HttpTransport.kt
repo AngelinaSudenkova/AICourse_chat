@@ -19,6 +19,13 @@ import models.Conversation
 import models.ConversationWithMessages
 import structured.ReadingSummary
 import structured.JournalResponse
+import structured.ReasonRequest
+import structured.ReasonResponse
+import structured.TempRequest
+import structured.TempResponse
+import structured.TempRun
+import structured.CompareRequest
+import structured.CompareSummary
 
 class HttpTransport(
     private val baseUrl: String
@@ -78,6 +85,24 @@ class HttpTransport(
     suspend fun journal(message: String, conversationHistory: List<String> = emptyList()): JournalResponse {
         return client.post("/api/journal") {
             setBody(JournalRequest(message, conversationHistory))
+        }.body()
+    }
+    
+    suspend fun reason(method: String, challenge: String): ReasonResponse {
+        return client.post("/api/reason") {
+            setBody(ReasonRequest(method, challenge))
+        }.body()
+    }
+    
+    suspend fun temperature(prompt: String, temps: List<Double> = listOf(0.0, 0.7, 1.2)): TempResponse {
+        return client.post("/api/temperature") {
+            setBody(TempRequest(prompt = prompt, temps = temps))
+        }.body()
+    }
+    
+    suspend fun compareTemperature(prompt: String, runs: List<TempRun>): CompareSummary {
+        return client.post("/api/temperature/compare") {
+            setBody(CompareRequest(prompt = prompt, runs = runs))
         }.body()
     }
     
