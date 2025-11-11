@@ -4,8 +4,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.ServerResponseException
 import io.ktor.client.request.*
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
@@ -13,6 +16,8 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import models.AgentRequest
 import models.AgentResponse
 import models.Conversation
@@ -26,6 +31,8 @@ import structured.TempResponse
 import structured.TempRun
 import structured.CompareRequest
 import structured.CompareSummary
+import structured.ModelsCompareRequest
+import structured.ModelsCompareResponse
 
 class HttpTransport(
     private val baseUrl: String
@@ -106,9 +113,36 @@ class HttpTransport(
         }.body()
     }
     
+    suspend fun compareModels(request: ModelsCompareRequest): ModelsCompareResponse {
+        return try {
+            client.post("/api/models/compare") {
+                setBody(request)
+            }.body()
+        } catch (e: ClientRequestException) {
+            val message = parseErrorMessage(e.response.bodyAsText())
+            throw Exception(message)
+        } catch (e: ServerResponseException) {
+            val message = parseErrorMessage(e.response.bodyAsText())
+            throw Exception(message)
+        }
+    }
+    
     @kotlinx.serialization.Serializable
     private data class JournalRequest(
         val message: String,
         val conversationHistory: List<String> = emptyList()
     )
+}
+
+private fun parseErrorMessage(raw: String): String {
+    return try {
+        val element = Json.parseToJsonElement(raw)
+        if (element is kotlinx.serialization.json.JsonObject && element["error"] != null) {
+            element["error"]!!.jsonPrimitive.content
+        } else {
+            raw
+        }
+    } catch (e: Exception) {
+        raw
+    }
 }

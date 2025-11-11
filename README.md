@@ -80,6 +80,9 @@ You should see two containers running:
 # Set Gemini API key (get from https://makersuite.google.com/app/apikey)
 export GEMINI_API_KEY='your-api-key-here'
 
+# (Optional) Hugging Face Inference Providers token – required for Model Comparison tab
+export HF_API_TOKEN='your-hf-token-here'
+
 # Database settings (defaults work if using docker-compose.yml)
 export DATABASE_URL='jdbc:postgresql://localhost:5432/kmp'
 export DB_USER='postgres'
@@ -94,6 +97,7 @@ export PORT=8081
 ```bash
 cat > .env << EOF
 GEMINI_API_KEY=your-api-key-here
+HF_API_TOKEN=your-hf-token-here
 DATABASE_URL=jdbc:postgresql://localhost:5432/kmp
 DB_USER=postgres
 DB_PASSWORD=postgres
@@ -101,7 +105,9 @@ PORT=8081
 EOF
 ```
 
-**Note:** The `GEMINI_API_KEY` is optional. Without it, AI features won't work, but calculator and time tools will still function.
+**Notes:**
+- `GEMINI_API_KEY` enables Gemini-powered chat and journaling.
+- `HF_API_TOKEN` (Inference Providers token) is required for the Model Comparison tab. Generate one with "Make calls to Inference Providers" permission in the Hugging Face settings.
 
 ---
 
@@ -138,6 +144,7 @@ cd /Users/anhelina.sudenkova/AICourse/week1
 # Set environment variables (if not using .env file)
 export PORT=8081
 export GEMINI_API_KEY='your-api-key-here'  # Optional
+export HF_API_TOKEN='your-hf-token-here'  # Optional, required for model comparison
 
 # Start the server
 ./gradlew :server:run
@@ -224,6 +231,19 @@ AI: Result: 8
 - **Auto-Scroll**: Chat automatically scrolls to show new messages
 - **Typing Indicator**: Shows animated dots while waiting for responses
 - **Markdown Support**: AI responses are beautifully formatted with headers, lists, code blocks, etc.
+
+### Specialized AI Tabs
+
+Use the mode toggle in the top bar to jump between focused workflows:
+
+- **📔 Personal Journal** – guided Gemini journaling with follow-up questions and a structured reflection card.
+- **🧪 Reasoning Lab** – run four prompting strategies (Direct, Step-by-step, Best Prompt, Expert Panel) plus on-demand comparisons.
+- **🔥 Temperature Lab** – benchmark the same prompt at different sampling temperatures and review an aggregated summary card.
+- **🧪 Model Comparison** – send provider-compatible prompts to multiple Hugging Face Inference Providers at once. Two tasks are available out of the box:
+  - *Story Prompt*: “Tell a short 6 sentence story about a curious cat exploring a hidden room.”
+  - *Fibonacci Code*: “Write idiomatic Kotlin code that prints the Fibonacci sequence up to 20 terms.”
+
+  Expand any result row to reveal the full output in a scrollable panel; timing, token estimates, and optional cost calculations are displayed alongside each model run. Set `HF_API_TOKEN` for successful calls.
 
 ---
 
@@ -507,6 +527,7 @@ sleep 10
 | `DB_PASSWORD` | Database password | `postgres` | No |
 | `REDIS_URL` | Redis connection string | `redis://localhost:6379` | No |
 | `GEMINI_API_KEY` | Gemini API key | - | **Yes** (for AI features) |
+| `HF_API_TOKEN` | Hugging Face Inference Providers token | - | **Yes** (for Model Comparison tab) |
 
 ---
 

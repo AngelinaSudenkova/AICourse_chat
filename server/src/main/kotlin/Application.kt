@@ -111,6 +111,7 @@ fun Application.module() {
             val gemini: GeminiClient = GlobalContext.get().get()
             temperatureRoutes(gemini)
             temperatureCompareRoutes(gemini)
+            hfModelsCompareRoutes()
             summaryRoutes()
             journalRoutes()
             reasoningRoutes() // Added reasoning lab route

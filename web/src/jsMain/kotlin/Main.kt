@@ -15,12 +15,12 @@ import structured.JournalResponse
 import structured.Journal
 import org.w3c.dom.HTMLDivElement
 import org.w3c.dom.Element
-import io.ktor.client.request.*
-import io.ktor.client.call.*
 import ReasoningLabViewModel
 import ReasoningLabView
 import TemperatureLabViewModel
 import TemperatureLabView
+import ModelComparisonViewModel
+import ui.ModelComparisonTab
 
 fun main() {
     renderComposable(rootElementId = "root") {
@@ -50,7 +50,8 @@ fun App() {
         mutableStateOf(
             try {
                 val stored = js("window.localStorage.getItem('mode')") as? String
-                if (stored != null && stored.isNotEmpty() && (stored == "chat" || stored == "journal" || stored == "reasoning" || stored == "temperature")) stored else "chat"
+                val allowed = setOf("chat", "journal", "reasoning", "temperature", "modelComparison")
+                if (stored != null && stored.isNotEmpty() && stored in allowed) stored else "chat"
             } catch (e: Exception) {
                 "chat"
             }
@@ -59,6 +60,8 @@ fun App() {
     
     val reasoningViewModel = remember { ReasoningLabViewModel(scope) }
     val temperatureViewModel = remember { TemperatureLabViewModel(scope) }
+    val httpTransport = remember { HttpTransport("http://localhost:8081") }
+    val modelComparisonViewModel = remember { ModelComparisonViewModel(scope, httpTransport) }
     
     // Save theme to localStorage when it changes
     LaunchedEffect(theme) {
@@ -133,6 +136,9 @@ fun App() {
                 onReasoningToggle = {
                     mode = "reasoning"
                 },
+                onModelComparisonToggle = {
+                    mode = "modelComparison"
+                },
                 onExport = { viewModel.exportMessages() }
             )
             
@@ -142,6 +148,8 @@ fun App() {
                 ReasoningLabView(reasoningViewModel)
             } else if (mode == "temperature") {
                 TemperatureLabView(temperatureViewModel)
+            } else if (mode == "modelComparison") {
+                ModelComparisonTab(modelComparisonViewModel)
             } else {
                 if (viewModel.messages.isEmpty() && !viewModel.isLoading && viewModel.currentConversationId == null) {
                     Div(attrs = {
@@ -268,6 +276,7 @@ fun TopBar(
     onModeToggle: () -> Unit,
     onTemperatureToggle: () -> Unit,
     onReasoningToggle: () -> Unit,
+    onModelComparisonToggle: () -> Unit,
     onExport: () -> Unit
 ) {
     Div(attrs = {
@@ -281,6 +290,7 @@ fun TopBar(
                     "journal" -> "Personal Journal"
                     "reasoning" -> "Reasoning Lab"
                     "temperature" -> "Temperature Lab"
+                    "modelComparison" -> "Model Comparison"
                     else -> "KMP AI Chat"
                 }
             )
@@ -293,14 +303,7 @@ fun TopBar(
                 classes(AppStylesheet.button, AppStylesheet.modeButton)
                 onClick { onModeToggle() }
             }) {
-                Text(
-                    when (mode) {
-                        "journal" -> "💬 Chat"
-                        "reasoning" -> "💬 Chat"
-                        "temperature" -> "💬 Chat"
-                        else -> "📔 Journal"
-                    }
-                )
+                Text(if (mode == "chat") "📔 Journal" else "💬 Chat")
             }
             
             if (mode != "temperature") {
@@ -318,6 +321,15 @@ fun TopBar(
                     onClick { onReasoningToggle() }
                 }) {
                     Text("🧪 Reasoning Lab")
+                }
+            }
+
+            if (mode != "modelComparison") {
+                Button(attrs = {
+                    classes(AppStylesheet.button, AppStylesheet.modeButton)
+                    onClick { onModelComparisonToggle() }
+                }) {
+                    Text("🧪 Model Comparison")
                 }
             }
             
