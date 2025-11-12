@@ -21,8 +21,11 @@ data class ModelRun(
     val latencyMs: Long,
     val inputTokensApprox: Int,
     val outputTokensApprox: Int,
+    val totalTokensApprox: Int,
     val costUSD: Double? = null,
-    val output: String
+    val output: String,
+    val overLimit: Boolean = false,
+    val error: String? = null
 )
 
 @Serializable

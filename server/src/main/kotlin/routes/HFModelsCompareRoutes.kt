@@ -34,6 +34,22 @@ private val providerOverrides = mapOf(
     "Qwen/Qwen2.5-7B-Instruct" to "Qwen/Qwen2.5-7B-Instruct:together"
 )
 
+private val softTokenLimits = mapOf(
+    "openai/gpt-oss-120b" to 128_000,
+    "openai/gpt-oss-120b:hf-inference" to 128_000,
+    "openai/gpt-oss-120b:fastest" to 128_000,
+    "Qwen/Qwen2.5-7B-Instruct" to 128_000,
+    "Qwen/Qwen2.5-7B-Instruct:hf-inference" to 128_000,
+    "Qwen/Qwen2.5-7B-Instruct:together" to 128_000,
+    "deepseek-ai/DeepSeek-R1" to 32_768,
+    "deepseek-ai/DeepSeek-R1:hf-inference" to 32_768,
+    "deepseek-ai/DeepSeek-R1:fastest" to 32_768
+)
+
+private const val DEFAULT_SOFT_TOKEN_LIMIT = 32_768
+
+private data class TokenUsage(val prompt: Int, val completion: Int, val total: Int)
+
 fun Route.hfModelsCompareRoutes() {
     route("/models") {
         post("/compare") {
@@ -50,21 +66,20 @@ fun Route.hfModelsCompareRoutes() {
                 return@post
             }
 
-            val runs = mutableListOf<ModelRun>()
-            for (spec in sanitizedModels) {
-                val run = runCatching {
-                    queryModel(spec, request.prompt, token)
+            val runs = sanitizedModels.map { spec ->
+                val resolvedModelId = spec.idWithProvider
+                val softLimit = resolveSoftLimit(spec, resolvedModelId)
+                runCatching {
+                    queryModel(spec, resolvedModelId, request.prompt, token, softLimit)
                 }.getOrElse { ex ->
-                    ModelRun(
+                    errorRun(
                         model = spec.id,
+                        prompt = request.prompt,
                         latencyMs = 0,
-                        inputTokensApprox = approxTokens(request.prompt),
-                        outputTokensApprox = 0,
-                        costUSD = null,
-                        output = "Error: ${ex.message ?: ex::class.simpleName}"
+                        message = ex.message ?: ex::class.simpleName.orEmpty(),
+                        softLimit = softLimit
                     )
                 }
-                runs += run
             }
 
             call.respond(ModelsCompareResponse(prompt = request.prompt, runs = runs))
@@ -79,9 +94,13 @@ private val ModelSpec.idWithProvider: String
         else -> "$id:hf-inference"
     }
 
-private suspend fun queryModel(spec: ModelSpec, prompt: String, token: String): ModelRun {
-    val modelId = spec.idWithProvider
-
+private suspend fun queryModel(
+    spec: ModelSpec,
+    modelId: String,
+    prompt: String,
+    token: String,
+    softLimit: Int
+): ModelRun {
     val start = System.nanoTime()
     val (chatStatus, chatBody) = callChat(modelId, prompt, token)
 
@@ -95,47 +114,41 @@ private suspend fun queryModel(spec: ModelSpec, prompt: String, token: String): 
 
     val finalOutput: String
     val finalStatus: Int
-    val channel: String
     if (chatSuccess) {
         finalOutput = extractChatOutput(chatBody)
         finalStatus = chatStatus
-        channel = "chat"
     } else if (fallbackNeeded) {
         val (compStatus, compBody) = callCompletions(modelId, prompt, token)
         println("[HF] Completion fallback model=$modelId status=$compStatus body=$compBody")
         finalStatus = compStatus
-        channel = "completion"
         finalOutput = if (compStatus in 200..299) extractCompletionOutput(compBody) else compBody
     } else {
         finalStatus = chatStatus
-        channel = "chat"
         finalOutput = chatBody
     }
 
     val latencyMs = (System.nanoTime() - start) / 1_000_000
 
     if (finalStatus !in 200..299) {
-        return ModelRun(
+        return errorRun(
             model = spec.id,
+            prompt = prompt,
             latencyMs = latencyMs,
-            inputTokensApprox = approxTokens(prompt),
-            outputTokensApprox = approxTokens(finalOutput),
-            costUSD = null,
-            output = "Error: HTTP $finalStatus - $finalOutput"
+            message = "HTTP $finalStatus - ${finalOutput.take(400)}",
+            softLimit = softLimit
         )
     }
 
-    val inputTokens = approxTokens(prompt)
-    val outputTokens = approxTokens(finalOutput)
-    val cost = estimateCost(spec, inputTokens, outputTokens)
+    val usage = computeUsage(prompt, finalOutput)
+    val cost = estimateCost(spec, usage.prompt, usage.completion)
 
-    return ModelRun(
+    return finishRun(
         model = spec.id,
         latencyMs = latencyMs,
-        inputTokensApprox = inputTokens,
-        outputTokensApprox = outputTokens,
-        costUSD = cost,
-        output = finalOutput
+        usage = usage,
+        cost = cost,
+        output = finalOutput,
+        softLimit = softLimit
     )
 }
 
@@ -181,6 +194,58 @@ private suspend fun callCompletions(modelId: String, prompt: String, token: Stri
 private fun approxTokens(text: String): Int {
     if (text.isBlank()) return 0
     return max(1, (text.length / 4.0).roundToInt())
+}
+
+private fun computeUsage(prompt: String, output: String): TokenUsage {
+    val promptTokens = approxTokens(prompt)
+    val completionTokens = approxTokens(output)
+    return TokenUsage(promptTokens, completionTokens, promptTokens + completionTokens)
+}
+
+private fun finishRun(
+    model: String,
+    latencyMs: Long,
+    usage: TokenUsage,
+    cost: Double?,
+    output: String,
+    softLimit: Int
+): ModelRun {
+    val run = ModelRun(
+        model = model,
+        latencyMs = latencyMs,
+        inputTokensApprox = usage.prompt,
+        outputTokensApprox = usage.completion,
+        totalTokensApprox = usage.total,
+        costUSD = cost,
+        output = output,
+        overLimit = usage.total > softLimit,
+        error = null
+    )
+    logRun(run, softLimit)
+    return run
+}
+
+private fun errorRun(
+    model: String,
+    prompt: String,
+    latencyMs: Long,
+    message: String,
+    softLimit: Int
+): ModelRun {
+    val usage = computeUsage(prompt, "")
+    val run = ModelRun(
+        model = model,
+        latencyMs = latencyMs,
+        inputTokensApprox = usage.prompt,
+        outputTokensApprox = 0,
+        totalTokensApprox = usage.total,
+        costUSD = null,
+        output = "",
+        overLimit = usage.total > softLimit,
+        error = message
+    )
+    logRun(run, softLimit)
+    return run
 }
 
 private fun estimateCost(spec: ModelSpec, inputTokens: Int, outputTokens: Int): Double? {
@@ -253,6 +318,25 @@ private fun extractFromElement(element: JsonElement): String? {
 
         is JsonPrimitive -> if (element.isString) element.content else element.toString()
     }
+}
+
+private fun logRun(run: ModelRun, softLimit: Int) {
+    val snippet = if (run.output.isBlank()) "<no output>" else run.output.replace("\n", " ").take(200)
+    println(
+        "[HF][Result] model=${run.model} promptTokens=${run.inputTokensApprox} " +
+            "outputTokens=${run.outputTokensApprox} totalTokens=${run.totalTokensApprox} softLimit=$softLimit " +
+            "overLimit=${run.overLimit} error=${run.error ?: "none"} outputSnippet=\"$snippet\""
+    )
+}
+
+private fun resolveSoftLimit(spec: ModelSpec, resolvedModelId: String): Int {
+    val candidates = sequenceOf(
+        resolvedModelId,
+        resolvedModelId.substringBefore(":"),
+        spec.id,
+        spec.id.substringBefore(":")
+    )
+    return candidates.firstNotNullOfOrNull { softTokenLimits[it] } ?: DEFAULT_SOFT_TOKEN_LIMIT
 }
 
 

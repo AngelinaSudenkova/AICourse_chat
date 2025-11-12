@@ -5,6 +5,8 @@ import ModelComparisonViewModel
 import UiModelSpec
 import UiRun
 import ComparisonTask
+import PromptPreset
+import DetailTab
 import androidx.compose.runtime.Composable
 import org.jetbrains.compose.web.attributes.InputType
 import org.jetbrains.compose.web.attributes.href
@@ -21,8 +23,8 @@ fun ModelComparisonTab(viewModel: ModelComparisonViewModel) {
             display(DisplayStyle.Flex)
             flexDirection(FlexDirection.Column)
             gap(20.px)
-            property("overflow-y", "auto")
             height(100.percent)
+            property("overflow-y", "auto")
         }
     }) {
         H2(attrs = {
@@ -44,6 +46,11 @@ fun ModelComparisonTab(viewModel: ModelComparisonViewModel) {
             tasks = viewModel.tasks,
             current = viewModel.currentTask,
             onSelect = { viewModel.setTask(it) }
+        )
+
+        PromptPresetsToolbar(
+            presets = viewModel.presets,
+            onPresetClick = viewModel::applyPreset
         )
 
         PromptEditor(
@@ -68,6 +75,8 @@ fun ModelComparisonTab(viewModel: ModelComparisonViewModel) {
 
         ResultsSection(
             runs = viewModel.results,
+            selectedTab = viewModel.detailTab,
+            onTabChange = viewModel::selectDetailTab,
             onToggle = viewModel::toggleExpand
         )
     }
@@ -285,32 +294,24 @@ private fun ActionButtons(
 @Composable
 private fun ResultsSection(
     runs: List<UiRun>,
+    selectedTab: DetailTab,
+    onTabChange: (DetailTab) -> Unit,
     onToggle: (Int) -> Unit
 ) {
     if (runs.isEmpty()) return
 
-    Table(attrs = {
-        style {
-            width(100.percent)
-            property("border-collapse", "separate")
-            property("border-spacing", "0px")
+    Div {
+        DetailTabs(selected = selectedTab, onSelect = onTabChange)
+
+        if (selectedTab == DetailTab.PerModel) {
+            DetailedTable(runs = runs, onToggle = onToggle)
+        } else {
+            RawOutputList(runs = runs)
         }
-    }) {
-        Thead {
-            Tr {
-                headerCell("Model")
-                headerCell("Latency (ms)")
-                headerCell("Input toks ~")
-                headerCell("Output toks ~")
-                headerCell("Cost (USD)")
-                headerCell("Output")
-            }
-        }
-        Tbody {
-            runs.forEachIndexed { index, run ->
-                ResultRow(index = index, run = run, onToggle = onToggle)
-            }
-        }
+    }
+
+    if (selectedTab == DetailTab.PerModel) {
+        SummaryFooter(runs = runs)
     }
 }
 
@@ -331,11 +332,46 @@ private fun headerCell(text: String) {
 }
 
 @Composable
+private fun DetailedTable(runs: List<UiRun>, onToggle: (Int) -> Unit) {
+    Table(attrs = {
+        style {
+            width(100.percent)
+            property("border-collapse", "separate")
+            property("border-spacing", "0px")
+        }
+    }) {
+        Thead {
+            Tr {
+                headerCell("Model")
+                headerCell("Latency (ms)")
+                headerCell("Prompt toks ~")
+                headerCell("Output toks ~")
+                headerCell("Total toks ~")
+                headerCell("Over limit?")
+                headerCell("Cost (USD)")
+                headerCell("Output")
+            }
+        }
+        Tbody {
+            runs.forEachIndexed { index, run ->
+                ResultRow(index = index, run = run, onToggle = onToggle)
+            }
+        }
+    }
+}
+
+@Composable
 private fun ResultRow(index: Int, run: UiRun, onToggle: (Int) -> Unit) {
-    Tr {
+    Tr(attrs = {
+        if (run.overLimit) {
+            style {
+                backgroundColor(Color("#fff6e0"))
+            }
+        }
+    }) {
         TdCell {
             A(attrs = {
-                href("https://huggingface.co/${run.model}")
+                href("https://huggingface.co/${run.model.substringBefore(":")}")
                 attr("target", "_blank")
                 attr("rel", "noopener noreferrer")
                 style {
@@ -349,49 +385,72 @@ private fun ResultRow(index: Int, run: UiRun, onToggle: (Int) -> Unit) {
         }
         TdCell { Text(run.latencyMs.toString()) }
         TdCell { Text(run.inputTokensApprox.toString()) }
-        TdCell { Text(run.outputTokensApprox.toString()) }
+        TdCell {
+            Text(if (run.error != null) "—" else run.outputTokensApprox.toString())
+        }
+        TdCell {
+            Text(if (run.error != null) "—" else run.totalTokensApprox.toString())
+        }
+        TdCell {
+            if (run.overLimit) {
+                Span(attrs = {
+                    style {
+                        color(Color("#b45309"))
+                        fontWeight(600)
+                    }
+                }) {
+                    Text("⚠️ Yes")
+                }
+            } else {
+                Text("—")
+            }
+        }
         TdCell {
             val costText = run.costUSD?.let { "\$${formatCost(it)}" } ?: "—"
             Text(costText)
         }
         TdCell {
-            val snippet = if (run.output.length > 200) run.output.take(200) + "…" else run.output
-            Div(attrs = {
-                style {
-                    whiteSpace("pre-wrap")
-                    color(Color("var(--text)"))
-                }
-            }) {
-                Text(snippet)
-            }
-            if (run.output.length > 200) {
-                Button(attrs = {
-                    classes(AppStylesheet.button)
-                    style {
-                        marginTop(8.px)
-                        padding(6.px, 12.px)
-                        fontSize(12.px)
-                    }
-                    onClick { onToggle(index) }
-                }) {
-                    Text(if (run.expanded) "Collapse" else "Expand")
-                }
-            }
-            if (run.expanded) {
+            if (run.error != null) {
                 Div(attrs = {
                     style {
-                        marginTop(10.px)
-                        padding(10.px)
+                        backgroundColor(Color("#fdecea"))
                         borderRadius(8.px)
-                        border(1.px, LineStyle.Solid, Color("var(--border)"))
-                        backgroundColor(Color("var(--background)"))
-                        whiteSpace("pre-wrap")
-                        color(Color("var(--text)"))
-                        maxHeight(220.px)
-                        overflowY("auto")
+                        border(1.px, LineStyle.Solid, Color("#f5c2c0"))
+                        padding(10.px)
+                        color(Color("#8a1c1c"))
+                        fontWeight(500)
                     }
                 }) {
-                    Text(run.output)
+                    Text("Error: ${run.error}")
+                }
+            } else {
+                val snippet = if (run.output.length > 200 && !run.expanded) run.output.take(200) + "…" else run.output
+                Div(attrs = {
+                    style {
+                        whiteSpace("pre-wrap")
+                        color(Color("var(--text)"))
+                        borderRadius(8.px)
+                        border(1.px, LineStyle.Solid, Color("var(--border)"))
+                        padding(12.px)
+                        backgroundColor(Color("var(--background)"))
+                    }
+                }) {
+                    Text(snippet)
+                }
+                if (run.expanded) {
+                    Div(attrs = {
+                        style {
+                            marginTop(12.px)
+                            whiteSpace("pre-wrap")
+                            color(Color("var(--text)"))
+                            borderRadius(8.px)
+                            border(1.px, LineStyle.Solid, Color("var(--border)"))
+                            padding(12.px)
+                            backgroundColor(Color("var(--background)"))
+                        }
+                    }) {
+                        Text(run.output)
+                    }
                 }
             }
         }
@@ -411,10 +470,53 @@ private fun TdCell(content: @Composable () -> Unit) {
     }
 }
 
-private fun formatCost(value: Double): String {
-    val number = js("Number")(value)
-    return number.asDynamic().toFixed(4) as String
+@Composable
+private fun SummaryFooter(runs: List<UiRun>) {
+    val avgLatency = runs.map { it.latencyMs.toDouble() }.average().takeIf { !it.isNaN() }
+    val avgTokens = runs.filter { it.error == null }.map { it.totalTokensApprox.toDouble() }.average().takeIf { !it.isNaN() }
+
+    if (avgLatency == null && avgTokens == null) return
+
+    Div(attrs = {
+        style {
+            marginTop(16.px)
+            padding(12.px, 16.px)
+            borderRadius(10.px)
+            border(1.px, LineStyle.Solid, Color("var(--border)"))
+            backgroundColor(Color("var(--surface)"))
+            color(Color("var(--text)"))
+            display(DisplayStyle.Flex)
+            flexWrap(FlexWrap.Wrap)
+            gap(16.px)
+        }
+    }) {
+        avgLatency?.let {
+            StrongText("Avg Latency:")
+            Text(" ${formatNumber(it)} ms")
+        }
+        avgTokens?.let {
+            StrongText("Avg Total Tokens (non-error):")
+            Text(" ${formatNumber(it)}")
+        }
+    }
 }
+
+@Composable
+private fun StrongText(label: String) {
+    Span(attrs = {
+        style {
+            fontWeight(600)
+        }
+    }) {
+        Text(label)
+    }
+}
+
+private fun formatNumber(value: Double): String =
+    (value.asDynamic().toFixed(1) as String)
+
+private fun formatCost(value: Double): String =
+    (value.asDynamic().toFixed(4) as String)
 
 @Composable
 private fun TaskTabs(
@@ -446,6 +548,142 @@ private fun TaskTabs(
                 onClick { onSelect(task) }
             }) {
                 Text(task.label)
+            }
+        }
+    }
+}
+
+@Composable
+private fun PromptPresetsToolbar(
+    presets: List<PromptPreset>,
+    onPresetClick: (PromptPreset) -> Unit
+) {
+    Div(attrs = {
+        style {
+            display(DisplayStyle.Flex)
+            gap(8.px)
+            flexWrap(FlexWrap.Wrap)
+        }
+    }) {
+        Span(attrs = {
+            style {
+                alignSelf(AlignSelf.Center)
+                fontWeight(600)
+                color(Color("var(--text)"))
+                marginRight(4.px)
+            }
+        }) {
+            Text("Prompt presets:")
+        }
+        presets.forEach { preset ->
+            Button(attrs = {
+                classes(AppStylesheet.button)
+                onClick { onPresetClick(preset) }
+            }) {
+                Text(preset.label)
+            }
+        }
+    }
+}
+
+@Composable
+private fun DetailTabs(selected: DetailTab, onSelect: (DetailTab) -> Unit) {
+    Div(attrs = {
+        style {
+            display(DisplayStyle.Flex)
+            gap(8.px)
+            marginBottom(12.px)
+        }
+    }) {
+        DetailTab.entries.forEach { tab ->
+            Button(attrs = {
+                classes(AppStylesheet.button)
+                if (tab == selected) {
+                    style {
+                        backgroundColor(Color("var(--primary)"))
+                        color(Color.white)
+                    }
+                } else {
+                    style {
+                        backgroundColor(Color("var(--surface)"))
+                        color(Color("var(--text)"))
+                        border(1.px, LineStyle.Solid, Color("var(--border)"))
+                    }
+                }
+                onClick { onSelect(tab) }
+            }) {
+                Text(tab.label)
+            }
+        }
+    }
+}
+
+@Composable
+private fun RawOutputList(runs: List<UiRun>) {
+    Div(attrs = {
+        style {
+            display(DisplayStyle.Flex)
+            flexDirection(FlexDirection.Column)
+            gap(12.px)
+        }
+    }) {
+        runs.forEach { run ->
+            Div(attrs = {
+                style {
+                    padding(16.px)
+                    borderRadius(12.px)
+                    border(1.px, LineStyle.Solid, Color("var(--border)"))
+                    backgroundColor(Color("var(--surface)"))
+                    display(DisplayStyle.Flex)
+                    flexDirection(FlexDirection.Column)
+                    gap(8.px)
+                }
+            }) {
+                H4(attrs = {
+                    style {
+                        margin(0.px)
+                        display(DisplayStyle.Flex)
+                        justifyContent(JustifyContent.SpaceBetween)
+                        alignItems(AlignItems.Center)
+                    }
+                }) {
+                    Text(run.model)
+                    Span(attrs = {
+                        style {
+                            fontSize(13.px)
+                            color(Color("var(--subtle-text)"))
+                        }
+                    }) {
+                        Text("Prompt: ${run.inputTokensApprox} | Output: ${run.outputTokensApprox} | Total: ${run.totalTokensApprox}")
+                    }
+                }
+                if (run.error != null) {
+                    Div(attrs = {
+                        style {
+                            backgroundColor(Color("#fdecea"))
+                            borderRadius(8.px)
+                            border(1.px, LineStyle.Solid, Color("#f5c2c0"))
+                            padding(10.px)
+                            color(Color("#8a1c1c"))
+                            fontWeight(500)
+                        }
+                    }) {
+                        Text("Error: ${run.error}")
+                    }
+                } else {
+                    Div(attrs = {
+                        style {
+                            whiteSpace("pre-wrap")
+                            color(Color("var(--text)"))
+                            border(1.px, LineStyle.Solid, Color("var(--border)"))
+                            borderRadius(10.px)
+                            padding(12.px)
+                            backgroundColor(Color("var(--background)"))
+                        }
+                    }) {
+                        Text(run.output)
+                    }
+                }
             }
         }
     }
