@@ -6,14 +6,20 @@ import models.ChatMessage
 import models.ToolCall
 import models.Conversation
 import models.ConversationWithMessages
+import models.ConversationState
+import models.ConversationSegment
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
 class ChatService(private val databaseFactory: DatabaseFactory) {
+    // In-memory storage for ConversationState (for compression feature)
+    private val conversationStates = ConcurrentHashMap<String, ConversationState>()
     fun saveConversation(conversationId: String?, messages: List<ChatMessage>, toolCalls: List<ToolCall>) {
         transaction {
             val convIdFinal = if (conversationId != null) {
@@ -132,9 +138,67 @@ class ChatService(private val databaseFactory: DatabaseFactory) {
         try {
             val convId = id.toInt()
             val deleted = Conversations.deleteWhere { Conversations.id eq convId }
+            // Also remove from in-memory state
+            conversationStates.remove(id)
             deleted > 0
         } catch (e: Exception) {
             false
         }
+    }
+    
+    // Compression-related methods
+    fun loadState(conversationId: String?): ConversationState? {
+        if (conversationId == null) return null
+        return conversationStates[conversationId]
+    }
+    
+    fun saveState(state: ConversationState) {
+        conversationStates[state.conversationId] = state
+    }
+    
+    fun getOrCreateState(conversationId: String?): ConversationState {
+        if (conversationId == null) {
+            // Create a new state with a new conversation ID
+            val newConv = createConversation()
+            val initialSegment = ConversationSegment(id = UUID.randomUUID().toString())
+            return ConversationState(
+                conversationId = newConv.id,
+                segments = listOf(initialSegment),
+                openSegmentId = initialSegment.id
+            )
+        }
+        
+        // Try to load existing state
+        val existing = conversationStates[conversationId]
+        if (existing != null) {
+            return existing
+        }
+        
+        // If no state exists, try to reconstruct from messages
+        val conv = getConversation(conversationId)
+        if (conv != null && conv.messages.isNotEmpty()) {
+            // Reconstruct state from existing messages
+            val initialSegment = ConversationSegment(
+                id = UUID.randomUUID().toString(),
+                messages = conv.messages
+            )
+            val state = ConversationState(
+                conversationId = conversationId,
+                segments = listOf(initialSegment),
+                openSegmentId = initialSegment.id
+            )
+            conversationStates[conversationId] = state
+            return state
+        }
+        
+        // Create new state
+        val initialSegment = ConversationSegment(id = UUID.randomUUID().toString())
+        val state = ConversationState(
+            conversationId = conversationId,
+            segments = listOf(initialSegment),
+            openSegmentId = initialSegment.id
+        )
+        conversationStates[conversationId] = state
+        return state
     }
 }

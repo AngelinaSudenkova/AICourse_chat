@@ -22,6 +22,7 @@ import models.AgentRequest
 import models.AgentResponse
 import models.Conversation
 import models.ConversationWithMessages
+import models.ConversationState
 import structured.ReadingSummary
 import structured.JournalResponse
 import structured.ReasonRequest
@@ -125,6 +126,12 @@ class HttpTransport(
             val message = parseErrorMessage(e.response.bodyAsText())
             throw Exception(message)
         }
+    }
+    
+    suspend fun forceSummarize(request: AgentRequest): ConversationState {
+        return client.post("/api/agent/force-summarize") {
+            setBody(request)
+        }.body()
     }
     
     @kotlinx.serialization.Serializable

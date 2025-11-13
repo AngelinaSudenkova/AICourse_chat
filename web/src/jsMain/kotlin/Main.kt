@@ -169,6 +169,9 @@ fun App() {
             }
             
             if (mode == "chat" || mode == "journal") {
+                if (mode == "chat") {
+                    CompressionInsightPanel(viewModel)
+                }
                 ChatInput(
                     onSend = { text -> 
                         if (mode == "journal") {
@@ -178,7 +181,8 @@ fun App() {
                         }
                     },
                     isLoading = viewModel.isLoading,
-                    placeholder = if (mode == "journal") "Share your thoughts..." else "Type a message..."
+                    placeholder = if (mode == "journal") "Share your thoughts..." else "Type a message...",
+                    viewModel = if (mode == "chat") viewModel else null
                 )
             }
         }
@@ -927,11 +931,176 @@ fun JournalCard(journal: Journal) {
 }
 
 @Composable
-fun ChatInput(onSend: (String) -> Unit, isLoading: Boolean = false, placeholder: String = "Type a message...") {
+fun CompressionInsightPanel(viewModel: ChatViewModel) {
+    Div(attrs = {
+        style {
+            padding(12.px, 16.px)
+            backgroundColor(Color("var(--surface)"))
+            property("border-top", "1px solid var(--border)")
+            display(DisplayStyle.Flex)
+            flexDirection(FlexDirection.Column)
+            gap(12.px)
+        }
+    }) {
+        // Compression toggle
+        Div(attrs = {
+            style {
+                display(DisplayStyle.Flex)
+                alignItems(AlignItems.Center)
+                gap(12.px)
+                flexWrap(FlexWrap.Wrap)
+            }
+        }) {
+            Label(attrs = {
+                style {
+                    display(DisplayStyle.Flex)
+                    alignItems(AlignItems.Center)
+                    gap(8.px)
+                    cursor("pointer")
+                }
+                onClick { viewModel.useCompression = !viewModel.useCompression }
+            }) {
+                Input(type = InputType.Checkbox, attrs = {
+                    checked(viewModel.useCompression)
+                    onChange { viewModel.useCompression = it.value }
+                })
+                Text("Compression")
+            }
+            Button(attrs = {
+                style {
+                    padding(6.px, 12.px)
+                    fontSize(12.px)
+                }
+                onClick { viewModel.forceSummarize() }
+                if (viewModel.isLoading) disabled()
+            }) {
+                Text("Force Summarize Now")
+            }
+            Button(attrs = {
+                style {
+                    padding(6.px, 12.px)
+                    fontSize(12.px)
+                }
+                onClick { viewModel.showRequestPrompt = !viewModel.showRequestPrompt }
+            }) {
+                Text(if (viewModel.showRequestPrompt) "Hide Request" else "Show Request")
+            }
+        }
+        
+        // Request prompt display
+        if (viewModel.showRequestPrompt && viewModel.currentRequestPrompt != null) {
+            Div(attrs = {
+                style {
+                    padding(12.px)
+                    backgroundColor(Color("var(--background)"))
+                    borderRadius(4.px)
+                    border(1.px, LineStyle.Solid, Color("var(--border)"))
+                    maxHeight(300.px)
+                    overflowY("auto")
+                    fontSize(11.px)
+                    fontFamily("monospace")
+                    whiteSpace("pre-wrap")
+                    color(Color("var(--text)"))
+                }
+            }) {
+                Text(viewModel.currentRequestPrompt!!)
+            }
+        }
+        
+        // Compression stats
+        if (viewModel.compressionStats != null) {
+            val stats = viewModel.compressionStats!!
+            Div(attrs = {
+                style {
+                    display(DisplayStyle.Flex)
+                    flexDirection(FlexDirection.Row)
+                    gap(16.px)
+                    fontSize(12.px)
+                    color(Color("var(--text)"))
+                    opacity(0.8)
+                }
+            }) {
+                Span { Text("Raw: ${stats.tokensRawApprox} tokens") }
+                Span { Text("Compressed: ${stats.tokensCompressedApprox} tokens") }
+                Span(attrs = {
+                    style {
+                        fontWeight(600)
+                        color(Color("#4caf50"))
+                    }
+                }) {
+                    Text("Savings: ${stats.savingsPercent}%")
+                }
+            }
+        }
+        
+        // Latest summary preview
+        if (viewModel.latestSummaryPreview != null) {
+            Div(attrs = {
+                style {
+                    fontSize(12.px)
+                    color(Color("var(--text)"))
+                    opacity(0.7)
+                    padding(8.px)
+                    backgroundColor(Color("var(--background)"))
+                    borderRadius(4.px)
+                    cursor("pointer")
+                }
+                onClick { viewModel.showSummaryExpanded = !viewModel.showSummaryExpanded }
+            }) {
+                Text(if (viewModel.showSummaryExpanded) viewModel.latestSummaryPreview!! else "${viewModel.latestSummaryPreview!!.take(100)}...")
+            }
+        }
+        
+        // A/B comparison buttons
+        Div(attrs = {
+            style {
+                display(DisplayStyle.Flex)
+                gap(8.px)
+                fontSize(11.px)
+                color(Color("var(--text)"))
+                opacity(0.7)
+            }
+        }) {
+            Text("Quick test:")
+            Button(attrs = {
+                style {
+                    padding(4.px, 8.px)
+                    fontSize(11.px)
+                }
+                if (viewModel.isLoading) disabled()
+            }) {
+                Text("Ask (Compressed)")
+            }
+            Button(attrs = {
+                style {
+                    padding(4.px, 8.px)
+                    fontSize(11.px)
+                }
+                if (viewModel.isLoading) disabled()
+            }) {
+                Text("Ask (Raw)")
+            }
+            Span(attrs = {
+                style {
+                    fontSize(10.px)
+                    opacity(0.6)
+                }
+            }) {
+                Text("(Use main input + Send for normal flow)")
+            }
+        }
+    }
+}
+
+@Composable
+fun ChatInput(onSend: (String) -> Unit, isLoading: Boolean = false, placeholder: String = "Type a message...", viewModel: ChatViewModel? = null) {
     var inputValue by remember { mutableStateOf("") }
     
     Div(attrs = {
         classes(AppStylesheet.chatInput)
+        style {
+            property("class", "chat-input")
+        }
     }) {
         Input(type = InputType.Text, attrs = {
             classes(AppStylesheet.input)
@@ -982,6 +1151,15 @@ class ChatViewModel(private val scope: CoroutineScope) {
     var journalMessages by mutableStateOf<List<ChatMessage>>(emptyList())
     var journalResponses by mutableStateOf<Map<String, JournalResponse>>(emptyMap())
     var journalConversationHistory by mutableStateOf<List<String>>(emptyList())
+    
+    // Compression state
+    var useCompression by mutableStateOf(true)
+    var compressionStats by mutableStateOf<CompressionStats?>(null)
+    var latestSummaryPreview by mutableStateOf<String?>(null)
+    var showSummaryExpanded by mutableStateOf(false)
+    var abComparisonResults by mutableStateOf<Pair<AgentResponse?, AgentResponse?>>(null to null)
+    var showRequestPrompt by mutableStateOf(false)
+    var currentRequestPrompt by mutableStateOf<String?>(null)
     
     private val transport = HttpTransport("http://localhost:8081")
     
@@ -1112,7 +1290,7 @@ class ChatViewModel(private val scope: CoroutineScope) {
     
     private var isSendingMessage = false
     
-    private fun sendMessageInternal(text: String) {
+    private fun sendMessageInternal(text: String, useCompressionFlag: Boolean = useCompression) {
         // Prevent duplicate sends
         if (isSendingMessage || isLoading) return
         isSendingMessage = true
@@ -1124,7 +1302,7 @@ class ChatViewModel(private val scope: CoroutineScope) {
         
         scope.launch {
             try {
-                val request = AgentRequest(messages = messages, conversationId = currentConversationId)
+                val request = AgentRequest(messages = messages, conversationId = currentConversationId, useCompression = useCompressionFlag)
                 val response = transport.send(request)
                 
                 // Only add response if we're still on the same conversation
@@ -1133,6 +1311,10 @@ class ChatViewModel(private val scope: CoroutineScope) {
                     if (response.toolCalls.isNotEmpty()) {
                         toolCalls = toolCalls + (response.message.timestamp.toString() to response.toolCalls)
                     }
+                    // Update compression stats
+                    compressionStats = response.compression
+                    latestSummaryPreview = response.latestSummaryPreview
+                    currentRequestPrompt = response.requestPrompt
                 }
                 
                 // Refresh conversation list to update titles (non-blocking, don't reload current conversation)
@@ -1152,6 +1334,67 @@ class ChatViewModel(private val scope: CoroutineScope) {
             } finally {
                 isLoading = false
                 isSendingMessage = false
+            }
+        }
+    }
+    
+    fun sendMessageCompressed(text: String) {
+        sendMessageInternal(text, useCompressionFlag = true)
+    }
+    
+    fun sendMessageRaw(text: String) {
+        sendMessageInternal(text, useCompressionFlag = false)
+    }
+    
+    fun sendMessageABComparison(text: String) {
+        if (isSendingMessage || isLoading) return
+        abComparisonResults = null to null
+        
+        scope.launch {
+            try {
+                val userMessage = ChatMessage("user", text)
+                val currentMessages = messages
+                messages = currentMessages + userMessage
+                isLoading = true
+                
+                // Send both requests in parallel
+                val compressedRequest = AgentRequest(messages = messages, conversationId = currentConversationId, useCompression = true)
+                val rawRequest = AgentRequest(messages = messages, conversationId = currentConversationId, useCompression = false)
+                
+                val compressedResponse = transport.send(compressedRequest)
+                val rawResponse = transport.send(rawRequest)
+                
+                abComparisonResults = compressedResponse to rawResponse
+                
+                // Add both responses to messages for display
+                if (currentConversationId != null) {
+                    messages = messages + ChatMessage("assistant", "[Compressed] ${compressedResponse.message.content}", timestamp = compressedResponse.message.timestamp)
+                    messages = messages + ChatMessage("assistant", "[Raw] ${rawResponse.message.content}", timestamp = rawResponse.message.timestamp)
+                }
+            } catch (e: Exception) {
+                if (currentConversationId != null) {
+                    messages = messages + ChatMessage("assistant", "Error in A/B comparison: ${e.message}")
+                }
+            } finally {
+                isLoading = false
+            }
+        }
+    }
+    
+    fun forceSummarize() {
+        if (isLoading || currentConversationId == null) return
+        isLoading = true
+        
+        scope.launch {
+            try {
+                val request = AgentRequest(messages = messages, conversationId = currentConversationId, useCompression = true)
+                val state = transport.forceSummarize(request)
+                // Update compression stats if available
+                latestSummaryPreview = state.segments.mapNotNull { it.summary }.lastOrNull()?.take(280)
+            } catch (e: Exception) {
+                messages = messages + ChatMessage("assistant", "Error forcing summarize: ${e.message}")
+            } finally {
+                isLoading = false
             }
         }
     }

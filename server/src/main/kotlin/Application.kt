@@ -18,6 +18,7 @@ import routes.*
 import database.DatabaseFactory
 import ai.GeminiClient
 import tools.ToolRegistry
+import chat.CompressionService
 import models.*
 import platform.currentTimeMillis
 import org.koin.core.context.GlobalContext
@@ -36,6 +37,7 @@ fun Application.module() {
         single { GeminiClient(System.getenv("GEMINI_API_KEY") ?: "") }
         single { ToolRegistry(get()) }
         single { ChatService(get()) }
+        single { CompressionService(get(), segmentWindowSize = 5) }
     }
     
     install(Koin) {
