@@ -38,6 +38,7 @@ fun Application.module() {
         single { ToolRegistry(get()) }
         single { ChatService(get()) }
         single { CompressionService(get(), segmentWindowSize = 5) }
+        single<memory.MemoryStore> { memory.FileMemoryStore() }
     }
     
     install(Koin) {
@@ -120,6 +121,7 @@ fun Application.module() {
             conversationRoutes()
             chatRoutes()
             agentRoutes()
+            memoryRoutes()
         }
         get("/health") {
             call.respondText("OK")

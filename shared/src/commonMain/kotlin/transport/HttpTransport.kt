@@ -23,6 +23,7 @@ import models.AgentResponse
 import models.Conversation
 import models.ConversationWithMessages
 import models.ConversationState
+import models.MemoryEntry
 import structured.ReadingSummary
 import structured.JournalResponse
 import structured.ReasonRequest
@@ -132,6 +133,10 @@ class HttpTransport(
         return client.post("/api/agent/force-summarize") {
             setBody(request)
         }.body()
+    }
+
+    suspend fun listMemories(conversationId: String): List<MemoryEntry> {
+        return client.get("/api/memory/$conversationId").body()
     }
     
     @kotlinx.serialization.Serializable

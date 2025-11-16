@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class AgentRequest(
     val messages: List<ChatMessage>,
     val conversationId: String? = null,
-    val useCompression: Boolean = true
+    val useCompression: Boolean = true,
+    val useMemory: Boolean = true
 )
 

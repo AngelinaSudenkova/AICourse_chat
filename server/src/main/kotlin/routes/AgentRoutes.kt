@@ -8,6 +8,7 @@ import models.*
 import tools.ToolRegistry
 import ai.GeminiClient
 import chat.CompressionService
+import memory.MemoryStore
 import org.koin.core.context.GlobalContext
 import platform.currentTimeMillis
 import kotlinx.coroutines.withTimeout
@@ -20,6 +21,7 @@ fun Route.agentRoutes() {
         val geminiClient: GeminiClient = koin.get()
         val chatService: ChatService = koin.get()
         val compressionService: CompressionService = koin.get()
+        val memoryStore: MemoryStore = koin.get()
         
         val req = runCatching { call.receive<AgentRequest>() }
             .getOrElse {
@@ -34,6 +36,8 @@ fun Route.agentRoutes() {
                     )
                 )
             }
+
+        val conversationId = req.conversationId
         
         val last = req.messages.lastOrNull()?.content.orEmpty()
         
@@ -56,6 +60,29 @@ fun Route.agentRoutes() {
             return@post call.respond(response)
         }
         
+        // Load existing memories (if enabled)
+        val existingMemories: List<MemoryEntry> =
+            if (req.useMemory && conversationId != null) {
+                runCatching { memoryStore.list(conversationId) }.getOrDefault(emptyList())
+            } else {
+                emptyList()
+            }
+
+        // Build memory context for the model
+        val memoryContext: String =
+            if (existingMemories.isNotEmpty()) {
+                buildString {
+                    appendLine("Relevant stored memories:")
+                    existingMemories.forEach {
+                        appendLine("- [${it.kind}] ${it.title}: ${it.content}")
+                    }
+                    appendLine()
+                    appendLine("Use these as background; do not invent new facts.")
+                }
+            } else {
+                "No external memory available yet."
+            }
+
         // Handle compression
         if (req.useCompression) {
             // Get or create conversation state
@@ -113,8 +140,16 @@ fun Route.agentRoutes() {
                 (((tokensRaw - tokensCompressed).toDouble() / tokensRaw) * 100).roundToInt()
             
             // Generate response using compressed context
-            val systemInstruction = "You are a helpful assistant. Use the context faithfully; if details are missing, ask clarifying questions."
-            val prompt = "$systemInstruction\n\n$context\n\nAssistant:"
+            val systemInstruction = "You are a helpful assistant with access to external memory. Use the context faithfully; if details are missing, ask clarifying questions."
+            val prompt = buildString {
+                appendLine(systemInstruction)
+                appendLine()
+                appendLine(memoryContext)
+                appendLine()
+                appendLine(context)
+                appendLine()
+                append("Assistant:")
+            }
             
             val text = runCatching {
                 withTimeout(60_000) { geminiClient.generate(prompt) }
@@ -127,6 +162,20 @@ fun Route.agentRoutes() {
             }
             
             val assistantMessage = ChatMessage("assistant", text, timestamp = currentTimeMillis())
+
+            // Optionally persist memory for this reply
+            if (req.useMemory && conversationId != null) {
+                val ts = assistantMessage.timestamp
+                val entry = MemoryEntry(
+                    id = java.util.UUID.randomUUID().toString(),
+                    conversationId = conversationId,
+                    kind = "note",
+                    title = "Assistant reply at $ts",
+                    content = assistantMessage.content,
+                    createdAt = ts
+                )
+                runCatching { memoryStore.save(entry) }
+            }
             
             // Append assistant message to open segment
             state = state.copy(
@@ -152,6 +201,14 @@ fun Route.agentRoutes() {
             
             // Get latest summary preview
             val latestSummary = state.segments.mapNotNull { it.summary }.lastOrNull()
+
+            // Reload memories after potential save
+            val updatedMemories: List<MemoryEntry> =
+                if (req.useMemory && conversationId != null) {
+                    runCatching { memoryStore.list(conversationId) }.getOrDefault(existingMemories)
+                } else {
+                    existingMemories
+                }
             
             val response = AgentResponse(
                 message = assistantMessage,
@@ -162,7 +219,8 @@ fun Route.agentRoutes() {
                     savingsPercent = savings
                 ),
                 latestSummaryPreview = latestSummary?.take(280),
-                requestPrompt = prompt  // Include the actual prompt sent to the model
+                requestPrompt = prompt,  // Include the actual prompt sent to the model
+                memories = updatedMemories
             )
             
             call.respond(response)
@@ -175,7 +233,15 @@ fun Route.agentRoutes() {
                 !it.content.startsWith("Handler error:") &&
                 !it.content.startsWith("DI error:")
             }
-            val prompt = cleanMessages.joinToString("\n") { "${it.role}: ${it.content}" }
+            val chatTranscript = cleanMessages.joinToString("\n") { "${it.role}: ${it.content}" }
+            val prompt = """
+                You are a helpful assistant with access to external memory.
+
+                $memoryContext
+
+                Conversation so far:
+                $chatTranscript
+            """.trimIndent()
             
             val text = runCatching {
                 withTimeout(60_000) { geminiClient.generate(prompt) }
@@ -187,9 +253,32 @@ fun Route.agentRoutes() {
                 errorMsg
             }
             
+            val assistantMessage = ChatMessage("assistant", text, timestamp = currentTimeMillis())
+
+            if (req.useMemory && conversationId != null) {
+                val ts = assistantMessage.timestamp
+                val entry = MemoryEntry(
+                    id = java.util.UUID.randomUUID().toString(),
+                    conversationId = conversationId,
+                    kind = "note",
+                    title = "Assistant reply at $ts",
+                    content = assistantMessage.content,
+                    createdAt = ts
+                )
+                runCatching { memoryStore.save(entry) }
+            }
+
+            val updatedMemories: List<MemoryEntry> =
+                if (req.useMemory && conversationId != null) {
+                    runCatching { memoryStore.list(conversationId) }.getOrDefault(existingMemories)
+                } else {
+                    existingMemories
+                }
+
             val response = AgentResponse(
-                message = ChatMessage("assistant", text, timestamp = currentTimeMillis()),
-                toolCalls = emptyList()
+                message = assistantMessage,
+                toolCalls = emptyList(),
+                memories = updatedMemories
             )
             
             runCatching {

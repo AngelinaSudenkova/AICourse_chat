@@ -171,6 +171,7 @@ fun App() {
             if (mode == "chat" || mode == "journal") {
                 if (mode == "chat") {
                     CompressionInsightPanel(viewModel)
+                    ExternalMemoryPanel(viewModel)
                 }
                 ChatInput(
                     onSend = { text -> 
@@ -184,6 +185,156 @@ fun App() {
                     placeholder = if (mode == "journal") "Share your thoughts..." else "Type a message...",
                     viewModel = if (mode == "chat") viewModel else null
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun ExternalMemoryPanel(viewModel: ChatViewModel) {
+    Div(attrs = {
+        style {
+            padding(12.px, 16.px)
+            backgroundColor(Color("var(--surface)"))
+            property("border-top", "1px solid var(--border)")
+            display(DisplayStyle.Flex)
+            flexDirection(FlexDirection.Column)
+            gap(8.px)
+        }
+    }) {
+        // Header with toggle and status
+        Div(attrs = {
+            style {
+                display(DisplayStyle.Flex)
+                alignItems(AlignItems.Center)
+                justifyContent(JustifyContent.SpaceBetween)
+                gap(12.px)
+                flexWrap(FlexWrap.Wrap)
+            }
+        }) {
+            Div {
+                Text("External Memory")
+            }
+            Div(attrs = {
+                style {
+                    display(DisplayStyle.Flex)
+                    alignItems(AlignItems.Center)
+                    gap(8.px)
+                }
+            }) {
+                if (viewModel.useMemory) {
+                    Span(attrs = {
+                        style {
+                            fontSize(12.px)
+                            color(Color("#4caf50"))
+                        }
+                    }) {
+                        Text("💾 Memory active")
+                    }
+                }
+                Label(attrs = {
+                    style {
+                        display(DisplayStyle.Flex)
+                        alignItems(AlignItems.Center)
+                        gap(4.px)
+                        cursor("pointer")
+                    }
+                    onClick {
+                        viewModel.useMemory = !viewModel.useMemory
+                        // When turning off memory, clear local list
+                        if (!viewModel.useMemory) {
+                            viewModel.memories = emptyList()
+                        } else {
+                            // Reload memories for current conversation when turning on
+                            val convId = viewModel.currentConversationId
+                            if (convId != null) {
+                                // Fire and forget; UI will update when loaded
+                                // We don't have direct scope here, so rely on next send/load to refresh.
+                            }
+                        }
+                    }
+                }) {
+                    Input(type = InputType.Checkbox, attrs = {
+                        checked(viewModel.useMemory)
+                        onChange { ev ->
+                            viewModel.useMemory = ev.value
+                            if (!viewModel.useMemory) {
+                                viewModel.memories = emptyList()
+                            }
+                        }
+                    })
+                    Text("Use memory")
+                }
+            }
+        }
+
+        val entries = viewModel.memories
+        if (entries.isEmpty()) {
+            Span(attrs = {
+                style {
+                    fontSize(12.px)
+                    opacity(0.7)
+                }
+            }) {
+                Text("No memories stored yet for this conversation.")
+            }
+        } else {
+            var expandedId by remember { mutableStateOf<String?>(null) }
+            Div(attrs = {
+                style {
+                    maxHeight(200.px)
+                    overflowY("auto")
+                    display(DisplayStyle.Flex)
+                    flexDirection(FlexDirection.Column)
+                    gap(6.px)
+                    fontSize(12.px)
+                }
+            }) {
+                entries.forEach { entry ->
+                    val createdAtText = remember(entry.createdAt) {
+                        kotlin.js.Date(entry.createdAt.toDouble()).toLocaleString()
+                    }
+                    Div(attrs = {
+                        style {
+                            padding(8.px)
+                            backgroundColor(Color("var(--background)"))
+                            borderRadius(4.px)
+                            border(1.px, LineStyle.Solid, Color("var(--border)"))
+                            cursor("pointer")
+                        }
+                        onClick {
+                            expandedId = if (expandedId == entry.id) null else entry.id
+                        }
+                    }) {
+                        // Header line
+                        Div(attrs = {
+                            style {
+                                display(DisplayStyle.Flex)
+                                justifyContent(JustifyContent.SpaceBetween)
+                                gap(8.px)
+                            }
+                        }) {
+                            Span {
+                                Text("[${entry.kind}] ${entry.title}")
+                            }
+                            Span(attrs = {
+                                style { fontSize(10.px); opacity(0.6) }
+                            }) {
+                                Text(createdAtText)
+                            }
+                        }
+                        if (expandedId == entry.id) {
+                            Div(attrs = {
+                                style {
+                                    marginTop(6.px)
+                                    whiteSpace("pre-wrap")
+                                }
+                            }) {
+                                Text(entry.content)
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -1160,6 +1311,10 @@ class ChatViewModel(private val scope: CoroutineScope) {
     var abComparisonResults by mutableStateOf<Pair<AgentResponse?, AgentResponse?>>(null to null)
     var showRequestPrompt by mutableStateOf(false)
     var currentRequestPrompt by mutableStateOf<String?>(null)
+
+    // External memory state
+    var useMemory by mutableStateOf(true)
+    var memories by mutableStateOf<List<MemoryEntry>>(emptyList())
     
     private val transport = HttpTransport("http://localhost:8081")
     
@@ -1194,6 +1349,14 @@ class ChatViewModel(private val scope: CoroutineScope) {
                 toolCalls = conversation.toolCalls.groupBy { it.timestamp.toString() }
                 readingSummaries = emptyMap() // Clear summaries when loading conversation
                 currentConversationId = id
+
+                // Load external memories for this conversation
+                if (useMemory) {
+                    runCatching { transport.listMemories(id) }
+                        .onSuccess { memories = it }
+                } else {
+                    memories = emptyList()
+                }
             } catch (e: Exception) {
                 messages = listOf(ChatMessage("assistant", "Error loading conversation: ${e.message}"))
             } finally {
@@ -1210,6 +1373,7 @@ class ChatViewModel(private val scope: CoroutineScope) {
                 messages = emptyList()
                 toolCalls = emptyMap()
                 readingSummaries = emptyMap()
+                memories = emptyList()
                 loadConversations() // Refresh list
             } catch (e: Exception) {
                 println("Error creating conversation: ${e.message}")
@@ -1302,7 +1466,12 @@ class ChatViewModel(private val scope: CoroutineScope) {
         
         scope.launch {
             try {
-                val request = AgentRequest(messages = messages, conversationId = currentConversationId, useCompression = useCompressionFlag)
+                val request = AgentRequest(
+                    messages = messages,
+                    conversationId = currentConversationId,
+                    useCompression = useCompressionFlag,
+                    useMemory = useMemory
+                )
                 val response = transport.send(request)
                 
                 // Only add response if we're still on the same conversation
@@ -1311,10 +1480,11 @@ class ChatViewModel(private val scope: CoroutineScope) {
                     if (response.toolCalls.isNotEmpty()) {
                         toolCalls = toolCalls + (response.message.timestamp.toString() to response.toolCalls)
                     }
-                    // Update compression stats
+                    // Update compression & memory stats
                     compressionStats = response.compression
                     latestSummaryPreview = response.latestSummaryPreview
                     currentRequestPrompt = response.requestPrompt
+                    response.memories?.let { memories = it }
                 }
                 
                 // Refresh conversation list to update titles (non-blocking, don't reload current conversation)
@@ -1358,8 +1528,18 @@ class ChatViewModel(private val scope: CoroutineScope) {
                 isLoading = true
                 
                 // Send both requests in parallel
-                val compressedRequest = AgentRequest(messages = messages, conversationId = currentConversationId, useCompression = true)
-                val rawRequest = AgentRequest(messages = messages, conversationId = currentConversationId, useCompression = false)
+                val compressedRequest = AgentRequest(
+                    messages = messages,
+                    conversationId = currentConversationId,
+                    useCompression = true,
+                    useMemory = useMemory
+                )
+                val rawRequest = AgentRequest(
+                    messages = messages,
+                    conversationId = currentConversationId,
+                    useCompression = false,
+                    useMemory = useMemory
+                )
                 
                 val compressedResponse = transport.send(compressedRequest)
                 val rawResponse = transport.send(rawRequest)
@@ -1387,7 +1567,12 @@ class ChatViewModel(private val scope: CoroutineScope) {
         
         scope.launch {
             try {
-                val request = AgentRequest(messages = messages, conversationId = currentConversationId, useCompression = true)
+                val request = AgentRequest(
+                    messages = messages,
+                    conversationId = currentConversationId,
+                    useCompression = true,
+                    useMemory = useMemory
+                )
                 val state = transport.forceSummarize(request)
                 // Update compression stats if available
                 latestSummaryPreview = state.segments.mapNotNull { it.summary }.lastOrNull()?.take(280)
