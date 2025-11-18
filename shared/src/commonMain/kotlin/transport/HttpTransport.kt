@@ -24,6 +24,8 @@ import models.Conversation
 import models.ConversationWithMessages
 import models.ConversationState
 import models.MemoryEntry
+import models.McpTool
+import models.McpToolsResponse
 import structured.ReadingSummary
 import structured.JournalResponse
 import structured.ReasonRequest
@@ -137,6 +139,24 @@ class HttpTransport(
 
     suspend fun listMemories(conversationId: String): List<MemoryEntry> {
         return client.get("/api/memory/$conversationId").body()
+    }
+    
+    suspend fun listMcpTools(): McpToolsResponse {
+        val response = client.post("/api/mcp/tools")
+        return try {
+            response.body<McpToolsResponse>()
+        } catch (e: Exception) {
+            // If deserialization fails, return error response
+            McpToolsResponse(
+                tools = emptyList(),
+                messages = listOf(
+                    models.McpJsonMessage(
+                        direction = "error",
+                        content = "{\"error\": \"Failed to parse response: ${e.message}\"}"
+                    )
+                )
+            )
+        }
     }
     
     @kotlinx.serialization.Serializable

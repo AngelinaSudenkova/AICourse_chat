@@ -122,6 +122,7 @@ fun Application.module() {
             chatRoutes()
             agentRoutes()
             memoryRoutes()
+            mcpRoutes()
         }
         get("/health") {
             call.respondText("OK")

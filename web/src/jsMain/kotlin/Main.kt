@@ -21,6 +21,7 @@ import TemperatureLabViewModel
 import TemperatureLabView
 import ModelComparisonViewModel
 import ui.ModelComparisonTab
+import McpLabViewModel
 
 fun main() {
     renderComposable(rootElementId = "root") {
@@ -50,7 +51,7 @@ fun App() {
         mutableStateOf(
             try {
                 val stored = js("window.localStorage.getItem('mode')") as? String
-                val allowed = setOf("chat", "journal", "reasoning", "temperature", "modelComparison")
+                val allowed = setOf("chat", "journal", "reasoning", "temperature", "modelComparison", "mcp")
                 if (stored != null && stored.isNotEmpty() && stored in allowed) stored else "chat"
             } catch (e: Exception) {
                 "chat"
@@ -62,6 +63,7 @@ fun App() {
     val temperatureViewModel = remember { TemperatureLabViewModel(scope) }
     val httpTransport = remember { HttpTransport("http://localhost:8081") }
     val modelComparisonViewModel = remember { ModelComparisonViewModel(scope, httpTransport) }
+    val mcpViewModel = remember { McpLabViewModel(scope) }
     
     // Save theme to localStorage when it changes
     LaunchedEffect(theme) {
@@ -139,6 +141,9 @@ fun App() {
                 onModelComparisonToggle = {
                     mode = "modelComparison"
                 },
+                onMcpToggle = {
+                    mode = "mcp"
+                },
                 onExport = { viewModel.exportMessages() }
             )
             
@@ -150,6 +155,8 @@ fun App() {
                 TemperatureLabView(temperatureViewModel)
             } else if (mode == "modelComparison") {
                 ModelComparisonTab(modelComparisonViewModel)
+            } else if (mode == "mcp") {
+                McpLabView(mcpViewModel)
             } else {
                 if (viewModel.messages.isEmpty() && !viewModel.isLoading && viewModel.currentConversationId == null) {
                     Div(attrs = {
@@ -432,6 +439,7 @@ fun TopBar(
     onTemperatureToggle: () -> Unit,
     onReasoningToggle: () -> Unit,
     onModelComparisonToggle: () -> Unit,
+    onMcpToggle: () -> Unit,
     onExport: () -> Unit
 ) {
     Div(attrs = {
@@ -446,6 +454,7 @@ fun TopBar(
                     "reasoning" -> "Reasoning Lab"
                     "temperature" -> "Temperature Lab"
                     "modelComparison" -> "Model Comparison"
+                    "mcp" -> "MCP Tools"
                     else -> "KMP AI Chat"
                 }
             )
@@ -485,6 +494,15 @@ fun TopBar(
                     onClick { onModelComparisonToggle() }
                 }) {
                     Text("🧪 Model Comparison")
+                }
+            }
+
+            if (mode != "mcp") {
+                Button(attrs = {
+                    classes(AppStylesheet.button, AppStylesheet.modeButton)
+                    onClick { onMcpToggle() }
+                }) {
+                    Text("🧩 MCP Tools")
                 }
             }
             
@@ -773,6 +791,244 @@ fun TypingIndicator() {
             }
         }) {
             Text("●")
+        }
+    }
+}
+
+@Composable
+fun McpLabView(viewModel: McpLabViewModel) {
+    Div(attrs = {
+        style {
+            display(DisplayStyle.Flex)
+            flexDirection(FlexDirection.Column)
+            padding(24.px)
+            gap(24.px)
+            property("overflow-y", "auto")
+            height(100.percent)
+        }
+    }) {
+        // Header
+        Div(attrs = {
+            style {
+                display(DisplayStyle.Flex)
+                flexDirection(FlexDirection.Column)
+                gap(12.px)
+            }
+        }) {
+            H2(attrs = {
+                style {
+                    fontSize(24.px)
+                    fontWeight(700)
+                    color(Color("var(--text)"))
+                    margin(0.px)
+                }
+            }) {
+                Text("🧩 MCP Tools")
+            }
+            P(attrs = {
+                style {
+                    fontSize(14.px)
+                    color(Color("var(--text)"))
+                    opacity(0.7)
+                    margin(0.px)
+                }
+            }) {
+                Text("Load and view tools from your MCP server. Set MCP_SERVER_PATH environment variable to configure the server.")
+            }
+        }
+
+        // Load button
+        Button(attrs = {
+            classes(AppStylesheet.button)
+            style {
+                alignSelf(AlignSelf.FlexStart)
+                padding(12.px, 24.px)
+                fontSize(14.px)
+            }
+            onClick { viewModel.loadTools() }
+            if (viewModel.isLoading) disabled()
+        }) {
+            Text(if (viewModel.isLoading) "Loading..." else "Load MCP Tools")
+        }
+
+        // Error display
+        if (viewModel.error != null) {
+            Div(attrs = {
+                style {
+                    padding(12.px, 16.px)
+                    backgroundColor(Color("#fee"))
+                    border(1.px, LineStyle.Solid, Color("#fcc"))
+                    borderRadius(8.px)
+                    color(Color("#c33"))
+                    fontSize(14.px)
+                }
+            }) {
+                Text(viewModel.error!!)
+            }
+        }
+
+        // JSON Messages (Request/Response)
+        if (viewModel.messages.isNotEmpty()) {
+            Div(attrs = {
+                style {
+                    display(DisplayStyle.Flex)
+                    flexDirection(FlexDirection.Column)
+                    gap(12.px)
+                }
+            }) {
+                H3(attrs = {
+                    style {
+                        fontSize(18.px)
+                        fontWeight(600)
+                        color(Color("var(--text)"))
+                        margin(0.px)
+                    }
+                }) {
+                    Text("JSON Request/Response Messages")
+                }
+
+                viewModel.messages.forEachIndexed { index, message ->
+                    val isRequest = message.direction == "request"
+                    val isResponse = message.direction == "response"
+                    val isError = message.direction == "error"
+                    
+                    Div(attrs = {
+                        style {
+                            padding(12.px)
+                            backgroundColor(
+                                when {
+                                    isRequest -> Color("rgba(66, 165, 245, 0.1)")
+                                    isError -> Color("rgba(244, 67, 54, 0.1)")
+                                    else -> Color("rgba(76, 175, 80, 0.1)")
+                                }
+                            )
+                            border(
+                                1.px, 
+                                LineStyle.Solid, 
+                                when {
+                                    isRequest -> Color("rgba(66, 165, 245, 0.3)")
+                                    isError -> Color("rgba(244, 67, 54, 0.3)")
+                                    else -> Color("rgba(76, 175, 80, 0.3)")
+                                }
+                            )
+                            borderRadius(8.px)
+                        }
+                    }) {
+                        Div(attrs = {
+                            style {
+                                display(DisplayStyle.Flex)
+                                justifyContent(JustifyContent.SpaceBetween)
+                                alignItems(AlignItems.Center)
+                                marginBottom(8.px)
+                            }
+                        }) {
+                            Span(attrs = {
+                                style {
+                                    fontSize(12.px)
+                                    fontWeight(600)
+                                    color(
+                                        when {
+                                            isRequest -> Color("#42a5f5")
+                                            isError -> Color("#f44336")
+                                            else -> Color("#4caf50")
+                                        }
+                                    )
+                                    property("text-transform", "uppercase")
+                                }
+                            }) {
+                                Text("${message.direction} #${index + 1}")
+                            }
+                        }
+                        Pre(attrs = {
+                            style {
+                                margin(0.px)
+                                padding(8.px)
+                                backgroundColor(Color("var(--background)"))
+                                borderRadius(4.px)
+                                fontSize(11.px)
+                                fontFamily("monospace")
+                                whiteSpace("pre-wrap")
+                                property("word-break", "break-all")
+                                overflowX("auto")
+                                maxHeight(300.px)
+                                overflowY("auto")
+                                color(Color("var(--text)"))
+                            }
+                        }) {
+                            Code {
+                                Text(message.content)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Tools list
+        if (viewModel.tools.isNotEmpty()) {
+            Div(attrs = {
+                style {
+                    display(DisplayStyle.Flex)
+                    flexDirection(FlexDirection.Column)
+                    gap(12.px)
+                }
+            }) {
+                H3(attrs = {
+                    style {
+                        fontSize(18.px)
+                        fontWeight(600)
+                        color(Color("var(--text)"))
+                        margin(0.px)
+                    }
+                }) {
+                    Text("Available Tools (${viewModel.tools.size})")
+                }
+
+                viewModel.tools.forEach { tool ->
+                    Div(attrs = {
+                        style {
+                            padding(16.px)
+                            backgroundColor(Color("var(--surface)"))
+                            border(1.px, LineStyle.Solid, Color("var(--border)"))
+                            borderRadius(8.px)
+                        }
+                    }) {
+                        Div(attrs = {
+                            style {
+                                fontSize(16.px)
+                                fontWeight(600)
+                                color(Color("var(--text)"))
+                                marginBottom(8.px)
+                            }
+                        }) {
+                            Text(tool.name)
+                        }
+                        tool.description?.let { desc ->
+                            Div(attrs = {
+                                style {
+                                    fontSize(14.px)
+                                    color(Color("var(--text)"))
+                                    opacity(0.8)
+                                    lineHeight("1.5")
+                                }
+                            }) {
+                                Text(desc)
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (!viewModel.isLoading && viewModel.error == null) {
+            Div(attrs = {
+                style {
+                    padding(24.px)
+                    textAlign("center")
+                    color(Color("var(--text)"))
+                    opacity(0.6)
+                }
+            }) {
+                Text("No tools loaded. Click 'Load MCP Tools' to fetch tools from your MCP server.")
+            }
         }
     }
 }
