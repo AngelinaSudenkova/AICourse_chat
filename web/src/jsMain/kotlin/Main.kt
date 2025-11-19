@@ -22,6 +22,7 @@ import TemperatureLabView
 import ModelComparisonViewModel
 import ui.ModelComparisonTab
 import McpLabViewModel
+import NotionFinanceViewModel
 
 fun main() {
     renderComposable(rootElementId = "root") {
@@ -51,7 +52,7 @@ fun App() {
         mutableStateOf(
             try {
                 val stored = js("window.localStorage.getItem('mode')") as? String
-                val allowed = setOf("chat", "journal", "reasoning", "temperature", "modelComparison", "mcp")
+                val allowed = setOf("chat", "journal", "reasoning", "temperature", "modelComparison", "mcp", "notionFinance")
                 if (stored != null && stored.isNotEmpty() && stored in allowed) stored else "chat"
             } catch (e: Exception) {
                 "chat"
@@ -64,6 +65,7 @@ fun App() {
     val httpTransport = remember { HttpTransport("http://localhost:8081") }
     val modelComparisonViewModel = remember { ModelComparisonViewModel(scope, httpTransport) }
     val mcpViewModel = remember { McpLabViewModel(scope) }
+    val notionFinanceViewModel = remember { NotionFinanceViewModel(scope) }
     
     // Save theme to localStorage when it changes
     LaunchedEffect(theme) {
@@ -144,6 +146,9 @@ fun App() {
                 onMcpToggle = {
                     mode = "mcp"
                 },
+                onNotionFinanceToggle = {
+                    mode = "notionFinance"
+                },
                 onExport = { viewModel.exportMessages() }
             )
             
@@ -157,6 +162,8 @@ fun App() {
                 ModelComparisonTab(modelComparisonViewModel)
             } else if (mode == "mcp") {
                 McpLabView(mcpViewModel)
+            } else if (mode == "notionFinance") {
+                NotionFinanceView(notionFinanceViewModel)
             } else {
                 if (viewModel.messages.isEmpty() && !viewModel.isLoading && viewModel.currentConversationId == null) {
                     Div(attrs = {
@@ -440,6 +447,7 @@ fun TopBar(
     onReasoningToggle: () -> Unit,
     onModelComparisonToggle: () -> Unit,
     onMcpToggle: () -> Unit,
+    onNotionFinanceToggle: () -> Unit,
     onExport: () -> Unit
 ) {
     Div(attrs = {
@@ -455,6 +463,7 @@ fun TopBar(
                     "temperature" -> "Temperature Lab"
                     "modelComparison" -> "Model Comparison"
                     "mcp" -> "MCP Tools"
+                    "notionFinance" -> "💰 Notion Finance"
                     else -> "KMP AI Chat"
                 }
             )
@@ -503,6 +512,15 @@ fun TopBar(
                     onClick { onMcpToggle() }
                 }) {
                     Text("🧩 MCP Tools")
+                }
+            }
+            
+            if (mode != "notionFinance") {
+                Button(attrs = {
+                    classes(AppStylesheet.button, AppStylesheet.modeButton)
+                    onClick { onNotionFinanceToggle() }
+                }) {
+                    Text("💰 Notion Finance")
                 }
             }
             
@@ -1028,6 +1046,340 @@ fun McpLabView(viewModel: McpLabViewModel) {
                 }
             }) {
                 Text("No tools loaded. Click 'Load MCP Tools' to fetch tools from your MCP server.")
+            }
+        }
+    }
+}
+
+@Composable
+fun NotionFinanceView(viewModel: NotionFinanceViewModel) {
+    // Load snapshot on first render
+    LaunchedEffect(Unit) {
+        viewModel.loadSnapshot()
+    }
+    
+    Div(attrs = {
+        style {
+            display(DisplayStyle.Flex)
+            flexDirection(FlexDirection.Column)
+            padding(24.px)
+            gap(24.px)
+            property("overflow-y", "auto")
+            height(100.percent)
+        }
+    }) {
+        // Header
+        Div(attrs = {
+            style {
+                display(DisplayStyle.Flex)
+                flexDirection(FlexDirection.Column)
+                gap(12.px)
+            }
+        }) {
+            H2(attrs = {
+                style {
+                    fontSize(24.px)
+                    fontWeight(700)
+                    color(Color("var(--text)"))
+                    margin(0.px)
+                }
+            }) {
+                Text("💰 Notion Finance")
+            }
+            P(attrs = {
+                style {
+                    fontSize(14.px)
+                    color(Color("var(--text)"))
+                    opacity(0.7)
+                    margin(0.px)
+                }
+            }) {
+                Text("View your expenses and ask AI questions about your spending.")
+            }
+        }
+
+        // Load snapshot button
+        Button(attrs = {
+            classes(AppStylesheet.button)
+            style {
+                alignSelf(AlignSelf.FlexStart)
+                padding(12.px, 24.px)
+                fontSize(14.px)
+            }
+            onClick { viewModel.loadSnapshot() }
+            if (viewModel.isLoadingSnapshot) disabled()
+        }) {
+            Text(if (viewModel.isLoadingSnapshot) "Loading..." else "Refresh Finance Data")
+        }
+
+        // Error display
+        if (viewModel.error != null) {
+            Div(attrs = {
+                style {
+                    padding(12.px, 16.px)
+                    backgroundColor(Color("#fee"))
+                    border(1.px, LineStyle.Solid, Color("#fcc"))
+                    borderRadius(8.px)
+                    color(Color("#c33"))
+                    fontSize(14.px)
+                }
+            }) {
+                Text(viewModel.error!!)
+            }
+        }
+
+        // Finance entries table
+        if (viewModel.entries.isNotEmpty()) {
+            Div(attrs = {
+                style {
+                    display(DisplayStyle.Flex)
+                    flexDirection(FlexDirection.Column)
+                    gap(12.px)
+                }
+            }) {
+                H3(attrs = {
+                    style {
+                        fontSize(18.px)
+                        fontWeight(600)
+                        color(Color("var(--text)"))
+                        margin(0.px)
+                    }
+                }) {
+                    Text("Expenses (${viewModel.entries.size})")
+                }
+                
+                // Calculate total
+                val totalAmount = viewModel.entries.sumOf { it.amount }
+                
+                Div(attrs = {
+                    style {
+                        padding(12.px, 16.px)
+                        backgroundColor(Color("var(--surface)"))
+                        border(1.px, LineStyle.Solid, Color("var(--border)"))
+                        borderRadius(8.px)
+                        marginBottom(8.px)
+                    }
+                }) {
+                    Text("Total: ${(totalAmount.asDynamic().toFixed(2) as String)} PLN")
+                }
+
+                // Table
+                Div(attrs = {
+                    style {
+                        overflowX("auto")
+                        border(1.px, LineStyle.Solid, Color("var(--border)"))
+                        borderRadius(8.px)
+                    }
+                }) {
+                    Table(attrs = {
+                        style {
+                            width(100.percent)
+                            property("border-collapse", "collapse")
+                        }
+                    }) {
+                        Thead {
+                            Tr {
+                                Th(attrs = {
+                                    style {
+                                        padding(12.px, 16.px)
+                                        textAlign("left")
+                                        backgroundColor(Color("var(--surface)"))
+                                        property("border-bottom", "1px solid var(--border)")
+                                        fontWeight(600)
+                                        fontSize(14.px)
+                                    }
+                                }) { Text("Date") }
+                                Th(attrs = {
+                                    style {
+                                        padding(12.px, 16.px)
+                                        textAlign("left")
+                                        backgroundColor(Color("var(--surface)"))
+                                        property("border-bottom", "1px solid var(--border)")
+                                        fontWeight(600)
+                                        fontSize(14.px)
+                                    }
+                                }) { Text("Title") }
+                                Th(attrs = {
+                                    style {
+                                        padding(12.px, 16.px)
+                                        textAlign("right")
+                                        backgroundColor(Color("var(--surface)"))
+                                        property("border-bottom", "1px solid var(--border)")
+                                        fontWeight(600)
+                                        fontSize(14.px)
+                                    }
+                                }) { Text("Amount (PLN)") }
+                            }
+                        }
+                        Tbody {
+                            viewModel.entries.forEach { entry ->
+                                Tr {
+                                    Td(attrs = {
+                                        style {
+                                            padding(12.px, 16.px)
+                                            property("border-bottom", "1px solid var(--border)")
+                                            fontSize(14.px)
+                                        }
+                                    }) { Text(entry.date) }
+                                    Td(attrs = {
+                                        style {
+                                            padding(12.px, 16.px)
+                                            property("border-bottom", "1px solid var(--border)")
+                                            fontSize(14.px)
+                                        }
+                                    }) { Text(entry.title) }
+                                    Td(attrs = {
+                                        style {
+                                            padding(12.px, 16.px)
+                                            property("border-bottom", "1px solid var(--border)")
+                                            fontSize(14.px)
+                                            textAlign("right")
+                                        }
+                                    }) { Text((entry.amount.asDynamic().toFixed(2) as String)) }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (!viewModel.isLoadingSnapshot && viewModel.error == null) {
+            Div(attrs = {
+                style {
+                    padding(24.px)
+                    textAlign("center")
+                    color(Color("var(--text)"))
+                    opacity(0.6)
+                }
+            }) {
+                Text("No expenses found. Click 'Refresh Finance Data' to load entries.")
+            }
+        }
+
+        // AI Analysis Section
+        Div(attrs = {
+            style {
+                display(DisplayStyle.Flex)
+                flexDirection(FlexDirection.Column)
+                gap(12.px)
+                marginTop(24.px)
+            }
+        }) {
+            H3(attrs = {
+                style {
+                    fontSize(18.px)
+                    fontWeight(600)
+                    color(Color("var(--text)"))
+                    margin(0.px)
+                }
+            }) {
+                Text("Ask AI About Your Spending")
+            }
+
+            // Default question button
+            Button(attrs = {
+                classes(AppStylesheet.button)
+                style {
+                    alignSelf(AlignSelf.FlexStart)
+                    padding(12.px, 24.px)
+                    fontSize(14.px)
+                }
+                onClick { viewModel.askDefaultQuestion() }
+                if (viewModel.isLoadingAnalysis) disabled()
+            }) {
+                Text(if (viewModel.isLoadingAnalysis) "Analyzing..." else "Ask AI about my spending")
+            }
+
+            // Custom question input
+            Div(attrs = {
+                style {
+                    display(DisplayStyle.Flex)
+                    flexDirection(FlexDirection.Column)
+                    gap(8.px)
+                }
+            }) {
+                Input(type = InputType.Text, attrs = {
+                    value(viewModel.customQuestion)
+                    onInput { ev ->
+                        viewModel.updateCustomQuestion((ev.target as? org.w3c.dom.HTMLInputElement)?.value ?: "")
+                    }
+                    placeholder("Ask anything about your spending...")
+                    style {
+                        padding(12.px, 16.px)
+                        fontSize(14.px)
+                        borderRadius(8.px)
+                        border(1.px, LineStyle.Solid, Color("var(--border)"))
+                        backgroundColor(Color("var(--background)"))
+                        color(Color("var(--text)"))
+                        width(100.percent)
+                    }
+                    onKeyDown { ev ->
+                        if (ev.key == "Enter" && !ev.shiftKey) {
+                            ev.preventDefault()
+                            viewModel.askCustomQuestion()
+                        }
+                    }
+                })
+                Button(attrs = {
+                    classes(AppStylesheet.button)
+                    style {
+                        alignSelf(AlignSelf.FlexStart)
+                        padding(12.px, 24.px)
+                        fontSize(14.px)
+                    }
+                    onClick { viewModel.askCustomQuestion() }
+                    if (viewModel.isLoadingAnalysis || viewModel.customQuestion.isBlank()) disabled()
+                }) {
+                    Text(if (viewModel.isLoadingAnalysis) "Analyzing..." else "Send")
+                }
+            }
+
+            // AI Answer display
+            if (viewModel.aiAnswer != null) {
+                Div(attrs = {
+                    style {
+                        padding(20.px)
+                        backgroundColor(Color("var(--surface)"))
+                        border(1.px, LineStyle.Solid, Color("var(--border)"))
+                        borderRadius(8.px)
+                        marginTop(12.px)
+                    }
+                }) {
+                    Div(attrs = {
+                        style {
+                            fontSize(16.px)
+                            fontWeight(600)
+                            color(Color("var(--text)"))
+                            marginBottom(12.px)
+                        }
+                    }) {
+                        Text("AI Analysis")
+                    }
+                    Div(attrs = {
+                        style {
+                            fontSize(14.px)
+                            color(Color("var(--text)"))
+                            lineHeight("1.6")
+                            whiteSpace("pre-wrap")
+                        }
+                    }) {
+                        MarkdownText(viewModel.aiAnswer!!)
+                    }
+                }
+            } else if (viewModel.isLoadingAnalysis) {
+                Div(attrs = {
+                    style {
+                        padding(20.px)
+                        backgroundColor(Color("var(--surface)"))
+                        border(1.px, LineStyle.Solid, Color("var(--border)"))
+                        borderRadius(8.px)
+                        marginTop(12.px)
+                        textAlign("center")
+                        color(Color("var(--text)"))
+                        opacity(0.7)
+                    }
+                }) {
+                    Text("Analyzing your spending...")
+                }
             }
         }
     }

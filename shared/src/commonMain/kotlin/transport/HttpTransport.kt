@@ -26,6 +26,9 @@ import models.ConversationState
 import models.MemoryEntry
 import models.McpTool
 import models.McpToolsResponse
+import models.FinanceEntriesResult
+import models.FinanceAnalyzeRequest
+import models.FinanceAnalyzeResponse
 import structured.ReadingSummary
 import structured.JournalResponse
 import structured.ReasonRequest
@@ -157,6 +160,16 @@ class HttpTransport(
                 )
             )
         }
+    }
+    
+    suspend fun getFinanceSnapshot(): FinanceEntriesResult {
+        return client.get("/api/notion/finance/snapshot").body()
+    }
+    
+    suspend fun analyzeFinance(request: FinanceAnalyzeRequest): FinanceAnalyzeResponse {
+        return client.post("/api/notion/finance/analyze") {
+            setBody(request)
+        }.body()
     }
     
     @kotlinx.serialization.Serializable

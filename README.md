@@ -22,6 +22,7 @@ This is a modern chat application built with:
 - 📱 **Responsive Design**: Works seamlessly on desktop and mobile browsers
 - ✨ **Real-time Updates**: Auto-scrolling, typing indicators, and smooth animations
 - 💾 **Theme Persistence**: Dark mode preference saved across sessions
+- 💰 **Notion Finance Integration**: Query your Notion expense database and ask AI about your spending via MCP
 
 ---
 
@@ -32,7 +33,9 @@ Before you begin, ensure you have the following installed:
 - **JDK 21+** (Java Development Kit)
 - **Docker Desktop** (for running PostgreSQL and Redis)
 - **Gradle 8.5+** (included via wrapper)
+- **Node.js 20+** (for Notion Finance MCP server - optional)
 - **Gemini API Key** (optional, for AI features - get one at [Google AI Studio](https://makersuite.google.com/app/apikey))
+- **Notion API Token** (optional, for Notion Finance tab - get one at [Notion Integrations](https://www.notion.so/my-integrations))
 
 ### Verify Prerequisites
 
@@ -97,6 +100,7 @@ export PORT=8081
 ```bash
 cat > .env << EOF
 GEMINI_API_KEY=your-api-key-here
+NOTION_API_TOKEN=secret_your-notion-token-here
 HF_API_TOKEN=your-hf-token-here
 DATABASE_URL=jdbc:postgresql://localhost:5432/kmp
 DB_USER=postgres
@@ -104,6 +108,21 @@ DB_PASSWORD=postgres
 PORT=8081
 EOF
 ```
+
+**⚠️ Important**: Java/Kotlin applications don't automatically read `.env` files. You need to either:
+
+1. **Use the helper script** (recommended):
+   ```bash
+   ./start-server.sh  # Automatically loads .env and starts server
+   ```
+
+2. **Manually load .env before starting**:
+   ```bash
+   # Load .env file
+   export $(cat .env | grep -v '^#' | xargs)
+   # Then start server
+   ./gradlew :server:run
+   ```
 
 **Notes:**
 - `GEMINI_API_KEY` enables Gemini-powered chat and journaling.
@@ -138,10 +157,21 @@ BUILD SUCCESSFUL
 
 **Open Terminal 2** (keep Terminal 1 with Docker running) and start the Ktor server:
 
+**If using .env file (recommended):**
+
 ```bash
 cd /Users/anhelina.sudenkova/AICourse/week1
 
-# Set environment variables (if not using .env file)
+# Use helper script that loads .env automatically
+./start-server.sh
+```
+
+**If exporting variables manually:**
+
+```bash
+cd /Users/anhelina.sudenkova/AICourse/week1
+
+# Set environment variables
 export PORT=8081
 export GEMINI_API_KEY='your-api-key-here'  # Optional
 export HF_API_TOKEN='your-hf-token-here'  # Optional, required for model comparison
@@ -528,6 +558,213 @@ sleep 10
 | `REDIS_URL` | Redis connection string | `redis://localhost:6379` | No |
 | `GEMINI_API_KEY` | Gemini API key | - | **Yes** (for AI features) |
 | `HF_API_TOKEN` | Hugging Face Inference Providers token | - | **Yes** (for Model Comparison tab) |
+| `NOTION_API_TOKEN` | Notion integration token | - | **Yes** (for Notion Finance tab) |
+| `MCP_NOTION_CMD` | MCP server command | `node` | No |
+| `MCP_NOTION_ARGS` | MCP server arguments | `mcp/notion-finance-server/dist/index.js` | No |
+| `NOTION_FINANCE_DATABASE_ID` | Notion database ID | `ID` | No |
+
+---
+
+## 💰 Notion Finance MCP Integration
+
+The application includes a Model Context Protocol (MCP) integration that allows you to query your Notion finance database and ask AI questions about your spending.
+
+### Prerequisites for Notion Finance
+
+1. **Node.js 20+** - Required for running the MCP server
+   ```bash
+   node --version  # Should show v20.x.x or higher
+   npm --version   # Should show 9.x.x or higher
+   ```
+
+2. **Notion Integration Token** - Create a Notion integration:
+   - Go to https://www.notion.so/my-integrations
+   - Click "New integration"
+   - Give it a name (e.g., "Finance MCP Integration")
+   - Copy the "Internal Integration Token"
+   - Share your finance database with this integration (click "..." on the database → "Connections" → Add your integration)
+
+3. **Notion Database** - Your database should have these properties:
+   - `Expense` (Title) - The expense name
+   - `Amount` (Number) - The expense amount
+   - `Date` (Date) - The expense date
+   - `Category` (Relation) - Optional category relation
+
+### Step-by-Step Notion Finance Setup
+
+#### Step 1: Install and Build MCP Server
+
+```bash
+# Navigate to the MCP server directory
+cd mcp/notion-finance-server
+
+# Install dependencies
+npm install
+
+# Build TypeScript to JavaScript
+npm run build
+
+# Verify build succeeded
+ls -la dist/index.js  # Should exist
+```
+
+#### Step 2: Configure Environment Variables
+
+Add the Notion API token to your environment:
+
+```bash
+# Export in terminal (recommended for development)
+export NOTION_API_TOKEN='secret_your_notion_integration_token_here'
+
+# Optional: Customize MCP server path if needed
+export MCP_NOTION_CMD='node'
+export MCP_NOTION_ARGS='mcp/notion-finance-server/dist/index.js'
+
+# Optional: Use a different database ID
+export NOTION_FINANCE_DATABASE_ID='your-database-id-here'
+```
+
+**Or add to your `.env` file:**
+```bash
+echo "NOTION_API_TOKEN=secret_your_notion_integration_token_here" >> .env
+```
+
+#### Step 3: Verify MCP Server Works
+
+Test the MCP server manually (optional):
+
+```bash
+cd mcp/notion-finance-server
+NOTION_API_TOKEN='your-token' node dist/index.js
+```
+
+The server should start and wait for stdio input. Press Ctrl+C to exit.
+
+#### Step 4: Start the Backend with Notion Support
+
+Make sure you have all required environment variables set:
+
+```bash
+# Terminal 2 - Backend Server
+export GEMINI_API_KEY='your-gemini-key'
+export NOTION_API_TOKEN='your-notion-token'
+./gradlew :server:run
+```
+
+The backend will automatically:
+- Start the MCP server as a subprocess
+- Connect to your Notion database
+- Expose `/api/notion/finance/snapshot` and `/api/notion/finance/analyze` endpoints
+
+#### Step 5: Access Notion Finance Tab
+
+1. Start the web client (if not already running):
+   ```bash
+   # Terminal 3 - Web Client
+   ./gradlew :web:jsBrowserDevelopmentRun
+   ```
+
+2. Open http://localhost:8080 in your browser
+
+3. Click the **"💰 Notion Finance"** button in the top bar
+
+4. The tab will:
+   - Automatically load your finance entries (last 30 days)
+   - Display them in a table with Date, Title, and Amount
+   - Show total spending
+   - Allow you to ask AI questions about your spending
+
+### Using the Notion Finance Tab
+
+#### Viewing Expenses
+
+- Click **"Refresh Finance Data"** to reload entries
+- The table shows all expenses with their dates, titles, and amounts
+- Total amount is displayed above the table
+
+#### Asking AI Questions
+
+**Option 1: Default Question**
+- Click **"Ask AI about my spending"** button
+- AI will provide a summary and highlight unusual expenses
+
+**Option 2: Custom Question**
+- Type your question in the text input (e.g., "Why did I spend so much on transport?")
+- Press **Enter** or click **"Send"**
+- AI will analyze your expenses and answer your question
+
+#### Example Questions
+
+- "What were my biggest expenses this month?"
+- "How much did I spend on food?"
+- "Show me expenses over 100 PLN"
+- "What's my average daily spending?"
+- "Why did I spend so much on transport?"
+
+### Troubleshooting Notion Finance
+
+#### Problem: "Failed to start Notion MCP server process"
+
+**Solution:**
+```bash
+# Verify Node.js is installed
+node --version
+
+# Verify MCP server is built
+ls -la mcp/notion-finance-server/dist/index.js
+
+# Rebuild if needed
+cd mcp/notion-finance-server
+npm run build
+```
+
+#### Problem: "Notion API error: 401 Unauthorized"
+
+**Solution:**
+- Verify `NOTION_API_TOKEN` is set correctly
+- Make sure the token starts with `secret_`
+- Ensure the integration is shared with your database:
+  1. Open your Notion database
+  2. Click "..." (three dots) → "Connections"
+  3. Add your integration
+
+#### Problem: "No expenses found"
+
+**Solution:**
+- Verify your database has entries
+- Check that property names match: `Expense`, `Amount`, `Date`
+- Try adjusting the date range in the code (default is last 30 days)
+
+#### Problem: "MCP tools/call error"
+
+**Solution:**
+- Check server logs for detailed error messages
+- Verify `NOTION_API_TOKEN` is set
+- Ensure the database ID is correct
+- Check that the database is accessible to the integration
+
+### Notion Finance API Endpoints
+
+The backend exposes two endpoints:
+
+1. **GET `/api/notion/finance/snapshot`**
+   - Returns finance entries (last 30 days by default)
+   - Used by the UI to display the table
+
+2. **POST `/api/notion/finance/analyze`**
+   - Accepts: `{ "question": "optional question", "fromDate": "optional", "toDate": "optional" }`
+   - Returns: `{ "entries": [...], "aiAnswer": "AI response" }`
+   - Fetches entries, builds prompt, calls Gemini, returns analysis
+
+### MCP Server Architecture
+
+The MCP server (`mcp/notion-finance-server/`) is a Node.js/TypeScript application that:
+- Communicates via stdio using JSON-RPC 2.0
+- Queries Notion API using the official SDK
+- Exposes the `notion.finance_get_entries` tool
+- Returns simplified finance entry objects
+
+The Kotlin backend (`NotionMcpClient`) spawns this server as a subprocess and communicates with it over stdin/stdout.
 
 ---
 
@@ -616,3 +853,11 @@ Your KMP AI Chat application is now ready to use. Start chatting, explore the to
 3. ✅ `export GEMINI_API_KEY='your-key' && ./gradlew :server:run` (Terminal 2)
 4. ✅ `./gradlew :web:jsBrowserDevelopmentRun` (Terminal 3)
 5. ✅ Open http://localhost:8080 and start chatting!
+
+**For Notion Finance:**
+1. ✅ `cd mcp/notion-finance-server && npm install && npm run build`
+2. ✅ `export NOTION_API_TOKEN='your-token'`
+3. ✅ Restart backend server
+4. ✅ Click "💰 Notion Finance" tab in the UI
+
+**📖 For detailed step-by-step instructions, see [START_APP.md](START_APP.md)**

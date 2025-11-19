@@ -22,6 +22,7 @@ import chat.CompressionService
 import models.*
 import platform.currentTimeMillis
 import org.koin.core.context.GlobalContext
+import mcp.NotionMcpClient
 
 fun main(args: Array<String>) {
     val port = System.getenv("PORT")?.toIntOrNull() ?: 8081
@@ -39,6 +40,12 @@ fun Application.module() {
         single { ChatService(get()) }
         single { CompressionService(get(), segmentWindowSize = 5) }
         single<memory.MemoryStore> { memory.FileMemoryStore() }
+        
+        // Notion MCP Client
+        val mcpCmd = System.getenv("MCP_NOTION_CMD") ?: "node"
+        val mcpArgsStr = System.getenv("MCP_NOTION_ARGS") ?: "mcp/notion-finance-server/dist/index.js"
+        val mcpArgs = mcpArgsStr.split(" ").filter { it.isNotBlank() }
+        single { NotionMcpClient(mcpCmd, mcpArgs) }
     }
     
     install(Koin) {
@@ -123,6 +130,7 @@ fun Application.module() {
             agentRoutes()
             memoryRoutes()
             mcpRoutes()
+            notionFinanceRoutes()
         }
         get("/health") {
             call.respondText("OK")

@@ -1,0 +1,19 @@
+{
+  "name": "mcp-notion-finance-server",
+  "version": "1.0.0",
+  "description": "MCP server for Notion finance database",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  }
+}
+
