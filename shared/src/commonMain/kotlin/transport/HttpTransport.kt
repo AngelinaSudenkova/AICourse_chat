@@ -29,6 +29,11 @@ import models.McpToolsResponse
 import models.FinanceEntriesResult
 import models.FinanceAnalyzeRequest
 import models.FinanceAnalyzeResponse
+import models.NewsSummaryResponse
+import models.Reminder
+import models.ReminderAddRequest
+import models.ReminderListResponse
+import models.ReminderSummary
 import structured.ReadingSummary
 import structured.JournalResponse
 import structured.ReasonRequest
@@ -170,6 +175,36 @@ class HttpTransport(
         return client.post("/api/notion/finance/analyze") {
             setBody(request)
         }.body()
+    }
+    
+    suspend fun getLatestNews(): NewsSummaryResponse {
+        return client.get("/api/news/latest").body()
+    }
+    
+    suspend fun refreshNews(): NewsSummaryResponse {
+        return client.post("/api/news/refresh").body()
+    }
+    
+    suspend fun searchNews(query: String): NewsSummaryResponse {
+        return client.get("/api/news/search") {
+            parameter("q", query)
+        }.body()
+    }
+    
+    suspend fun addReminder(request: ReminderAddRequest): Reminder {
+        return client.post("/api/reminder/add") {
+            setBody(request)
+        }.body()
+    }
+    
+    suspend fun listReminders(onlyPending: Boolean = false): ReminderListResponse {
+        return client.get("/api/reminder/list") {
+            parameter("onlyPending", onlyPending.toString())
+        }.body()
+    }
+    
+    suspend fun getReminderSummary(): ReminderSummary {
+        return client.get("/api/reminder/summary").body()
     }
     
     @kotlinx.serialization.Serializable

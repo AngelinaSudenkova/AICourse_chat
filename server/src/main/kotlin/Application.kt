@@ -23,6 +23,14 @@ import models.*
 import platform.currentTimeMillis
 import org.koin.core.context.GlobalContext
 import mcp.NotionMcpClient
+import mcp.NewsMcpClient
+import mcp.ReminderMcpClient
+import news.NewsScheduler
+import reminder.ReminderRepository
+import reminder.ReminderScheduler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 fun main(args: Array<String>) {
     val port = System.getenv("PORT")?.toIntOrNull() ?: 8081
@@ -46,6 +54,27 @@ fun Application.module() {
         val mcpArgsStr = System.getenv("MCP_NOTION_ARGS") ?: "mcp/notion-finance-server/dist/index.js"
         val mcpArgs = mcpArgsStr.split(" ").filter { it.isNotBlank() }
         single { NotionMcpClient(mcpCmd, mcpArgs) }
+        
+        // News MCP Client
+        val newsMcpCmd = System.getenv("MCP_NEWS_CMD") ?: "node"
+        val newsMcpArgsStr = System.getenv("MCP_NEWS_ARGS") ?: "mcp/news-server/dist/index.js"
+        val newsMcpArgs = newsMcpArgsStr.split(" ").filter { it.isNotBlank() }
+        single { NewsMcpClient(newsMcpCmd, newsMcpArgs) }
+        
+        // News Scheduler
+        single { NewsScheduler(get(), get()) }
+        
+        // Reminder Repository
+        single { ReminderRepository() }
+        
+        // Reminder MCP Client
+        val reminderMcpCmd = System.getenv("MCP_REMINDER_CMD") ?: "node"
+        val reminderMcpArgsStr = System.getenv("MCP_REMINDER_ARGS") ?: "mcp/reminder-server/dist/index.js"
+        val reminderMcpArgs = reminderMcpArgsStr.split(" ").filter { it.isNotBlank() }
+        single { ReminderMcpClient(reminderMcpCmd, reminderMcpArgs) }
+        
+        // Reminder Scheduler
+        single { ReminderScheduler(get(), get()) }
     }
     
     install(Koin) {
@@ -131,9 +160,32 @@ fun Application.module() {
             memoryRoutes()
             mcpRoutes()
             notionFinanceRoutes()
+            newsRoutes()
+            reminderRoutes()
         }
         get("/health") {
             call.respondText("OK")
+        }
+    }
+    
+    // Start schedulers after Koin is ready
+    val applicationScope = CoroutineScope(SupervisorJob())
+    applicationScope.launch {
+        try {
+            val newsScheduler: NewsScheduler = GlobalContext.get().get()
+            newsScheduler.start(applicationScope)
+        } catch (e: Exception) {
+            println("Failed to start news scheduler: ${e.message}")
+            e.printStackTrace()
+        }
+    }
+    applicationScope.launch {
+        try {
+            val reminderScheduler: ReminderScheduler = GlobalContext.get().get()
+            reminderScheduler.start(applicationScope)
+        } catch (e: Exception) {
+            println("Failed to start reminder scheduler: ${e.message}")
+            e.printStackTrace()
         }
     }
 }

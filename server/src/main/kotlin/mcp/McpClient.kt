@@ -182,9 +182,3 @@ class McpClient(
         }
     }
 }
-
-/**
- * Exception thrown when MCP communication fails.
- */
-class McpException(message: String, cause: Throwable? = null) : Exception(message, cause)
-

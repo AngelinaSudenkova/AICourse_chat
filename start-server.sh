@@ -36,6 +36,12 @@ else
     echo "Info: NOTION_API_TOKEN is set (starts with: ${NOTION_API_TOKEN:0:10}...)"
 fi
 
+if [ -z "$NEWS_API_KEY" ]; then
+    echo "Warning: NEWS_API_KEY is not set. News tab will not work."
+else
+    echo "Info: NEWS_API_KEY is set (starts with: ${NEWS_API_KEY:0:10}...)"
+fi
+
 # Check if port is already in use
 PORT=${PORT:-8081}
 if lsof -Pi :$PORT -sTCP:LISTEN -t >/dev/null 2>&1 ; then

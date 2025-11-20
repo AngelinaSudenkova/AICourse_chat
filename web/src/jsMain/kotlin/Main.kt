@@ -23,6 +23,11 @@ import ModelComparisonViewModel
 import ui.ModelComparisonTab
 import McpLabViewModel
 import NotionFinanceViewModel
+import NewsViewModel
+import NewsView
+import NewsNotificationPanel
+import RemindersViewModel
+import RemindersView
 
 fun main() {
     renderComposable(rootElementId = "root") {
@@ -52,7 +57,7 @@ fun App() {
         mutableStateOf(
             try {
                 val stored = js("window.localStorage.getItem('mode')") as? String
-                val allowed = setOf("chat", "journal", "reasoning", "temperature", "modelComparison", "mcp", "notionFinance")
+                val allowed = setOf("chat", "journal", "reasoning", "temperature", "modelComparison", "mcp", "notionFinance", "news", "reminders")
                 if (stored != null && stored.isNotEmpty() && stored in allowed) stored else "chat"
             } catch (e: Exception) {
                 "chat"
@@ -66,6 +71,12 @@ fun App() {
     val modelComparisonViewModel = remember { ModelComparisonViewModel(scope, httpTransport) }
     val mcpViewModel = remember { McpLabViewModel(scope) }
     val notionFinanceViewModel = remember { NotionFinanceViewModel(scope) }
+    val newsViewModel = remember { NewsViewModel(scope) }
+    val remindersViewModel = remember { RemindersViewModel(scope) }
+    
+    // News notification panel state
+    var isNewsNotificationOpen by remember { mutableStateOf(false) }
+    var lastViewedNewsTimestamp by remember { mutableStateOf<String?>(null) }
     
     // Save theme to localStorage when it changes
     LaunchedEffect(theme) {
@@ -149,7 +160,23 @@ fun App() {
                 onNotionFinanceToggle = {
                     mode = "notionFinance"
                 },
-                onExport = { viewModel.exportMessages() }
+                onNewsToggle = {
+                    mode = "news"
+                },
+                onRemindersToggle = {
+                    mode = "reminders"
+                },
+                onExport = { viewModel.exportMessages() },
+                onNewsNotificationClick = {
+                    isNewsNotificationOpen = true
+                    // Update last viewed timestamp when opening
+                    if (newsViewModel.fetchedAt.isNotEmpty()) {
+                        lastViewedNewsTimestamp = newsViewModel.fetchedAt
+                    }
+                },
+                hasNewNews = newsViewModel.fetchedAt.isNotEmpty() && 
+                    lastViewedNewsTimestamp != null && 
+                    newsViewModel.fetchedAt != lastViewedNewsTimestamp
             )
             
             if (mode == "journal") {
@@ -164,6 +191,10 @@ fun App() {
                 McpLabView(mcpViewModel)
             } else if (mode == "notionFinance") {
                 NotionFinanceView(notionFinanceViewModel)
+            } else if (mode == "news") {
+                NewsView(newsViewModel)
+            } else if (mode == "reminders") {
+                RemindersView(remindersViewModel)
             } else {
                 if (viewModel.messages.isEmpty() && !viewModel.isLoading && viewModel.currentConversationId == null) {
                     Div(attrs = {
@@ -181,6 +212,19 @@ fun App() {
                     )
                 }
             }
+            
+            // News notification panel (overlay)
+            NewsNotificationPanel(
+                viewModel = newsViewModel,
+                isOpen = isNewsNotificationOpen,
+                onClose = {
+                    isNewsNotificationOpen = false
+                    // Update last viewed timestamp when closing
+                    if (newsViewModel.fetchedAt.isNotEmpty()) {
+                        lastViewedNewsTimestamp = newsViewModel.fetchedAt
+                    }
+                }
+            )
             
             if (mode == "chat" || mode == "journal") {
                 if (mode == "chat") {
@@ -448,7 +492,11 @@ fun TopBar(
     onModelComparisonToggle: () -> Unit,
     onMcpToggle: () -> Unit,
     onNotionFinanceToggle: () -> Unit,
-    onExport: () -> Unit
+    onNewsToggle: () -> Unit,
+    onRemindersToggle: () -> Unit,
+    onExport: () -> Unit,
+    onNewsNotificationClick: () -> Unit,
+    hasNewNews: Boolean = false
 ) {
     Div(attrs = {
         classes(AppStylesheet.topBar)
@@ -464,6 +512,8 @@ fun TopBar(
                     "modelComparison" -> "Model Comparison"
                     "mcp" -> "MCP Tools"
                     "notionFinance" -> "💰 Notion Finance"
+                    "news" -> "📰 News"
+                    "reminders" -> "🔔 Reminders"
                     else -> "KMP AI Chat"
                 }
             )
@@ -521,6 +571,56 @@ fun TopBar(
                     onClick { onNotionFinanceToggle() }
                 }) {
                     Text("💰 Notion Finance")
+                }
+            }
+            
+            if (mode != "news") {
+                Button(attrs = {
+                    classes(AppStylesheet.button, AppStylesheet.modeButton)
+                    onClick { onNewsToggle() }
+                }) {
+                    Text("📰 News")
+                }
+            }
+            
+            if (mode != "reminders") {
+                Button(attrs = {
+                    classes(AppStylesheet.button, AppStylesheet.modeButton)
+                    onClick { onRemindersToggle() }
+                }) {
+                    Text("🔔 Reminders")
+                }
+            }
+            
+            // News notification button
+            Div(attrs = {
+                style {
+                    position(Position.Relative)
+                    display(DisplayStyle.InlineBlock)
+                }
+            }) {
+                Button(attrs = {
+                    classes(AppStylesheet.button, AppStylesheet.iconButton)
+                    onClick { onNewsNotificationClick() }
+                }) {
+                    Text("🔔")
+                }
+                // Badge indicator
+                if (hasNewNews) {
+                    Span(attrs = {
+                        style {
+                            position(Position.Absolute)
+                            top(0.px)
+                            right(0.px)
+                            width(8.px)
+                            height(8.px)
+                            backgroundColor(Color("#f44336"))
+                            borderRadius(50.percent)
+                            border(2.px, LineStyle.Solid, Color("var(--surface)"))
+                        }
+                    }) {
+                        // Empty span for badge dot
+                    }
                 }
             }
             
