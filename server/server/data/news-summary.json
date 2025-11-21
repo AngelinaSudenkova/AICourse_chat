@@ -1,149 +1,140 @@
 {
     "articles": [
         {
-            "source": "CNBC",
-            "author": "Pia Singh",
-            "title": "Stock futures little changed as S&P 500 notches fourth-straight loss, Nvidia earnings loom: Live updates - CNBC",
-            "description": "Tuesday's session saw the Dow Jones Industrial Average and S&P 500 notch their fourth consecutive losing day, marking the S&P 500's longest slide since August.",
-            "url": "https://www.cnbc.com/2025/11/18/stock-market-today-live-updates.html",
-            "publishedAt": "2025-11-19T00:38:00Z"
+            "source": "Associated Press",
+            "author": "Hussein Malla, Bassem Mroue, Wafaa Shurafa",
+            "title": "Israel’s military carries out strikes in Lebanon and Gaza, killing dozens of people - AP News",
+            "description": "The Israeli military has carried out airstrikes in southern Lebanon, targeting what it claims are Hezbollah weapons storage facilities. This comes after a drone strike earlier in the day killed one person and injured several others, including students on a bu…",
+            "url": "https://apnews.com/article/lebanon-israel-airstrike-84a26c919c2636e6bd8d0a86ae166b3a",
+            "publishedAt": "2025-11-19T22:03:00Z"
+        },
+        {
+            "source": "CNN",
+            "author": "Clare Duffy",
+            "title": "Nvidia beats earnings expectations, even as bubble concerns mount - CNN",
+            "description": "Nvidia posted strong revenue and profits that exceeded Wall Street’s expectations Wednesday. The closely watched result could prompt a sigh of relief across the stock market following growing concerns about an artificial intelligence bubble.",
+            "url": "https://www.cnn.com/2025/11/19/tech/nvidia-earnings-ai-bubble-fears",
+            "publishedAt": "2025-11-19T21:25:08Z"
+        },
+        {
+            "source": "New York Post",
+            "author": "Cooper Albers",
+            "title": "Brandin Cooks released in another Saints shakeup - New York Post",
+            "description": "The New Orleans Saints continue to clear out their receiver room.",
+            "url": "https://nypost.com/2025/11/19/sports/brandin-cooks-released-in-another-saints-shakeup/",
+            "publishedAt": "2025-11-19T20:43:00Z"
+        },
+        {
+            "source": "Politico",
+            "author": "Kyle Cheney, Josh Gerstein",
+            "title": "Judge Boasberg to resume contempt proceedings over Alien Enemies Act deportations - Politico",
+            "description": "Boasberg said he intends to receive testimony from a DOJ attorney who was fired in April and has since accused his superiors of flouting court orders related to the deportation flights.",
+            "url": "https://www.politico.com/news/2025/11/19/james-boasberg-deportation-flights-case-00659973",
+            "publishedAt": "2025-11-19T20:35:05Z"
+        },
+        {
+            "source": "Ars Technica",
+            "author": "Dan Goodin",
+            "title": "Critics scoff after Microsoft warns AI feature can infect machines and pilfer data - Ars Technica",
+            "description": "Integration of Copilot Actions into Windows is off by default, but for how long?",
+            "url": "https://arstechnica.com/security/2025/11/critics-scoff-after-microsoft-warns-ai-feature-can-infect-machines-and-pilfer-data/",
+            "publishedAt": "2025-11-19T20:25:46Z"
+        },
+        {
+            "source": "Yahoo Entertainment",
+            "author": "Rebecca Carhart",
+            "title": "Black Friday fashion deals for 2025 are up to 75% off Kate Spade, Hoka, Patagonia and more - Yahoo",
+            "description": "There are tons of style sales already happening  — we're eyeing Coach bags for 70% off, plus Skechers, Crocs and others.",
+            "url": "https://www.yahoo.com/lifestyle/style/clothing/article/black-friday-fashion-deals-for-2025-are-up-to-75-off-kate-spade-hoka-patagonia-and-more-160547946.html",
+            "publishedAt": "2025-11-19T20:24:38Z"
+        },
+        {
+            "source": "NASA",
+            "author": "Erin Morton",
+            "title": "View Interstellar Comet 3I/ATLAS Through NASA’s Multiple Lenses - NASA Science (.gov)",
+            "description": "This article was updated to include the full range of dates from the SOHO image.",
+            "url": "https://science.nasa.gov/solar-system/view-interstellar-comet-3i-atlas-through-nasas-multiple-lenses/",
+            "publishedAt": "2025-11-19T20:15:26Z"
         },
         {
             "source": "ABC News",
-            "author": "abcnews.go.com",
-            "title": "Singer D4vd considered suspect in investigation of teen found dead in his Tesla: Sources - abcnews.go.com",
-            "url": "https://abcnews.go.com/US/singer-d4vd-considered-suspect-investigation-teen-found-dead/story?id\\\\u003d126591951",
-            "publishedAt": "2025-11-18T23:13:02Z"
+            "author": "ABC News",
+            "title": "Trump's words loom over Comey case as judge weighs tossing indictment - ABC News",
+            "url": "https://abcnews.go.com/US/trumps-words-loom-comey-case-judge-weighs-tossing/story?id\\\\u003d127677570",
+            "publishedAt": "2025-11-19T19:29:06Z"
         },
         {
-            "source": "Politico",
-            "author": "Kyle Cheney, Andrew Howard, Josh Gerstein",
-            "title": "In blow to Trump, federal judges block new Texas congressional map - Politico",
-            "description": "The decision is a massive blow in the White House’s push to redistrict across the country.",
-            "url": "https://www.politico.com/news/2025/11/18/federal-judges-block-new-texas-congressional-map-00656680",
-            "publishedAt": "2025-11-18T23:04:55Z"
+            "source": "Associated Press",
+            "author": "Gary D. Robertson",
+            "title": "Arrests now top 250 in immigration crackdown across North Carolina - AP News",
+            "description": "Federal agents have now arrested more than 250 people during an immigration crackdown in North Carolina centered around Charlotte, the state’s largest city. Those totals released Wednesday by the U.S. Department of Homeland Security are about double the arres…",
+            "url": "https://apnews.com/article/new-orleans-charlotte-immigration-arrests-trump-84bc76392705dad1ea7d1cfef29ec380",
+            "publishedAt": "2025-11-19T19:20:00Z"
         },
         {
-            "source": "The Verge",
-            "author": "Emma Roth",
-            "title": "Cloudflare shows internet outages aren’t a matter of if — but when - The Verge",
-            "description": "The latest Cloudflare outage draws attention to concentration in the web infrastructure industry, with one expert saying it should serve as a “wake-up call” for companies.",
-            "url": "https://www.theverge.com/news/823562/cloudflare-outage-wake-up-call-websites",
-            "publishedAt": "2025-11-18T22:58:59Z"
-        },
-        {
-            "source": "Sports Illustrated",
-            "author": "Bryan Fischer",
-            "title": "How Every Contender Can Still Make (or Miss) the College Football Playoff - Sports Illustrated",
-            "description": "Every team on this list has a dream finish and a nightmare waiting in the wings. We explore both as the CFP race reaches its final stretch.",
-            "url": "https://www.si.com/college-football/how-every-contender-can-still-make-or-miss-the-college-football-playoff",
-            "publishedAt": "2025-11-18T22:21:15Z"
-        },
-        {
-            "source": "BBC News",
-            "title": "Loose wire on ship may have led to Baltimore bridge collapse, report says - BBC",
-            "description": "The cargo ship lost power before crashing into the Francis Scott Key Bridge, leaving six workers dead.",
-            "url": "https://www.bbc.com/news/articles/cqjw52p58geo",
-            "publishedAt": "2025-11-18T21:50:48Z"
-        },
-        {
-            "source": "247Sports",
-            "author": "Grant Hughes",
-            "title": "Latest coaching intel: Lane Kiffin news headlines updates on eight Power Four vacancies - 247Sports",
-            "description": "Team insiders across the 247Sports network revealed the lastest coachingsearch intel for all eight remaining Power Four openings LSU Florida Auburn Penn State Arkansas UCLA Oklahoma State and Stanford",
-            "url": "https://247sports.com/longformarticle/latest-coaching-intel-lane-kiffin-news-headlines-updates-on-eight-power-four-vacancies-262128867/",
-            "publishedAt": "2025-11-18T21:18:55Z"
+            "source": "NBC News",
+            "author": "Minyvonne Burke",
+            "title": "Ryan Wedding, Olympic snowboarder turned alleged drug kingpin, charged in death of federal witness - NBC News",
+            "description": "Former Olympic snowboarder Ryan Wedding, who officials say runs one of the most violent drug-trafficking organizations in the world, faces new charges related to the murder of a federal witness in the case against him.",
+            "url": "https://www.nbcnews.com/news/us-news/ryan-wedding-olympic-snowboarder-turned-alleged-drug-kingpin-charged-d-rcna244824",
+            "publishedAt": "2025-11-19T19:15:47Z"
         },
         {
             "source": "Bloomberg",
-            "author": "Leah Nylen, Riley Griffin, Josh Sisco",
-            "title": "Meta Wins FTC Antitrust Trial Over Instagram, WhatsApp Deals - Bloomberg.com",
-            "description": "Meta Platforms Inc. won a key court ruling that the company’s acquisitions of the photo-sharing app Instagram and messaging service WhatsApp don’t violate US antitrust law, a blow to the federal government which has sought to break up the company for the past…",
-            "url": "https://www.bloomberg.com/news/articles/2025-11-18/meta-wins-ftc-antitrust-trial-over-instagram-whatsapp-deals",
-            "publishedAt": "2025-11-18T21:04:09Z"
+            "author": "Jaewon Kang",
+            "title": "Target Lowers Top End of Profit Outlook on Soft Demand - Bloomberg.com",
+            "description": "Target Corp.’s lengthy slump persisted in the third quarter, underscoring the numerous obstacles the big-box retailer’s incoming chief executive officer faces — from intense competition to a weakening economy.",
+            "url": "https://www.bloomberg.com/news/articles/2025-11-19/target-lowers-top-end-of-profit-outlook-as-soft-demand-persists",
+            "publishedAt": "2025-11-19T19:13:30Z"
         },
         {
-            "source": "Politico",
-            "author": "Nicholas Wu",
-            "title": "House set to vote on Plaskett censure measure - Politico",
-            "description": "Republicans want to formally reprimand Democratic Del. Stacey Plaskett for her contact with Jeffrey Epstein.",
-            "url": "https://www.politico.com/live-updates/2025/11/18/congress/stacey-plaskett-house-censure-vote-epstein-00657247",
-            "publishedAt": "2025-11-18T20:37:11Z"
+            "source": "Al Jazeera English",
+            "author": "Mariamne Everett",
+            "title": "At least 25 killed in Russian attacks on war-torn Ukraine - Al Jazeera",
+            "description": "Moscow claims Ukraine tried to hit civilian targets with US-made ATACMS missiles in Russia’s southern city of Voronezh.",
+            "url": "https://www.aljazeera.com/news/2025/11/19/children-among-the-36-wounded-in-russias-overnight-attacks-on-ukraine",
+            "publishedAt": "2025-11-19T18:18:50Z"
         },
         {
-            "source": "Axios",
-            "author": "Andrew Solender",
-            "title": "Two dozens House Democrats vote with Republicans to rebuke one of their members - Axios",
-            "description": "The resolution caused considerable internal tension among Democrats.",
-            "url": "https://www.axios.com/2025/11/18/chuy-garcia-marie-perez-election-illinois-house",
-            "publishedAt": "2025-11-18T20:21:00Z"
+            "source": "Live Science",
+            "author": "Stephanie Pappas",
+            "title": "US could lose its measles elimination status within months, experts say - Live Science",
+            "description": "With 45 outbreaks of measles over the past year, the United States is at risk of endemic spread within months, experts told Live Science.",
+            "url": "https://www.livescience.com/health/viruses-infections-disease/us-could-lose-its-measles-elimination-status-within-months-experts-say",
+            "publishedAt": "2025-11-19T16:52:59Z"
         },
         {
-            "source": "Ars Technica",
-            "author": "Andrew Cunningham",
-            "title": "Microsoft tries to head off the “novel security risks” of Windows 11 AI agents - Ars Technica",
-            "description": "Agents with read/write access to your files create big security, privacy issues.",
-            "url": "https://arstechnica.com/gadgets/2025/11/new-windows-11-ai-agents-can-work-in-the-background-but-create-new-security-risks/",
-            "publishedAt": "2025-11-18T19:28:14Z"
+            "source": "NBCSports.com",
+            "author": "Mike Florio",
+            "title": "Will Jalen Ramsey be fined for his reaction to Ja’Marr Chase spitting on on him? - NBC Sports",
+            "description": "Steelers coach Mike Tomlin gets it, when it comes to getting spit on.",
+            "url": "https://www.nbcsports.com/nfl/profootballtalk/rumor-mill/news/will-jalen-ramsey-be-fined-for-his-reaction-to-jamarr-chase-spitting-on-on-him",
+            "publishedAt": "2025-11-19T16:27:03Z"
         },
         {
-            "source": "Associated Press",
-            "author": "Illia Novikov",
-            "title": "Zelenskyy will visit Turkey in a new bid to jump-start talks to end Russia’s invasion - AP News",
-            "description": "Ukrainian President Volodymyr Zelenskyy plans to visit Turkey this week to revive talks on ending Russia's invasion, which began nearly four years ago. It remains unclear if U.S. representatives will attend, but Russia says it will not send a representative. …",
-            "url": "https://apnews.com/article/russia-ukraine-war-turkey-negotiations-spain-france-6a739b523cb926d92f2bf44b24dfc3c3",
-            "publishedAt": "2025-11-18T19:10:00Z"
+            "source": "clevelandbrowns.com",
+            "title": "Shedeur Sanders to start Week 12 against the Raiders - Cleveland Browns",
+            "description": "Dillon Gabriel remains in concussion protocol as Sanders makes first NFL start",
+            "url": "https://www.clevelandbrowns.com/news/shedeur-sanders-to-start-week-12-against-the-raiders",
+            "publishedAt": "2025-11-19T16:19:22Z"
         },
         {
-            "source": "The Washington Post",
-            "author": "Michael Birnbaum, Susannah George, Natalie Allison",
-            "title": "Trump defends Saudi crown prince over Khashoggi killing - The Washington Post",
-            "description": "The de facto ruler of Saudi Arabia was branded a pariah in 2018 after the killing of Washington Post columnist Jamal Khashoggi. Now, U.S.-Saudi relations are approaching a high point.",
-            "url": "https://www.washingtonpost.com/world/2025/11/18/saudi-prince-trump-visit-white-house/",
-            "publishedAt": "2025-11-18T19:02:01Z"
+            "source": "Ohchr.org",
+            "title": "UN Security Council resolution a violation of Palestinian right of self-determination and UN Charter, UN expert warns - ohchr",
+            "description": "GENEVA – A UN expert today expressed serious concern with the Security Council’s adoption of Resolution 2803, warning that it runs counter to the Palestinian right to self-determination, consolidates Israel’s unlawful presence in the occupied Palestinian terr…",
+            "url": "https://www.ohchr.org/en/press-releases/2025/11/un-security-council-resolution-violation-palestinian-right-self",
+            "publishedAt": "2025-11-19T16:10:22Z"
         },
         {
-            "source": "cleveland.com",
-            "author": "Lucas Daprile, cleveland.com",
-            "title": "Thieves fleece Shedeur Sanders’ home of $200,000 in property, Medina deputies say - Cleveland.com",
-            "description": "Masked suspects broke into Shedeur Sanders’ Granger Township home on Sunday, making off with more than $200,000 in items, authorities said.",
-            "url": "https://www.cleveland.com/crime/2025/11/thieves-fleece-shedeur-sanders-home-of-200000-in-property-medina-deputies-say.html",
-            "publishedAt": "2025-11-18T18:19:00Z"
-        },
-        {
-            "source": "Associated Press",
-            "author": "Gary D. Robertson, Tim Sullivan",
-            "title": "Federal immigration agents will expand enforcement action in North Carolina to Raleigh, mayor says - AP News",
-            "description": "Federal immigration authorities will expand their enforcement action in North Carolina to Raleigh. That’s according to the mayor of the state’s capital city, who says the expansion could come as soon as Tuesday. Mayor Janet Cowell said she didn’t know how lar…",
-            "url": "https://apnews.com/article/charlotte-north-carolina-immigration-arrests-trump-6b53bb45813edbbc28433739763aebbe",
-            "publishedAt": "2025-11-18T17:58:00Z"
-        },
-        {
-            "source": "Playbill.com",
-            "author": "Margaret Hall",
-            "title": "What Do the Critics Think of Wicked: For Good? - Playbill",
-            "description": "The second part of the smash-hit Wicked film duology has officially arrived.",
-            "url": "https://playbill.com/article/what-do-the-critics-think-of-wicked-for-good",
-            "publishedAt": "2025-11-18T17:14:00Z"
-        },
-        {
-            "source": "Jalopnik",
-            "author": "Nicholas Werner",
-            "title": "Blue Origin's New Glenn Rocket Completes First Mission, Begins Direct Competition With SpaceX - Jalopnik",
-            "description": "The mission involved delivering a real (not test) payload into low-Earth orbit and then landing its first-stage rocket on a drone boat.",
-            "url": "https://www.jalopnik.com/2029446/blue-origin-glenn-rocket-completes-first-mission/",
-            "publishedAt": "2025-11-18T17:05:00Z"
-        },
-        {
-            "source": "Ars Technica",
-            "author": "Ryan Whitwam",
-            "title": "Google unveils Gemini 3 AI model and AI-first IDE called Antigravity - Ars Technica",
-            "description": "Google’s flagship AI model is getting its second major upgrade this year.",
-            "url": "https://arstechnica.com/google/2025/11/google-unveils-gemini-3-ai-model-and-ai-first-ide-called-antigravity/",
-            "publishedAt": "2025-11-18T16:08:56Z"
+            "source": "NASA",
+            "author": "NASA Webb Mission Team",
+            "title": "Webb First to Show 4 Dust Shells ‘Spiraling’ Apep, Limits Long Orbit - NASA Science (.gov)",
+            "description": "NASA’s James Webb Space Telescope has delivered a first of its kind: a crisp mid-infrared image of a system of four serpentine spirals of dust, one expanding",
+            "url": "https://science.nasa.gov/missions/webb/webb-first-to-show-4-dust-shells-spiraling-apep-limits-long-orbit/",
+            "publishedAt": "2025-11-19T16:00:00Z"
         }
     ],
-    "aiSummary": "As a news analyst, the top headlines reveal a mix of market apprehension, significant legal and political battles, and ongoing investigations into critical incidents.\n\nOn the economic front, financial markets are exhibiting caution, with the S&P 500 recording its longest losing streak since August as investors anticipate upcoming tech earnings, particularly from Nvidia. In the legal sphere, Meta Platforms secured a notable victory against the FTC, as a court ruled its acquisitions of Instagram and WhatsApp do not violate antitrust law, representing a setback for federal efforts to curb big tech. Politically, federal judges dealt a blow to Republican redistricting efforts by blocking a new Texas congressional map. Simultaneously, congressional tensions are high, with the House set to vote on censoring Democratic Del. Stacey Plaskett, following an earlier vote where a significant number of Democrats joined Republicans to rebuke one of their own, signaling internal party divisions.\n\nCritical infrastructure and high-profile incidents are also in the spotlight. A report suggests a loose wire on the cargo ship may have caused the catastrophic Baltimore bridge collapse. Separately, a recent Cloudflare outage underscored the vulnerability and concentration within global internet infrastructure, serving as a \"wake-up call\" for the industry. Investigations continue, with singer D4vd reportedly considered a suspect in the death of a teen found in his Tesla. Meanwhile, the sports world is focused on the intense final stretch of the College Football Playoff race and ongoing coaching searches across Power Four conferences.",
-    "fetchedAt": "2025-11-20T00:20:52.340Z",
-    "totalResults": 35
+    "aiSummary": "Top news headlines are marked by a mix of escalating geopolitical tensions, significant developments in the technology and economic sectors, and a range of domestic legal and social issues.\n\nGlobally, the Israeli military has carried out strikes in Lebanon and Gaza, reportedly killing dozens of people following an earlier drone attack. Economically, Nvidia's strong earnings have temporarily eased concerns about an artificial intelligence market bubble, though Microsoft simultaneously issued warnings about the potential for its AI features to infect machines and pilfer data, highlighting ongoing security concerns. Consumers are already seeing early and steep discounts for Black Friday fashion deals.\n\nDomestically, legal and political challenges are prominent. A judge is set to resume contempt proceedings regarding controversial \"Alien Enemies Act\" deportations, prompted by accusations that DOJ superiors flouted court orders. This coincides with a substantial immigration crackdown in North Carolina, leading to over 250 arrests. Separately, a former Olympic snowboarder, now alleged drug kingpin, faces new charges including the murder of a federal witness, while a judge weighs the impact of former President Trump's words on the Comey case.",
+    "fetchedAt": "2025-11-21T00:22:15.660Z",
+    "totalResults": 34
 }

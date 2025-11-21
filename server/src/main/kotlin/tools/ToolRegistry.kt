@@ -22,6 +22,10 @@ class ToolRegistry(private val databaseFactory: DatabaseFactory) {
                 val query = input.removePrefix("/search").removePrefix("/db").trim()
                 ToolCall("dbSearch", query)
             }
+            input.startsWith("/research") -> {
+                val query = input.removePrefix("/research").trim()
+                ToolCall("research", query)
+            }
             else -> null
         }
     }

@@ -28,6 +28,8 @@ import NewsView
 import NewsNotificationPanel
 import RemindersViewModel
 import RemindersView
+import ResearchLogViewModel
+import ResearchLogView
 
 fun main() {
     renderComposable(rootElementId = "root") {
@@ -57,7 +59,7 @@ fun App() {
         mutableStateOf(
             try {
                 val stored = js("window.localStorage.getItem('mode')") as? String
-                val allowed = setOf("chat", "journal", "reasoning", "temperature", "modelComparison", "mcp", "notionFinance", "news", "reminders")
+                val allowed = setOf("chat", "journal", "reasoning", "temperature", "modelComparison", "mcp", "notionFinance", "news", "reminders", "researchLog")
                 if (stored != null && stored.isNotEmpty() && stored in allowed) stored else "chat"
             } catch (e: Exception) {
                 "chat"
@@ -73,6 +75,7 @@ fun App() {
     val notionFinanceViewModel = remember { NotionFinanceViewModel(scope) }
     val newsViewModel = remember { NewsViewModel(scope) }
     val remindersViewModel = remember { RemindersViewModel(scope) }
+    val researchLogViewModel = remember { ResearchLogViewModel(scope) }
     
     // News notification panel state
     var isNewsNotificationOpen by remember { mutableStateOf(false) }
@@ -166,6 +169,9 @@ fun App() {
                 onRemindersToggle = {
                     mode = "reminders"
                 },
+                onResearchLogToggle = {
+                    mode = "researchLog"
+                },
                 onExport = { viewModel.exportMessages() },
                 onNewsNotificationClick = {
                     isNewsNotificationOpen = true
@@ -195,6 +201,8 @@ fun App() {
                 NewsView(newsViewModel)
             } else if (mode == "reminders") {
                 RemindersView(remindersViewModel)
+            } else if (mode == "researchLog") {
+                ResearchLogView(researchLogViewModel)
             } else {
                 if (viewModel.messages.isEmpty() && !viewModel.isLoading && viewModel.currentConversationId == null) {
                     Div(attrs = {
@@ -494,6 +502,7 @@ fun TopBar(
     onNotionFinanceToggle: () -> Unit,
     onNewsToggle: () -> Unit,
     onRemindersToggle: () -> Unit,
+    onResearchLogToggle: () -> Unit,
     onExport: () -> Unit,
     onNewsNotificationClick: () -> Unit,
     hasNewNews: Boolean = false
@@ -514,6 +523,7 @@ fun TopBar(
                     "notionFinance" -> "💰 Notion Finance"
                     "news" -> "📰 News"
                     "reminders" -> "🔔 Reminders"
+                    "researchLog" -> "📚 Research Log"
                     else -> "KMP AI Chat"
                 }
             )
@@ -589,6 +599,15 @@ fun TopBar(
                     onClick { onRemindersToggle() }
                 }) {
                     Text("🔔 Reminders")
+                }
+            }
+            
+            if (mode != "researchLog") {
+                Button(attrs = {
+                    classes(AppStylesheet.button, AppStylesheet.modeButton)
+                    onClick { onResearchLogToggle() }
+                }) {
+                    Text("📚 Research Log")
                 }
             }
             

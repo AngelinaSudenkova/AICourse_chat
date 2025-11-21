@@ -9,6 +9,7 @@ import tools.ToolRegistry
 import ai.GeminiClient
 import chat.CompressionService
 import memory.MemoryStore
+import research.ResearchPipeline
 import org.koin.core.context.GlobalContext
 import platform.currentTimeMillis
 import kotlinx.coroutines.withTimeout
@@ -45,8 +46,34 @@ fun Route.agentRoutes() {
             .getOrNull()
         
         if (toolCall != null) {
-            val result = runCatching { toolRegistry.invokeSync(toolCall) }
-                .getOrDefault("Tool failed: ${toolCall.name}")
+            val result = if (toolCall.name == "research") {
+                // Handle async research tool
+                val researchPipeline: ResearchPipeline = koin.get()
+                runCatching {
+                    val pipelineResult = researchPipeline.runResearchPipeline(toolCall.input)
+                    buildString {
+                        appendLine("## ${pipelineResult.summary.title}")
+                        appendLine()
+                        appendLine(pipelineResult.summary.summary)
+                        appendLine()
+                        appendLine("### Key Points:")
+                        pipelineResult.summary.keyPoints.forEach { point ->
+                            appendLine("- $point")
+                        }
+                        appendLine()
+                        appendLine("### Sources:")
+                        pipelineResult.summary.sources.forEach { source ->
+                            appendLine("- [$source]($source)")
+                        }
+                        appendLine()
+                        appendLine("**Saved to:** ${pipelineResult.savedPath}")
+                    }
+                }.getOrDefault("Research failed: ${toolCall.input}")
+            } else {
+                // Handle sync tools
+                runCatching { toolRegistry.invokeSync(toolCall) }
+                    .getOrDefault("Tool failed: ${toolCall.name}")
+            }
             
             val response = AgentResponse(
                 message = ChatMessage("assistant", result, timestamp = currentTimeMillis()),

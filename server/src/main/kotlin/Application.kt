@@ -25,9 +25,11 @@ import org.koin.core.context.GlobalContext
 import mcp.NotionMcpClient
 import mcp.NewsMcpClient
 import mcp.ReminderMcpClient
+import mcp.ResearchMcpClient
 import news.NewsScheduler
 import reminder.ReminderRepository
 import reminder.ReminderScheduler
+import research.ResearchPipeline
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -75,6 +77,15 @@ fun Application.module() {
         
         // Reminder Scheduler
         single { ReminderScheduler(get(), get()) }
+        
+        // Research MCP Client
+        val researchMcpCmd = System.getenv("MCP_RESEARCH_CMD") ?: "node"
+        val researchMcpArgsStr = System.getenv("MCP_RESEARCH_ARGS") ?: "mcp/research-server/dist/index.js"
+        val researchMcpArgs = researchMcpArgsStr.split(" ").filter { it.isNotBlank() }
+        single { ResearchMcpClient(researchMcpCmd, researchMcpArgs) }
+        
+        // Research Pipeline
+        single { ResearchPipeline(get(), get()) }
     }
     
     install(Koin) {
@@ -162,6 +173,7 @@ fun Application.module() {
             notionFinanceRoutes()
             newsRoutes()
             reminderRoutes()
+            researchRoutes()
         }
         get("/health") {
             call.respondText("OK")

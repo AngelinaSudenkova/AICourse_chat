@@ -34,6 +34,9 @@ import models.Reminder
 import models.ReminderAddRequest
 import models.ReminderListResponse
 import models.ReminderSummary
+import models.ResearchRequest
+import models.ResearchResponse
+import models.ResearchLogResponse
 import structured.ReadingSummary
 import structured.JournalResponse
 import structured.ReasonRequest
@@ -205,6 +208,20 @@ class HttpTransport(
     
     suspend fun getReminderSummary(): ReminderSummary {
         return client.get("/api/reminder/summary").body()
+    }
+    
+    suspend fun research(query: String): ResearchResponse {
+        return client.post("/api/research") {
+            setBody(ResearchRequest(query = query))
+        }.body()
+    }
+    
+    suspend fun getResearchLog(): ResearchLogResponse {
+        return client.get("/api/research/log").body()
+    }
+    
+    suspend fun getResearchFile(filename: String): Map<String, String> {
+        return client.get("/api/research/file/$filename").body()
     }
     
     @kotlinx.serialization.Serializable
