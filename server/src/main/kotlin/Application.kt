@@ -26,10 +26,14 @@ import mcp.NotionMcpClient
 import mcp.NewsMcpClient
 import mcp.ReminderMcpClient
 import mcp.ResearchMcpClient
+import mcp.WikipediaMcpClient
+import mcp.YouTubeMcpClient
+import mcp.NotionNotesMcpClient
 import news.NewsScheduler
 import reminder.ReminderRepository
 import reminder.ReminderScheduler
 import research.ResearchPipeline
+import tutor.TutorService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -86,6 +90,27 @@ fun Application.module() {
         
         // Research Pipeline
         single { ResearchPipeline(get(), get()) }
+        
+        // Wikipedia MCP Client
+        val wikipediaMcpCmd = System.getenv("MCP_WIKIPEDIA_CMD") ?: "node"
+        val wikipediaMcpArgsStr = System.getenv("MCP_WIKIPEDIA_ARGS") ?: "mcp/wikipedia-server/dist/index.js"
+        val wikipediaMcpArgs = wikipediaMcpArgsStr.split(" ").filter { it.isNotBlank() }
+        single { WikipediaMcpClient(wikipediaMcpCmd, wikipediaMcpArgs) }
+        
+        // YouTube MCP Client
+        val youtubeMcpCmd = System.getenv("MCP_YOUTUBE_CMD") ?: "node"
+        val youtubeMcpArgsStr = System.getenv("MCP_YOUTUBE_ARGS") ?: "mcp/youtube-server/dist/index.js"
+        val youtubeMcpArgs = youtubeMcpArgsStr.split(" ").filter { it.isNotBlank() }
+        single { YouTubeMcpClient(youtubeMcpCmd, youtubeMcpArgs) }
+        
+        // Notion Notes MCP Client (reuses Notion server)
+        val notionNotesMcpCmd = System.getenv("MCP_NOTION_CMD") ?: "node"
+        val notionNotesMcpArgsStr = System.getenv("MCP_NOTION_ARGS") ?: "mcp/notion-finance-server/dist/index.js"
+        val notionNotesMcpArgs = notionNotesMcpArgsStr.split(" ").filter { it.isNotBlank() }
+        single { NotionNotesMcpClient(notionNotesMcpCmd, notionNotesMcpArgs) }
+        
+        // Tutor Service
+        single { TutorService(get(), get(), get(), get()) }
     }
     
     install(Koin) {
@@ -174,6 +199,7 @@ fun Application.module() {
             newsRoutes()
             reminderRoutes()
             researchRoutes()
+            tutorRoutes()
         }
         get("/health") {
             call.respondText("OK")

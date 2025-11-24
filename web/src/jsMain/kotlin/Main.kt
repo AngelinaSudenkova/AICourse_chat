@@ -30,6 +30,8 @@ import RemindersViewModel
 import RemindersView
 import ResearchLogViewModel
 import ResearchLogView
+import TutorViewModel
+import TutorView
 
 fun main() {
     renderComposable(rootElementId = "root") {
@@ -59,7 +61,7 @@ fun App() {
         mutableStateOf(
             try {
                 val stored = js("window.localStorage.getItem('mode')") as? String
-                val allowed = setOf("chat", "journal", "reasoning", "temperature", "modelComparison", "mcp", "notionFinance", "news", "reminders", "researchLog")
+                val allowed = setOf("chat", "journal", "reasoning", "temperature", "modelComparison", "mcp", "notionFinance", "news", "reminders", "researchLog", "tutor")
                 if (stored != null && stored.isNotEmpty() && stored in allowed) stored else "chat"
             } catch (e: Exception) {
                 "chat"
@@ -76,6 +78,7 @@ fun App() {
     val newsViewModel = remember { NewsViewModel(scope) }
     val remindersViewModel = remember { RemindersViewModel(scope) }
     val researchLogViewModel = remember { ResearchLogViewModel(scope) }
+    val tutorViewModel = remember { TutorViewModel(scope, httpTransport) }
     
     // News notification panel state
     var isNewsNotificationOpen by remember { mutableStateOf(false) }
@@ -172,6 +175,9 @@ fun App() {
                 onResearchLogToggle = {
                     mode = "researchLog"
                 },
+                onTutorToggle = {
+                    mode = "tutor"
+                },
                 onExport = { viewModel.exportMessages() },
                 onNewsNotificationClick = {
                     isNewsNotificationOpen = true
@@ -203,6 +209,8 @@ fun App() {
                 RemindersView(remindersViewModel)
             } else if (mode == "researchLog") {
                 ResearchLogView(researchLogViewModel)
+            } else if (mode == "tutor") {
+                TutorView(tutorViewModel)
             } else {
                 if (viewModel.messages.isEmpty() && !viewModel.isLoading && viewModel.currentConversationId == null) {
                     Div(attrs = {
@@ -503,6 +511,7 @@ fun TopBar(
     onNewsToggle: () -> Unit,
     onRemindersToggle: () -> Unit,
     onResearchLogToggle: () -> Unit,
+    onTutorToggle: () -> Unit,
     onExport: () -> Unit,
     onNewsNotificationClick: () -> Unit,
     hasNewNews: Boolean = false
@@ -524,6 +533,7 @@ fun TopBar(
                     "news" -> "📰 News"
                     "reminders" -> "🔔 Reminders"
                     "researchLog" -> "📚 Research Log"
+                    "tutor" -> "🎓 Learning Tutor"
                     else -> "KMP AI Chat"
                 }
             )
@@ -608,6 +618,15 @@ fun TopBar(
                     onClick { onResearchLogToggle() }
                 }) {
                     Text("📚 Research Log")
+                }
+            }
+            
+            if (mode != "tutor") {
+                Button(attrs = {
+                    classes(AppStylesheet.button, AppStylesheet.modeButton)
+                    onClick { onTutorToggle() }
+                }) {
+                    Text("🎓 Tutor")
                 }
             }
             

@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.SerializationException
 import models.AgentRequest
 import models.AgentResponse
 import models.Conversation
@@ -37,6 +38,8 @@ import models.ReminderSummary
 import models.ResearchRequest
 import models.ResearchResponse
 import models.ResearchLogResponse
+import models.TutorRequest
+import models.TutorResponse
 import structured.ReadingSummary
 import structured.JournalResponse
 import structured.ReasonRequest
@@ -222,6 +225,50 @@ class HttpTransport(
     
     suspend fun getResearchFile(filename: String): Map<String, String> {
         return client.get("/api/research/file/$filename").body()
+    }
+    
+    suspend fun teachTopic(request: TutorRequest): TutorResponse {
+        return try {
+            val response = client.post("/api/tutor/teach") {
+                setBody(request)
+            }
+            
+            // Check if response is successful before deserializing
+            if (response.status.value >= 400) {
+                val errorBody = response.bodyAsText()
+                val errorMessage = parseErrorMessage(errorBody)
+                throw Exception(errorMessage)
+            }
+            
+            response.body()
+        } catch (e: ClientRequestException) {
+            // Try to extract error message from response body
+            val errorMessage = try {
+                val errorBody = e.response.bodyAsText()
+                parseErrorMessage(errorBody)
+            } catch (ex: Exception) {
+                e.message ?: "Request failed with status ${e.response.status.value}"
+            }
+            throw Exception(errorMessage)
+        } catch (e: ServerResponseException) {
+            // Try to extract error message from response body
+            val errorMessage = try {
+                val errorBody = e.response.bodyAsText()
+                parseErrorMessage(errorBody)
+            } catch (ex: Exception) {
+                e.message ?: "Server error: ${e.response.status.value}"
+            }
+            throw Exception(errorMessage)
+        } catch (e: kotlinx.serialization.SerializationException) {
+            // Handle case where response is not a valid TutorResponse (e.g., error object)
+            throw Exception("Invalid response format: ${e.message}")
+        } catch (e: Exception) {
+            // Catch any other exceptions (including deserialization errors)
+            if (e.message?.contains("required for type") == true || e.message?.contains("missing at path") == true) {
+                throw Exception("Server returned an error response. Please check backend logs for details.")
+            }
+            throw e
+        }
     }
     
     @kotlinx.serialization.Serializable

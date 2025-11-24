@@ -36,6 +36,18 @@ else
     echo "Info: NOTION_API_TOKEN is set (starts with: ${NOTION_API_TOKEN:0:10}...)"
 fi
 
+if [ -z "$NOTION_API_TOKEN_STUDY" ]; then
+    echo "Info: NOTION_API_TOKEN_STUDY is not set. Learning Tutor study notes will not work."
+else
+    echo "Info: NOTION_API_TOKEN_STUDY is set (starts with: ${NOTION_API_TOKEN_STUDY:0:10}...)"
+fi
+
+if [ -z "$NOTION_STUDY_PARENT_PAGE_ID" ]; then
+    echo "Info: NOTION_STUDY_PARENT_PAGE_ID is not set. Study notes will be created at workspace root."
+else
+    echo "Info: NOTION_STUDY_PARENT_PAGE_ID is set: $NOTION_STUDY_PARENT_PAGE_ID"
+fi
+
 if [ -z "$NEWS_API_KEY" ]; then
     echo "Warning: NEWS_API_KEY is not set. News tab will not work."
 else

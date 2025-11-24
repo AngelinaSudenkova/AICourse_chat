@@ -1,140 +1,148 @@
 {
     "articles": [
         {
-            "source": "Associated Press",
-            "author": "Hussein Malla, Bassem Mroue, Wafaa Shurafa",
-            "title": "Israel’s military carries out strikes in Lebanon and Gaza, killing dozens of people - AP News",
-            "description": "The Israeli military has carried out airstrikes in southern Lebanon, targeting what it claims are Hezbollah weapons storage facilities. This comes after a drone strike earlier in the day killed one person and injured several others, including students on a bu…",
-            "url": "https://apnews.com/article/lebanon-israel-airstrike-84a26c919c2636e6bd8d0a86ae166b3a",
-            "publishedAt": "2025-11-19T22:03:00Z"
-        },
-        {
-            "source": "CNN",
-            "author": "Clare Duffy",
-            "title": "Nvidia beats earnings expectations, even as bubble concerns mount - CNN",
-            "description": "Nvidia posted strong revenue and profits that exceeded Wall Street’s expectations Wednesday. The closely watched result could prompt a sigh of relief across the stock market following growing concerns about an artificial intelligence bubble.",
-            "url": "https://www.cnn.com/2025/11/19/tech/nvidia-earnings-ai-bubble-fears",
-            "publishedAt": "2025-11-19T21:25:08Z"
-        },
-        {
-            "source": "New York Post",
-            "author": "Cooper Albers",
-            "title": "Brandin Cooks released in another Saints shakeup - New York Post",
-            "description": "The New Orleans Saints continue to clear out their receiver room.",
-            "url": "https://nypost.com/2025/11/19/sports/brandin-cooks-released-in-another-saints-shakeup/",
-            "publishedAt": "2025-11-19T20:43:00Z"
+            "source": "CBS Sports",
+            "author": "David Cobb",
+            "title": "USC vs. Oregon live updates, score, game analysis and highlights - CBS Sports",
+            "description": "Live updates, highlights and analysis as USC and Oregon collide in a massive Big Ten tilt on CBS",
+            "url": "https://www.cbssports.com/college-football/news/usc-oregon-live-updates-score-results-analysis/live/",
+            "publishedAt": "2025-11-22T22:03:03Z"
         },
         {
             "source": "Politico",
-            "author": "Kyle Cheney, Josh Gerstein",
-            "title": "Judge Boasberg to resume contempt proceedings over Alien Enemies Act deportations - Politico",
-            "description": "Boasberg said he intends to receive testimony from a DOJ attorney who was fired in April and has since accused his superiors of flouting court orders related to the deportation flights.",
-            "url": "https://www.politico.com/news/2025/11/19/james-boasberg-deportation-flights-case-00659973",
-            "publishedAt": "2025-11-19T20:35:05Z"
+            "author": "Eli Stokols, Alex Gangitano, Diana Nerozzi",
+            "title": "Amid GOP grumbling, White House makes course corrections - Politico",
+            "description": "‘There's some bumps here and there,’ a White House official acknowledged.",
+            "url": "https://www.politico.com/news/2025/11/22/trump-gop-affordability-epstein-mtg-00665988",
+            "publishedAt": "2025-11-22T21:00:00Z"
         },
         {
-            "source": "Ars Technica",
-            "author": "Dan Goodin",
-            "title": "Critics scoff after Microsoft warns AI feature can infect machines and pilfer data - Ars Technica",
-            "description": "Integration of Copilot Actions into Windows is off by default, but for how long?",
-            "url": "https://arstechnica.com/security/2025/11/critics-scoff-after-microsoft-warns-ai-feature-can-infect-machines-and-pilfer-data/",
-            "publishedAt": "2025-11-19T20:25:46Z"
+            "source": "ESPN",
+            "title": "Oklahoma 17-6 Missouri (Nov 22, 2025) Game Recap - ESPN",
+            "description": "Expert recap and game analysis of the Oklahoma Sooners vs. Missouri Tigers NCAAF game from November 22, 2025 on ESPN.",
+            "url": "https://www.espn.com/college-football/recap?gameId=401752778",
+            "publishedAt": "2025-11-22T21:00:00Z"
         },
         {
-            "source": "Yahoo Entertainment",
-            "author": "Rebecca Carhart",
-            "title": "Black Friday fashion deals for 2025 are up to 75% off Kate Spade, Hoka, Patagonia and more - Yahoo",
-            "description": "There are tons of style sales already happening  — we're eyeing Coach bags for 70% off, plus Skechers, Crocs and others.",
-            "url": "https://www.yahoo.com/lifestyle/style/clothing/article/black-friday-fashion-deals-for-2025-are-up-to-75-off-kate-spade-hoka-patagonia-and-more-160547946.html",
-            "publishedAt": "2025-11-19T20:24:38Z"
+            "source": "The Wall Street Journal",
+            "author": "The Wall Street Journal",
+            "title": "Comey Prosecution on the Ropes After Series of Missteps - The Wall Street Journal",
+            "url": "https://www.wsj.com/us-news/law/james-comey-case-doj-challenges-0c1c2bb2",
+            "publishedAt": "2025-11-22T19:34:00Z"
         },
         {
-            "source": "NASA",
-            "author": "Erin Morton",
-            "title": "View Interstellar Comet 3I/ATLAS Through NASA’s Multiple Lenses - NASA Science (.gov)",
-            "description": "This article was updated to include the full range of dates from the SOHO image.",
-            "url": "https://science.nasa.gov/solar-system/view-interstellar-comet-3i-atlas-through-nasas-multiple-lenses/",
-            "publishedAt": "2025-11-19T20:15:26Z"
+            "source": "TooFab",
+            "author": "Toofab Staff",
+            "title": "Selma Blair Shares Update On Battle with Multiple Sclerosis - TooFab",
+            "description": "The actress -- who was diagnosed with MS in 2018 -- opened up about her battle with the disease, giving a positive update on her health journey.",
+            "url": "https://toofab.com/2025/11/22/selma-blair-update-ms-battle/",
+            "publishedAt": "2025-11-22T19:27:00Z"
+        },
+        {
+            "source": "CNN",
+            "title": "Chris Paul hints at retirement from NBA with video before Clippers-Hornets game in his home state - CNN",
+            "description": "Los Angeles Clippers point guard Chris Paul hinted his potential retirement prior to the team’s game against the Charlotte Hornets on Saturday in what would be his final game in his home state of North Carolina.",
+            "url": "https://www.cnn.com/2025/11/22/sport/basketball-nba-clippers-chris-paul-retirement",
+            "publishedAt": "2025-11-22T19:12:40Z"
         },
         {
             "source": "ABC News",
-            "author": "ABC News",
-            "title": "Trump's words loom over Comey case as judge weighs tossing indictment - ABC News",
-            "url": "https://abcnews.go.com/US/trumps-words-loom-comey-case-judge-weighs-tossing/story?id\\\\u003d127677570",
-            "publishedAt": "2025-11-19T19:29:06Z"
-        },
-        {
-            "source": "Associated Press",
-            "author": "Gary D. Robertson",
-            "title": "Arrests now top 250 in immigration crackdown across North Carolina - AP News",
-            "description": "Federal agents have now arrested more than 250 people during an immigration crackdown in North Carolina centered around Charlotte, the state’s largest city. Those totals released Wednesday by the U.S. Department of Homeland Security are about double the arres…",
-            "url": "https://apnews.com/article/new-orleans-charlotte-immigration-arrests-trump-84bc76392705dad1ea7d1cfef29ec380",
-            "publishedAt": "2025-11-19T19:20:00Z"
-        },
-        {
-            "source": "NBC News",
-            "author": "Minyvonne Burke",
-            "title": "Ryan Wedding, Olympic snowboarder turned alleged drug kingpin, charged in death of federal witness - NBC News",
-            "description": "Former Olympic snowboarder Ryan Wedding, who officials say runs one of the most violent drug-trafficking organizations in the world, faces new charges related to the murder of a federal witness in the case against him.",
-            "url": "https://www.nbcnews.com/news/us-news/ryan-wedding-olympic-snowboarder-turned-alleged-drug-kingpin-charged-d-rcna244824",
-            "publishedAt": "2025-11-19T19:15:47Z"
+            "author": "ROB GILLIES Associated Press",
+            "title": "American senators rip Trump’s Ukraine peace proposal at international security conference in Canada - ABC News",
+            "description": "American senators panned a U.S. peace proposal on Ukraine at a international security conference in Canada, with one calling it one of the most serious geopolitical mistakes of his lifetime",
+            "url": "https://abcnews.go.com/International/wireStory/american-senators-rip-trumps-ukraine-peace-proposal-international-127785276",
+            "publishedAt": "2025-11-22T19:05:00Z"
         },
         {
             "source": "Bloomberg",
-            "author": "Jaewon Kang",
-            "title": "Target Lowers Top End of Profit Outlook on Soft Demand - Bloomberg.com",
-            "description": "Target Corp.’s lengthy slump persisted in the third quarter, underscoring the numerous obstacles the big-box retailer’s incoming chief executive officer faces — from intense competition to a weakening economy.",
-            "url": "https://www.bloomberg.com/news/articles/2025-11-19/target-lowers-top-end-of-profit-outlook-as-soft-demand-persists",
-            "publishedAt": "2025-11-19T19:13:30Z"
+            "author": "Sakura Murakami",
+            "title": "Japan Blasts China’s UN Letter Claim as Baseless, Urges Dialogue - Bloomberg.com",
+            "description": "A Japanese official blasted China’s claims that Prime Minister Sanae Takaichi has altered Japan’s position on a Taiwan crisis as “entirely baseless,” calling for more dialogue to stop ties between Asia’s top economies spiraling.",
+            "url": "https://www.bloomberg.com/news/articles/2025-11-22/japan-blasts-china-s-un-letter-claim-as-baseless-urges-dialogue",
+            "publishedAt": "2025-11-22T18:48:43Z"
         },
         {
-            "source": "Al Jazeera English",
-            "author": "Mariamne Everett",
-            "title": "At least 25 killed in Russian attacks on war-torn Ukraine - Al Jazeera",
-            "description": "Moscow claims Ukraine tried to hit civilian targets with US-made ATACMS missiles in Russia’s southern city of Voronezh.",
-            "url": "https://www.aljazeera.com/news/2025/11/19/children-among-the-36-wounded-in-russias-overnight-attacks-on-ukraine",
-            "publishedAt": "2025-11-19T18:18:50Z"
+            "source": "WLS-TV",
+            "author": "Evelyn Holmes, Lissette Nuñez",
+            "title": "Chicago crime: Teen killed, 8 injured in Loop shootings on State Street, near Dearborn, Monroe, police, Mayor Johnson say - ABC7 Chicago",
+            "description": "Chicago police said seven teens ranging in age from 13 to 17 were shot in the Loop Friday night, just steps from ABC7's studios. A separate shooting nearby left a 14-year-old dead, Mayor Johnson said.",
+            "url": "https://abc7chicago.com/post/chicago-shooting-7-teens-man-injured-person-killed-loop-shootings-state-street-dearborn-monroe-police-say/18191436/",
+            "publishedAt": "2025-11-22T18:06:28Z"
         },
         {
-            "source": "Live Science",
-            "author": "Stephanie Pappas",
-            "title": "US could lose its measles elimination status within months, experts say - Live Science",
-            "description": "With 45 outbreaks of measles over the past year, the United States is at risk of endemic spread within months, experts told Live Science.",
-            "url": "https://www.livescience.com/health/viruses-infections-disease/us-could-lose-its-measles-elimination-status-within-months-experts-say",
-            "publishedAt": "2025-11-19T16:52:59Z"
+            "source": "Variety",
+            "author": "Adam B. Vary",
+            "title": "Josh Hutcherson on Hunger Games Return and Five Nights at Freddys 2 - Variety",
+            "description": "Josh Hutcherson breaks down his career resurgence with 'I Love L.A.' and 'Five Nights at Freddy's 2,' plus his dream of a 'Hunger Games' return.",
+            "url": "https://variety.com/2025/film/news/josh-hutcherson-hunger-games-return-five-nights-at-freddys-2-1236587674/",
+            "publishedAt": "2025-11-22T17:30:00Z"
         },
         {
-            "source": "NBCSports.com",
-            "author": "Mike Florio",
-            "title": "Will Jalen Ramsey be fined for his reaction to Ja’Marr Chase spitting on on him? - NBC Sports",
-            "description": "Steelers coach Mike Tomlin gets it, when it comes to getting spit on.",
-            "url": "https://www.nbcsports.com/nfl/profootballtalk/rumor-mill/news/will-jalen-ramsey-be-fined-for-his-reaction-to-jamarr-chase-spitting-on-on-him",
-            "publishedAt": "2025-11-19T16:27:03Z"
+            "source": "Politico",
+            "author": "Sara Schonhardt, Karl Mathiesen, Zia Weise, Zack Colman",
+            "title": "Deal or ‘meh’ deal? Climate summit ends on a deflating note - Politico",
+            "description": "Nearly two weeks of talks in the Amazon ended with commitments to do more, but no firm movement on the most divisive issues — including turning away from fossil fuels.",
+            "url": "https://www.politico.com/news/2025/11/22/deal-or-meh-deal-climate-summit-ends-on-a-deflating-note-00665990",
+            "publishedAt": "2025-11-22T17:27:25Z"
         },
         {
-            "source": "clevelandbrowns.com",
-            "title": "Shedeur Sanders to start Week 12 against the Raiders - Cleveland Browns",
-            "description": "Dillon Gabriel remains in concussion protocol as Sanders makes first NFL start",
-            "url": "https://www.clevelandbrowns.com/news/shedeur-sanders-to-start-week-12-against-the-raiders",
-            "publishedAt": "2025-11-19T16:19:22Z"
+            "source": "The Verge",
+            "author": "Terrence O'Brien",
+            "title": "Spotify simplifies importing playlists from other streaming services - The Verge",
+            "description": "Spotify’s mobile app now lets you import playlists from other streaming services using TuneMyMusic.",
+            "url": "https://www.theverge.com/news/825646/spotify-playlist-import",
+            "publishedAt": "2025-11-22T17:10:35Z"
         },
         {
-            "source": "Ohchr.org",
-            "title": "UN Security Council resolution a violation of Palestinian right of self-determination and UN Charter, UN expert warns - ohchr",
-            "description": "GENEVA – A UN expert today expressed serious concern with the Security Council’s adoption of Resolution 2803, warning that it runs counter to the Palestinian right to self-determination, consolidates Israel’s unlawful presence in the occupied Palestinian terr…",
-            "url": "https://www.ohchr.org/en/press-releases/2025/11/un-security-council-resolution-violation-palestinian-right-self",
-            "publishedAt": "2025-11-19T16:10:22Z"
+            "source": "MarketWatch",
+            "author": "Isabel Wang",
+            "title": "Wall Street’s wild week shows just how fragile confidence in the stock market has become - MarketWatch",
+            "description": "Friday’s market rebound was ‘not built on anything solid but something very ephemeral,’ says strategist",
+            "url": "https://www.marketwatch.com/story/wall-streets-wild-week-shows-just-how-fragile-confidence-in-the-stock-market-has-become-1b0353da",
+            "publishedAt": "2025-11-22T17:02:00Z"
         },
         {
-            "source": "NASA",
-            "author": "NASA Webb Mission Team",
-            "title": "Webb First to Show 4 Dust Shells ‘Spiraling’ Apep, Limits Long Orbit - NASA Science (.gov)",
-            "description": "NASA’s James Webb Space Telescope has delivered a first of its kind: a crisp mid-infrared image of a system of four serpentine spirals of dust, one expanding",
-            "url": "https://science.nasa.gov/missions/webb/webb-first-to-show-4-dust-shells-spiraling-apep-limits-long-orbit/",
-            "publishedAt": "2025-11-19T16:00:00Z"
+            "source": "Deadline",
+            "author": "Glenn Garner",
+            "title": "Jellybean Johnson Dies: The Time Drummer Was 69 - Deadline",
+            "description": "Jellybean Johnson, the drummer of The Time and music producer for artists like Janet Jackson, has died. He was 69.",
+            "url": "http://deadline.com/2025/11/jellybean-johnson-dies-69-1236626486/",
+            "publishedAt": "2025-11-22T16:44:00Z"
+        },
+        {
+            "source": "Variety",
+            "author": "J. Kim Murphy",
+            "title": "Box Office: 'Wicked: For Good' Boosts Opening Day for Biggest of 2025 - Variety",
+            "description": "The musical sequel 'Wicked: For Good' enjoyed the biggest opening day of 2025 and looks headed for the second-biggest debut of the year.",
+            "url": "https://variety.com/2025/film/news/box-office-wicked-for-good-opening-day-1236588784/",
+            "publishedAt": "2025-11-22T15:49:00Z"
+        },
+        {
+            "source": "MMA Fighting",
+            "author": "Bryan Tucker",
+            "title": "LIVE! UFC Qatar Results: Tsarukyan vs. Hooker - MMA Fighting",
+            "description": "Get UFC Qatar results for the Tsarukyan vs. Hooker event in Doha on Saturday.",
+            "url": "https://www.mmafighting.com/ufc/457739/ufc-qatar-results-tsarukyan-vs-hooker",
+            "publishedAt": "2025-11-22T15:17:43Z"
+        },
+        {
+            "source": "NPR",
+            "author": "The Associated Press",
+            "title": "More than 300 children were abducted in an attack on a Catholic school in Nigeria - NPR",
+            "description": "A total of 303 schoolchildren and 12 teachers were abducted by gunmen during an attack on St. Mary's School, a Catholic institution in north-central Nigeria's Niger state, the Christian Association of Nigeria said.",
+            "url": "https://www.npr.org/2025/11/22/nx-s1-5617680/nigeria-catholic-school-children-abducted",
+            "publishedAt": "2025-11-22T14:37:45Z"
+        },
+        {
+            "source": "Associated Press",
+            "author": "JoNel Aleccia",
+            "title": "Babies who drank ByHeart formula got sick months before botulism outbreak, parents say - AP News",
+            "description": "At least five families say their babies were treated for infant botulism after consuming ByHeart formula months before a current outbreak was detected. More than 30 babies have been treated for the rare and life-threatening disease in an outbreak that started…",
+            "url": "https://apnews.com/article/byheart-infant-formula-botulism-recall-9971f57a2a218eac4fba53f305dcba3c",
+            "publishedAt": "2025-11-22T14:06:00Z"
         }
     ],
-    "aiSummary": "Top news headlines are marked by a mix of escalating geopolitical tensions, significant developments in the technology and economic sectors, and a range of domestic legal and social issues.\n\nGlobally, the Israeli military has carried out strikes in Lebanon and Gaza, reportedly killing dozens of people following an earlier drone attack. Economically, Nvidia's strong earnings have temporarily eased concerns about an artificial intelligence market bubble, though Microsoft simultaneously issued warnings about the potential for its AI features to infect machines and pilfer data, highlighting ongoing security concerns. Consumers are already seeing early and steep discounts for Black Friday fashion deals.\n\nDomestically, legal and political challenges are prominent. A judge is set to resume contempt proceedings regarding controversial \"Alien Enemies Act\" deportations, prompted by accusations that DOJ superiors flouted court orders. This coincides with a substantial immigration crackdown in North Carolina, leading to over 250 arrests. Separately, a former Olympic snowboarder, now alleged drug kingpin, faces new charges including the murder of a federal witness, while a judge weighs the impact of former President Trump's words on the Comey case.",
-    "fetchedAt": "2025-11-21T00:22:15.660Z",
-    "totalResults": 34
+    "aiSummary": "Today's top headlines reveal a complex mix of geopolitical tensions, domestic political maneuvering, and pressing social concerns, alongside developments in sports and entertainment. On the international stage, a proposed U.S. peace plan for Ukraine drew sharp condemnation from American senators, with one calling it a major geopolitical mistake. Simultaneously, tensions flared between Japan and China as Japan blasted China's \"baseless\" claims regarding a Taiwan crisis, calling for dialogue to prevent spiraling ties. Domestically, the White House is acknowledging \"bumps\" and making \"course corrections\" amid Republican grumbling, while a high-profile prosecution involving Comey appears to be struggling due to a series of missteps.\n\nKey risks and concerns include the potential for continued global instability, particularly regarding the Ukraine conflict and rising friction in the Asia-Pacific region. Domestically, the White House faces ongoing political pressures, and the potential failure of a significant legal case could have broader implications. A particularly urgent concern is the surge in urban violence, exemplified by multiple shootings in Chicago's Loop that left one teenager dead and several others, mostly teens, injured.\n\nIn other notable developments, college football saw live updates from the USC vs. Oregon game and a recap of Oklahoma's victory over Missouri. NBA veteran Chris Paul hinted at his potential retirement, while actress Selma Blair shared a positive update on her battle with Multiple Sclerosis. Actor Josh Hutcherson also discussed his career resurgence and prospects for returning to the \"Hunger Games\" franchise.",
+    "fetchedAt": "2025-11-24T00:13:55.767Z",
+    "totalResults": 33
 }
