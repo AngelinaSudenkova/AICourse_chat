@@ -1,124 +1,132 @@
 {
     "articles": [
         {
-            "source": "ABC News",
-            "author": "ABC News",
-            "title": "'Slender Man' stabbing assailant Morgan Geyser taken into custody after fleeing group home: Police - ABC News",
-            "url": "https://abcnews.go.com/US/slender-man-stabbing-assailant-morgan-geyser-flees-wisconsin/story?id\\\\u003d127803086",
-            "publishedAt": "2025-11-24T06:00:00Z"
+            "source": "BBC News",
+            "author": "https://www.facebook.com/bbcnews",
+            "title": "Live updates: Judge dismisses cases against James Comey and Letitia James - BBC",
+            "description": "A judge rules the US attorney, who brought the case against Trump's political foes, was improperly appointed.",
+            "url": "https://www.bbc.com/news/live/cr7m7nd4d2kt",
+            "publishedAt": "2025-11-24T20:29:48Z"
         },
         {
-            "source": "Al Jazeera English",
-            "author": "Al Jazeera Staff",
-            "title": "Six killed in suicide attack on paramilitary complex in Pakistan’s Peshawar - Al Jazeera",
-            "description": "Three fighters and three security officers killed in attack on Federal Constabulary headquarters, media reports say.",
-            "url": "https://www.aljazeera.com/news/2025/11/24/gunfire-explosions-at-paramilitary-hq-in-pakistans-peshawar-reports",
-            "publishedAt": "2025-11-24T04:52:30Z"
-        },
-        {
-            "source": "The Washington Post",
-            "author": "Lizzie Johnson, Adam Taylor, Catherine Belton, Natalie Allison",
-            "title": "U.S., Ukraine agree to change draft of peace plan that appeased Russia - The Washington Post",
-            "description": "Negotiators had been working off an early proposal that bipartisan lawmakers say would further destabilize global security and reward Russia after its 2022 invasion.",
-            "url": "https://www.washingtonpost.com/world/2025/11/23/ukraine-peace-plan-russian-wish-list/",
-            "publishedAt": "2025-11-24T04:35:14Z"
-        },
-        {
-            "source": "NBCSports.com",
-            "author": "Myles Simmons",
-            "title": "Sunday Night Football: Rams take over NFC’s top seed, defeat Bucs, 34-7 - NBC Sports",
-            "description": "Tampa Bay QB Baker Mayfield did not play in the second half with a left shoulder injury.",
-            "url": "https://www.nbcsports.com/nfl/profootballtalk/rumor-mill/news/sunday-night-football-rams-take-over-nfcs-top-seed-defeat-bucs-34-7",
-            "publishedAt": "2025-11-24T04:17:20Z"
-        },
-        {
-            "source": "Axios",
-            "author": "Adriel Bettelheim, Peter Sullivan, Maya Goldman",
-            "title": "Trump to push new Republican plan on Obamacare subsidies - Axios",
-            "description": "The plan calls for a short-term extension of the subsidies in exchange for new eligibility limits.",
-            "url": "https://www.axios.com/2025/11/24/trump-health-cost-plan-aca-subsidies",
-            "publishedAt": "2025-11-24T03:40:30Z"
-        },
-        {
-            "source": "KSL.com",
-            "author": "Sean Lyngaas and Evan Perez, CNN",
-            "title": "Wall Street banks scramble to assess fallout from hack of real-estate data firm - KSL.com",
-            "description": "Hackers stole a trove of data from a company used by major Wall Street banks for real-estate loans and mortgages, setting off a scramble to determine what was taken and which banks were affected.",
-            "url": "https://www.ksl.com/article/51409606/wall-street-banks-scramble-to-assess-fallout-from-hack-of-real-estate-data-firm",
-            "publishedAt": "2025-11-24T03:19:42Z"
-        },
-        {
-            "source": "CBS News",
-            "author": "Marielle  Mohs",
-            "title": "Kristi Noem delivers bonus checks to some MSP Airport TSA employees in move union calls \"illegal\" - CBS News",
-            "description": "U.S. Secretary of Homeland Security Kristi Noem returned to the Twin Cities on Sunday for the second time in a month, this time to deliver bonus checks to select TSA officers. WCCO's Marielle Mohs was there, asking why all officers didn't receive bonuses.",
-            "url": "https://www.cbsnews.com/minnesota/news/kristi-noem-tsa-bonus-checks-msp-airport/",
-            "publishedAt": "2025-11-24T03:04:33Z"
-        },
-        {
-            "source": "TMZ",
-            "author": "TMZ Staff",
-            "title": "'Baylen Out Loud' Star Bechnir Dupree Not Missing Despite Rumors, Mom Says - TMZ",
-            "description": "Bechnir Dupree of \"Baylen Out Loud\" fame is not missing despite a viral social media rumor claiming otherwise ... TMZ has learned.",
-            "url": "https://www.tmz.com/2025/11/23/baylen-out-loud-star-bechnir-dupree-not-missing-despite-rumors-mom-says/",
-            "publishedAt": "2025-11-24T01:40:37Z"
+            "source": "Tom's Guide",
+            "author": "Alyse Stanley",
+            "title": "31 best Apple Black Friday deals live now — AirPods, MacBooks, iPads, iPhones and more - Tom's Guide",
+            "description": "The best Apple Black Friday deals happening right now",
+            "url": "https://www.tomsguide.com/live/news/black-friday-apple-deals-2025",
+            "publishedAt": "2025-11-24T20:29:45Z"
         },
         {
             "source": "The Washington Post",
-            "author": "Abbie Cheeseman, Suzan Haidamous, Lior Soroka",
-            "title": "Israeli strike on Beirut kills top Hezbollah military official - The Washington Post",
-            "description": "The Israeli attack targeting Haytham Ali Tabatabai was the first strike on Beirut in more than five months and fueled fears that a wider war could be brewing.",
-            "url": "https://www.washingtonpost.com/world/2025/11/23/israel-strike-beirut-hezbollah-tabatabai/",
-            "publishedAt": "2025-11-24T00:45:27Z"
+            "author": "Phil Davison",
+            "title": "Jimmy Cliff, who helped introduce reggae to the world, dies at 81 - The Washington Post",
+            "description": "The Jamaican reggae star had a breakout performance in the 1972 film “The Harder They Come,” playing a singer turned outlaw.",
+            "url": "https://www.washingtonpost.com/obituaries/2025/11/24/jimmy-cliff-reggae-dead/",
+            "publishedAt": "2025-11-24T20:23:39Z"
         },
         {
-            "source": "Bloomberg",
-            "author": "Angus Whitley",
-            "title": "Fresh Macquarie Asset Management Bid Values Qube at $7.5 Billion - Bloomberg.com",
-            "description": "Macquarie Asset Management offered to buy Qube Holdings Ltd. in a deal valuing the Australian logistics and shipping-containers company at A$11.6 billion ($7.5 billion).",
-            "url": "https://www.bloomberg.com/news/articles/2025-11-23/fresh-macquarie-asset-management-bid-values-qube-at-7-5-billion",
-            "publishedAt": "2025-11-24T00:42:00Z"
+            "source": "clevelandbrowns.com",
+            "title": "Shedeur Sanders to start Week 13 against the 49ers - Cleveland Browns",
+            "description": "Sanders made first career start in Week 12 win over the Raiders",
+            "url": "https://www.clevelandbrowns.com/news/shedeur-sanders-to-start-week-13-against-the-49ers",
+            "publishedAt": "2025-11-24T19:24:25Z"
         },
         {
-            "source": "Yahoo Entertainment",
-            "author": "Frank Schwab",
-            "title": "Shedeur Sanders throws 1st NFL TD, helps lead Browns to win over Raiders - Yahoo Sports",
-            "description": "Sanders became the first Browns QB to win his first career start with the team.",
-            "url": "https://sports.yahoo.com/nfl/article/shedeur-sanders-throws-1st-nfl-td-helps-lead-browns-to-win-over-raiders-001625017.html",
-            "publishedAt": "2025-11-24T00:37:14Z"
+            "source": "TechCrunch",
+            "author": "Russell Brandom",
+            "title": "Anthropic releases Opus 4.5 with new Chrome and Excel integrations - TechCrunch",
+            "description": "Anthropic has launched Opus 4.5, the latest version of its flagship model, with new integrations into Chrome and Excel.",
+            "url": "https://techcrunch.com/2025/11/24/anthropic-releases-opus-4-5-with-new-chrome-and-excel-integrations/",
+            "publishedAt": "2025-11-24T19:08:48Z"
+        },
+        {
+            "source": "Ars Technica",
+            "author": "Eric Berger",
+            "title": "NASA confirms that Starliner’s next mission will be cargo only - Ars Technica",
+            "description": "As the space station nears its end, NASA also cuts some future Starliner flights.",
+            "url": "https://arstechnica.com/space/2025/11/nasa-confirms-that-starliners-next-mission-will-be-cargo-only/",
+            "publishedAt": "2025-11-24T18:55:29Z"
+        },
+        {
+            "source": "NPR",
+            "author": "Rachel Treisman",
+            "title": "'Just Google' me: Slender Man stabber is recaptured after fleeing her group home - NPR",
+            "description": "Geyser and a friend lured a classmate to the woods and stabbed her 19 times in 2014. She moved from a psychiatric facility to a group home in Wisconsin earlier this year.",
+            "url": "https://www.npr.org/2025/11/24/nx-s1-5619148/morgan-geyser-escape-slenderman",
+            "publishedAt": "2025-11-24T18:33:41Z"
+        },
+        {
+            "source": "Politico",
+            "author": "Faith Wardwell",
+            "title": "Trump, Xi spoke by phone Monday - Politico",
+            "description": "The emerging talks come amid mounting tensions between China and Japan over the future of self-governed Taiwan, a former Japanese territory that China sees as its own.",
+            "url": "https://www.politico.com/news/2025/11/24/trump-xi-phone-taiwan-00666893",
+            "publishedAt": "2025-11-24T18:02:57Z"
+        },
+        {
+            "source": "The Washington Post",
+            "author": "Sabrina Malhi",
+            "title": "The complicated relationship between GLP-1s and pregnancy - The Washington Post",
+            "description": "A new study sheds light on the risks and benefits of taking GLP-1 weight-loss drugs before having a baby.",
+            "url": "https://www.washingtonpost.com/health/2025/11/24/glp-1s-pregnancy/",
+            "publishedAt": "2025-11-24T17:31:43Z"
+        },
+        {
+            "source": "CNN",
+            "author": "Daniel Dale",
+            "title": "Fact check: 78 times Zelensky has expressed gratitude to the US - CNN",
+            "description": "Ukrainian President Volodymyr Zelensky has expressed gratitude to the United States on dozens of occasions – 78 examples are listed below – since Russia launched its full-scale invasion of his country in early 2022.",
+            "url": "https://www.cnn.com/2025/11/24/politics/fact-check-zelensky-trump-ukraine",
+            "publishedAt": "2025-11-24T17:21:14Z"
         },
         {
             "source": "BBC News",
-            "title": "Budget 2025: What can nervous businesses expect from the Budget? - BBC",
-            "description": "It is going to be a nail-biting final few days for business leaders, says the BBC's Business Editor, Simon Jack.",
-            "url": "https://www.bbc.com/news/articles/c1dz7gr042no",
-            "publishedAt": "2025-11-24T00:01:18Z"
+            "title": "Obesity drug semaglutide fails to slow Alzheimer's - BBC",
+            "description": "There were initial hopes that the drug in weight loss jab Wegovy could slow progression of dementia.",
+            "url": "https://www.bbc.com/news/articles/c0edn8v8yl3o",
+            "publishedAt": "2025-11-24T17:13:38Z"
         },
         {
-            "source": "Fortune",
-            "author": "Jason Ma",
-            "title": "'It didn't have to be this way' — Top economist warns affordability crisis will continue - Fortune",
-            "description": "\"Consumer price inflation is near 3%, well above the Fed’s inflation target, and everything points to even higher inflation dead-ahead.\"",
-            "url": "https://fortune.com/2025/11/23/affordability-crisis-inflation-outlook-trump-tariffs-immigration-crackdown-prices/",
-            "publishedAt": "2025-11-23T22:42:00Z"
+            "source": "Futurism",
+            "author": "Victor Tangermann",
+            "title": "Professor Says Mysterious Interstellar Object May Be Releasing Sentinels Around Jupiter - Yahoo",
+            "description": "Mysterious interstellar object 3I/ATLAS could be passing by Jupiter to \"seed\" the planet with \"technological devices.\"",
+            "url": "http://futurism.com/space/professor-interstellar-object-releasing-satellites-jupiter",
+            "publishedAt": "2025-11-24T16:25:27Z"
         },
         {
-            "source": "NFL News",
-            "title": "NFL Week 12 takeaways: What We Learned from Sunday's 12 games - NFL.com",
-            "description": "Around The NFL breaks down what you need to know from Sunday's action in Week 12 of the 2025 NFL season.",
-            "url": "https://www.nfl.com/news/nfl-week-12-takeaways-what-we-learned-from-sunday-s-12-games",
-            "publishedAt": "2025-11-23T21:48:00Z"
+            "source": "BBC News",
+            "title": "Niger state kidnap: Nigerian father felt helpless as he saw children taken from Catholic school in Papiri - BBC",
+            "description": "The authorities are trying to rescue more than 250 schoolchildren who were abducted by raiders on motorbikes.",
+            "url": "https://www.bbc.com/news/articles/cq5qen5gnzqo",
+            "publishedAt": "2025-11-24T16:11:12Z"
         },
         {
-            "source": "The Action Network",
-            "author": "Dead President Picks",
-            "title": "Rams vs Buccaneers Odds, Picks, Parlay for Sunday Night Football - Action Network",
-            "description": "Sunday Night Football for NFL Week 12 features a matchup between the Tampa Bay Buccaneers and Los Angeles Rams at SoFi Stadium in Inglewood, Calif. This Sunday Night Football game",
-            "url": "https://www.actionnetwork.com/nfl/rams-vs-buccaneers-odds-picks-parlay-for-sunday-night-football",
-            "publishedAt": "2025-11-23T21:21:00Z"
+            "source": "Variety",
+            "author": "Rebecca Rubin",
+            "title": "‘Wicked’: How Universal’s Risky Gamble to Split the Musical Into Two Movies Paid Off at the Box Office - Variety",
+            "description": "Universal's risky gamble to turn 'Wicked' into two movies ultimately paid off at the box office.",
+            "url": "https://variety.com/2025/film/box-office/wicked-universal-gamble-two-movies-box-office-results-1236590136/",
+            "publishedAt": "2025-11-24T15:30:00Z"
+        },
+        {
+            "source": "Yahoo Entertainment",
+            "author": "Associated Press Finance",
+            "title": "Kohl's promotes interim CEO and 30-year retail veteran Michael J. Bender to be its permanent chief - Yahoo Finance",
+            "description": "Kohl's has named its fourth CEO in as many years, attempting to staunch an extended sales slide.  The company named Michael Bender as its permanent CEO...",
+            "url": "https://finance.yahoo.com/news/kohls-promotes-interim-ceo-30-152815096.html",
+            "publishedAt": "2025-11-24T15:28:15Z"
+        },
+        {
+            "source": "Hollywood Reporter",
+            "author": "Carly Thomas",
+            "title": "‘Stranger Things’: 10 Things The Duffer Brothers Want You to Know Before Watching the Final Season - The Hollywood Reporter",
+            "description": "Volume 1 of Netflix's mega-hit series releases Nov. 26.",
+            "url": "http://www.hollywoodreporter.com/lists/stranger-things-season-5-duffer-brothers-recommendations/",
+            "publishedAt": "2025-11-24T15:17:06Z"
         }
     ],
-    "aiSummary": "The top news headlines reveal a landscape dominated by escalating geopolitical tensions and significant cybersecurity threats, alongside persistent domestic political and social issues. In the Middle East, an Israeli strike in Beirut killed a top Hezbollah military official, the first such attack in months, fueling fears of a wider regional conflict. South Asia also experienced violence with a suicide attack on a paramilitary complex in Pakistan’s Peshawar, killing six. On the diplomatic front, the U.S. and Ukraine have agreed to revise a draft peace plan previously criticized for appeasing Russia, indicating a firmer stance against Moscow's aggression. A critical economic and security concern is the scramble among Wall Street banks to assess the fallout from a major hack of a real-estate data firm, highlighting the persistent vulnerability of financial infrastructure to cyberattacks.\n\nDomestically in the U.S., political and social issues remain prominent. Former President Trump is pushing a new Republican plan for Obamacare subsidies, signaling ongoing debate over healthcare policy. Meanwhile, Homeland Security Secretary Kristi Noem's delivery of bonus checks to specific TSA employees at MSP Airport sparked controversy, with the union calling the move \"illegal.\" In other notable developments, Morgan Geyser, one of the assailants in the notorious \"Slender Man\" stabbing, was taken into custody after fleeing a group home, while Macquarie Asset Management offered $7.5 billion to acquire Australian logistics firm Qube. On the sports front, the Rams defeated the Bucs to claim the NFC's top seed, and a social media rumor about \"Baylen Out Loud\" star Bechnir Dupree being missing was debunked.",
-    "fetchedAt": "2025-11-25T05:15:35.008Z",
-    "totalResults": 38
+    "aiSummary": "Top news headlines reveal a dynamic landscape across politics, technology, and social issues, alongside emerging risks. In a significant legal development, a judge dismissed cases against high-profile figures like James Comey and Letitia James, citing an improperly appointed US attorney. Geopolitically, former President Trump and Chinese President Xi Jinping held phone discussions amidst mounting tensions between China and Japan over Taiwan, a critical situation underscored by Ukraine's President Zelensky's documented gratitude for consistent US support.\n\nTechnological advancements continue, with Anthropic launching Opus 4.5, featuring new integrations for Chrome and Excel. Concurrently, NASA announced a shift in its space strategy, confirming Starliner's next mission will be cargo-only and reducing future flights. Key concerns include the geopolitical instability surrounding Taiwan, the integrity of legal appointments, and public safety issues highlighted by the recapture of the 'Slender Man stabber' after fleeing a group home. Public health discussions also gained traction with new research exploring the complex relationship between popular GLP-1 weight-loss drugs and pregnancy. Additionally, the world mourned the passing of reggae legend Jimmy Cliff at 81, and consumer news saw a focus on Apple Black Friday deals.",
+    "fetchedAt": "2025-11-25T19:18:24.987Z",
+    "totalResults": 36
 }

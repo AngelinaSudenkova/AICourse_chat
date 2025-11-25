@@ -40,6 +40,7 @@ import wiki.WikiSearcher
 import indexing.TextChunker
 import indexing.EmbeddingsClient
 import indexing.OllamaEmbeddingsClient
+import rag.RagService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -129,6 +130,9 @@ fun Application.module() {
         }
         single { WikiIndexer(get(), get(), get()) }
         single { WikiSearcher(get()) }
+        
+        // RAG Service
+        single { rag.RagService(get(), get(), get(), get()) }
     }
     
     install(Koin) {
@@ -219,6 +223,7 @@ fun Application.module() {
             researchRoutes()
             tutorRoutes()
             wikiRoutes()
+            ragRoutes()
         }
         get("/health") {
             call.respondText("OK")

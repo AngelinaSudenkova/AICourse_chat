@@ -2,6 +2,6 @@
     "pendingCount": 0,
     "overdueCount": 0,
     "reminders": [],
-    "aiSummary": "You currently have no pending or overdue reminders. All tasks are up-to-date, allowing you to focus on your current workflow without any immediate priorities from your reminder list.",
-    "generatedAt": 1764047734709
+    "aiSummary": "You currently have no pending or overdue reminders. All tasks appear to be completed or not yet entered. Consider adding new reminders for upcoming tasks or important dates to ensure nothing is missed.",
+    "generatedAt": 1764097392661
 }
