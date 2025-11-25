@@ -1,148 +1,124 @@
 {
     "articles": [
         {
-            "source": "CBS Sports",
-            "author": "David Cobb",
-            "title": "USC vs. Oregon live updates, score, game analysis and highlights - CBS Sports",
-            "description": "Live updates, highlights and analysis as USC and Oregon collide in a massive Big Ten tilt on CBS",
-            "url": "https://www.cbssports.com/college-football/news/usc-oregon-live-updates-score-results-analysis/live/",
-            "publishedAt": "2025-11-22T22:03:03Z"
-        },
-        {
-            "source": "Politico",
-            "author": "Eli Stokols, Alex Gangitano, Diana Nerozzi",
-            "title": "Amid GOP grumbling, White House makes course corrections - Politico",
-            "description": "‘There's some bumps here and there,’ a White House official acknowledged.",
-            "url": "https://www.politico.com/news/2025/11/22/trump-gop-affordability-epstein-mtg-00665988",
-            "publishedAt": "2025-11-22T21:00:00Z"
-        },
-        {
-            "source": "ESPN",
-            "title": "Oklahoma 17-6 Missouri (Nov 22, 2025) Game Recap - ESPN",
-            "description": "Expert recap and game analysis of the Oklahoma Sooners vs. Missouri Tigers NCAAF game from November 22, 2025 on ESPN.",
-            "url": "https://www.espn.com/college-football/recap?gameId=401752778",
-            "publishedAt": "2025-11-22T21:00:00Z"
-        },
-        {
-            "source": "The Wall Street Journal",
-            "author": "The Wall Street Journal",
-            "title": "Comey Prosecution on the Ropes After Series of Missteps - The Wall Street Journal",
-            "url": "https://www.wsj.com/us-news/law/james-comey-case-doj-challenges-0c1c2bb2",
-            "publishedAt": "2025-11-22T19:34:00Z"
-        },
-        {
-            "source": "TooFab",
-            "author": "Toofab Staff",
-            "title": "Selma Blair Shares Update On Battle with Multiple Sclerosis - TooFab",
-            "description": "The actress -- who was diagnosed with MS in 2018 -- opened up about her battle with the disease, giving a positive update on her health journey.",
-            "url": "https://toofab.com/2025/11/22/selma-blair-update-ms-battle/",
-            "publishedAt": "2025-11-22T19:27:00Z"
-        },
-        {
-            "source": "CNN",
-            "title": "Chris Paul hints at retirement from NBA with video before Clippers-Hornets game in his home state - CNN",
-            "description": "Los Angeles Clippers point guard Chris Paul hinted his potential retirement prior to the team’s game against the Charlotte Hornets on Saturday in what would be his final game in his home state of North Carolina.",
-            "url": "https://www.cnn.com/2025/11/22/sport/basketball-nba-clippers-chris-paul-retirement",
-            "publishedAt": "2025-11-22T19:12:40Z"
-        },
-        {
             "source": "ABC News",
-            "author": "ROB GILLIES Associated Press",
-            "title": "American senators rip Trump’s Ukraine peace proposal at international security conference in Canada - ABC News",
-            "description": "American senators panned a U.S. peace proposal on Ukraine at a international security conference in Canada, with one calling it one of the most serious geopolitical mistakes of his lifetime",
-            "url": "https://abcnews.go.com/International/wireStory/american-senators-rip-trumps-ukraine-peace-proposal-international-127785276",
-            "publishedAt": "2025-11-22T19:05:00Z"
+            "author": "ABC News",
+            "title": "'Slender Man' stabbing assailant Morgan Geyser taken into custody after fleeing group home: Police - ABC News",
+            "url": "https://abcnews.go.com/US/slender-man-stabbing-assailant-morgan-geyser-flees-wisconsin/story?id\\\\u003d127803086",
+            "publishedAt": "2025-11-24T06:00:00Z"
+        },
+        {
+            "source": "Al Jazeera English",
+            "author": "Al Jazeera Staff",
+            "title": "Six killed in suicide attack on paramilitary complex in Pakistan’s Peshawar - Al Jazeera",
+            "description": "Three fighters and three security officers killed in attack on Federal Constabulary headquarters, media reports say.",
+            "url": "https://www.aljazeera.com/news/2025/11/24/gunfire-explosions-at-paramilitary-hq-in-pakistans-peshawar-reports",
+            "publishedAt": "2025-11-24T04:52:30Z"
+        },
+        {
+            "source": "The Washington Post",
+            "author": "Lizzie Johnson, Adam Taylor, Catherine Belton, Natalie Allison",
+            "title": "U.S., Ukraine agree to change draft of peace plan that appeased Russia - The Washington Post",
+            "description": "Negotiators had been working off an early proposal that bipartisan lawmakers say would further destabilize global security and reward Russia after its 2022 invasion.",
+            "url": "https://www.washingtonpost.com/world/2025/11/23/ukraine-peace-plan-russian-wish-list/",
+            "publishedAt": "2025-11-24T04:35:14Z"
+        },
+        {
+            "source": "NBCSports.com",
+            "author": "Myles Simmons",
+            "title": "Sunday Night Football: Rams take over NFC’s top seed, defeat Bucs, 34-7 - NBC Sports",
+            "description": "Tampa Bay QB Baker Mayfield did not play in the second half with a left shoulder injury.",
+            "url": "https://www.nbcsports.com/nfl/profootballtalk/rumor-mill/news/sunday-night-football-rams-take-over-nfcs-top-seed-defeat-bucs-34-7",
+            "publishedAt": "2025-11-24T04:17:20Z"
+        },
+        {
+            "source": "Axios",
+            "author": "Adriel Bettelheim, Peter Sullivan, Maya Goldman",
+            "title": "Trump to push new Republican plan on Obamacare subsidies - Axios",
+            "description": "The plan calls for a short-term extension of the subsidies in exchange for new eligibility limits.",
+            "url": "https://www.axios.com/2025/11/24/trump-health-cost-plan-aca-subsidies",
+            "publishedAt": "2025-11-24T03:40:30Z"
+        },
+        {
+            "source": "KSL.com",
+            "author": "Sean Lyngaas and Evan Perez, CNN",
+            "title": "Wall Street banks scramble to assess fallout from hack of real-estate data firm - KSL.com",
+            "description": "Hackers stole a trove of data from a company used by major Wall Street banks for real-estate loans and mortgages, setting off a scramble to determine what was taken and which banks were affected.",
+            "url": "https://www.ksl.com/article/51409606/wall-street-banks-scramble-to-assess-fallout-from-hack-of-real-estate-data-firm",
+            "publishedAt": "2025-11-24T03:19:42Z"
+        },
+        {
+            "source": "CBS News",
+            "author": "Marielle  Mohs",
+            "title": "Kristi Noem delivers bonus checks to some MSP Airport TSA employees in move union calls \"illegal\" - CBS News",
+            "description": "U.S. Secretary of Homeland Security Kristi Noem returned to the Twin Cities on Sunday for the second time in a month, this time to deliver bonus checks to select TSA officers. WCCO's Marielle Mohs was there, asking why all officers didn't receive bonuses.",
+            "url": "https://www.cbsnews.com/minnesota/news/kristi-noem-tsa-bonus-checks-msp-airport/",
+            "publishedAt": "2025-11-24T03:04:33Z"
+        },
+        {
+            "source": "TMZ",
+            "author": "TMZ Staff",
+            "title": "'Baylen Out Loud' Star Bechnir Dupree Not Missing Despite Rumors, Mom Says - TMZ",
+            "description": "Bechnir Dupree of \"Baylen Out Loud\" fame is not missing despite a viral social media rumor claiming otherwise ... TMZ has learned.",
+            "url": "https://www.tmz.com/2025/11/23/baylen-out-loud-star-bechnir-dupree-not-missing-despite-rumors-mom-says/",
+            "publishedAt": "2025-11-24T01:40:37Z"
+        },
+        {
+            "source": "The Washington Post",
+            "author": "Abbie Cheeseman, Suzan Haidamous, Lior Soroka",
+            "title": "Israeli strike on Beirut kills top Hezbollah military official - The Washington Post",
+            "description": "The Israeli attack targeting Haytham Ali Tabatabai was the first strike on Beirut in more than five months and fueled fears that a wider war could be brewing.",
+            "url": "https://www.washingtonpost.com/world/2025/11/23/israel-strike-beirut-hezbollah-tabatabai/",
+            "publishedAt": "2025-11-24T00:45:27Z"
         },
         {
             "source": "Bloomberg",
-            "author": "Sakura Murakami",
-            "title": "Japan Blasts China’s UN Letter Claim as Baseless, Urges Dialogue - Bloomberg.com",
-            "description": "A Japanese official blasted China’s claims that Prime Minister Sanae Takaichi has altered Japan’s position on a Taiwan crisis as “entirely baseless,” calling for more dialogue to stop ties between Asia’s top economies spiraling.",
-            "url": "https://www.bloomberg.com/news/articles/2025-11-22/japan-blasts-china-s-un-letter-claim-as-baseless-urges-dialogue",
-            "publishedAt": "2025-11-22T18:48:43Z"
+            "author": "Angus Whitley",
+            "title": "Fresh Macquarie Asset Management Bid Values Qube at $7.5 Billion - Bloomberg.com",
+            "description": "Macquarie Asset Management offered to buy Qube Holdings Ltd. in a deal valuing the Australian logistics and shipping-containers company at A$11.6 billion ($7.5 billion).",
+            "url": "https://www.bloomberg.com/news/articles/2025-11-23/fresh-macquarie-asset-management-bid-values-qube-at-7-5-billion",
+            "publishedAt": "2025-11-24T00:42:00Z"
         },
         {
-            "source": "WLS-TV",
-            "author": "Evelyn Holmes, Lissette Nuñez",
-            "title": "Chicago crime: Teen killed, 8 injured in Loop shootings on State Street, near Dearborn, Monroe, police, Mayor Johnson say - ABC7 Chicago",
-            "description": "Chicago police said seven teens ranging in age from 13 to 17 were shot in the Loop Friday night, just steps from ABC7's studios. A separate shooting nearby left a 14-year-old dead, Mayor Johnson said.",
-            "url": "https://abc7chicago.com/post/chicago-shooting-7-teens-man-injured-person-killed-loop-shootings-state-street-dearborn-monroe-police-say/18191436/",
-            "publishedAt": "2025-11-22T18:06:28Z"
+            "source": "Yahoo Entertainment",
+            "author": "Frank Schwab",
+            "title": "Shedeur Sanders throws 1st NFL TD, helps lead Browns to win over Raiders - Yahoo Sports",
+            "description": "Sanders became the first Browns QB to win his first career start with the team.",
+            "url": "https://sports.yahoo.com/nfl/article/shedeur-sanders-throws-1st-nfl-td-helps-lead-browns-to-win-over-raiders-001625017.html",
+            "publishedAt": "2025-11-24T00:37:14Z"
         },
         {
-            "source": "Variety",
-            "author": "Adam B. Vary",
-            "title": "Josh Hutcherson on Hunger Games Return and Five Nights at Freddys 2 - Variety",
-            "description": "Josh Hutcherson breaks down his career resurgence with 'I Love L.A.' and 'Five Nights at Freddy's 2,' plus his dream of a 'Hunger Games' return.",
-            "url": "https://variety.com/2025/film/news/josh-hutcherson-hunger-games-return-five-nights-at-freddys-2-1236587674/",
-            "publishedAt": "2025-11-22T17:30:00Z"
+            "source": "BBC News",
+            "title": "Budget 2025: What can nervous businesses expect from the Budget? - BBC",
+            "description": "It is going to be a nail-biting final few days for business leaders, says the BBC's Business Editor, Simon Jack.",
+            "url": "https://www.bbc.com/news/articles/c1dz7gr042no",
+            "publishedAt": "2025-11-24T00:01:18Z"
         },
         {
-            "source": "Politico",
-            "author": "Sara Schonhardt, Karl Mathiesen, Zia Weise, Zack Colman",
-            "title": "Deal or ‘meh’ deal? Climate summit ends on a deflating note - Politico",
-            "description": "Nearly two weeks of talks in the Amazon ended with commitments to do more, but no firm movement on the most divisive issues — including turning away from fossil fuels.",
-            "url": "https://www.politico.com/news/2025/11/22/deal-or-meh-deal-climate-summit-ends-on-a-deflating-note-00665990",
-            "publishedAt": "2025-11-22T17:27:25Z"
+            "source": "Fortune",
+            "author": "Jason Ma",
+            "title": "'It didn't have to be this way' — Top economist warns affordability crisis will continue - Fortune",
+            "description": "\"Consumer price inflation is near 3%, well above the Fed’s inflation target, and everything points to even higher inflation dead-ahead.\"",
+            "url": "https://fortune.com/2025/11/23/affordability-crisis-inflation-outlook-trump-tariffs-immigration-crackdown-prices/",
+            "publishedAt": "2025-11-23T22:42:00Z"
         },
         {
-            "source": "The Verge",
-            "author": "Terrence O'Brien",
-            "title": "Spotify simplifies importing playlists from other streaming services - The Verge",
-            "description": "Spotify’s mobile app now lets you import playlists from other streaming services using TuneMyMusic.",
-            "url": "https://www.theverge.com/news/825646/spotify-playlist-import",
-            "publishedAt": "2025-11-22T17:10:35Z"
+            "source": "NFL News",
+            "title": "NFL Week 12 takeaways: What We Learned from Sunday's 12 games - NFL.com",
+            "description": "Around The NFL breaks down what you need to know from Sunday's action in Week 12 of the 2025 NFL season.",
+            "url": "https://www.nfl.com/news/nfl-week-12-takeaways-what-we-learned-from-sunday-s-12-games",
+            "publishedAt": "2025-11-23T21:48:00Z"
         },
         {
-            "source": "MarketWatch",
-            "author": "Isabel Wang",
-            "title": "Wall Street’s wild week shows just how fragile confidence in the stock market has become - MarketWatch",
-            "description": "Friday’s market rebound was ‘not built on anything solid but something very ephemeral,’ says strategist",
-            "url": "https://www.marketwatch.com/story/wall-streets-wild-week-shows-just-how-fragile-confidence-in-the-stock-market-has-become-1b0353da",
-            "publishedAt": "2025-11-22T17:02:00Z"
-        },
-        {
-            "source": "Deadline",
-            "author": "Glenn Garner",
-            "title": "Jellybean Johnson Dies: The Time Drummer Was 69 - Deadline",
-            "description": "Jellybean Johnson, the drummer of The Time and music producer for artists like Janet Jackson, has died. He was 69.",
-            "url": "http://deadline.com/2025/11/jellybean-johnson-dies-69-1236626486/",
-            "publishedAt": "2025-11-22T16:44:00Z"
-        },
-        {
-            "source": "Variety",
-            "author": "J. Kim Murphy",
-            "title": "Box Office: 'Wicked: For Good' Boosts Opening Day for Biggest of 2025 - Variety",
-            "description": "The musical sequel 'Wicked: For Good' enjoyed the biggest opening day of 2025 and looks headed for the second-biggest debut of the year.",
-            "url": "https://variety.com/2025/film/news/box-office-wicked-for-good-opening-day-1236588784/",
-            "publishedAt": "2025-11-22T15:49:00Z"
-        },
-        {
-            "source": "MMA Fighting",
-            "author": "Bryan Tucker",
-            "title": "LIVE! UFC Qatar Results: Tsarukyan vs. Hooker - MMA Fighting",
-            "description": "Get UFC Qatar results for the Tsarukyan vs. Hooker event in Doha on Saturday.",
-            "url": "https://www.mmafighting.com/ufc/457739/ufc-qatar-results-tsarukyan-vs-hooker",
-            "publishedAt": "2025-11-22T15:17:43Z"
-        },
-        {
-            "source": "NPR",
-            "author": "The Associated Press",
-            "title": "More than 300 children were abducted in an attack on a Catholic school in Nigeria - NPR",
-            "description": "A total of 303 schoolchildren and 12 teachers were abducted by gunmen during an attack on St. Mary's School, a Catholic institution in north-central Nigeria's Niger state, the Christian Association of Nigeria said.",
-            "url": "https://www.npr.org/2025/11/22/nx-s1-5617680/nigeria-catholic-school-children-abducted",
-            "publishedAt": "2025-11-22T14:37:45Z"
-        },
-        {
-            "source": "Associated Press",
-            "author": "JoNel Aleccia",
-            "title": "Babies who drank ByHeart formula got sick months before botulism outbreak, parents say - AP News",
-            "description": "At least five families say their babies were treated for infant botulism after consuming ByHeart formula months before a current outbreak was detected. More than 30 babies have been treated for the rare and life-threatening disease in an outbreak that started…",
-            "url": "https://apnews.com/article/byheart-infant-formula-botulism-recall-9971f57a2a218eac4fba53f305dcba3c",
-            "publishedAt": "2025-11-22T14:06:00Z"
+            "source": "The Action Network",
+            "author": "Dead President Picks",
+            "title": "Rams vs Buccaneers Odds, Picks, Parlay for Sunday Night Football - Action Network",
+            "description": "Sunday Night Football for NFL Week 12 features a matchup between the Tampa Bay Buccaneers and Los Angeles Rams at SoFi Stadium in Inglewood, Calif. This Sunday Night Football game",
+            "url": "https://www.actionnetwork.com/nfl/rams-vs-buccaneers-odds-picks-parlay-for-sunday-night-football",
+            "publishedAt": "2025-11-23T21:21:00Z"
         }
     ],
-    "aiSummary": "Today's top headlines reveal a complex mix of geopolitical tensions, domestic political maneuvering, and pressing social concerns, alongside developments in sports and entertainment. On the international stage, a proposed U.S. peace plan for Ukraine drew sharp condemnation from American senators, with one calling it a major geopolitical mistake. Simultaneously, tensions flared between Japan and China as Japan blasted China's \"baseless\" claims regarding a Taiwan crisis, calling for dialogue to prevent spiraling ties. Domestically, the White House is acknowledging \"bumps\" and making \"course corrections\" amid Republican grumbling, while a high-profile prosecution involving Comey appears to be struggling due to a series of missteps.\n\nKey risks and concerns include the potential for continued global instability, particularly regarding the Ukraine conflict and rising friction in the Asia-Pacific region. Domestically, the White House faces ongoing political pressures, and the potential failure of a significant legal case could have broader implications. A particularly urgent concern is the surge in urban violence, exemplified by multiple shootings in Chicago's Loop that left one teenager dead and several others, mostly teens, injured.\n\nIn other notable developments, college football saw live updates from the USC vs. Oregon game and a recap of Oklahoma's victory over Missouri. NBA veteran Chris Paul hinted at his potential retirement, while actress Selma Blair shared a positive update on her battle with Multiple Sclerosis. Actor Josh Hutcherson also discussed his career resurgence and prospects for returning to the \"Hunger Games\" franchise.",
-    "fetchedAt": "2025-11-24T00:13:55.767Z",
-    "totalResults": 33
+    "aiSummary": "The top news headlines reveal a landscape dominated by escalating geopolitical tensions and significant cybersecurity threats, alongside persistent domestic political and social issues. In the Middle East, an Israeli strike in Beirut killed a top Hezbollah military official, the first such attack in months, fueling fears of a wider regional conflict. South Asia also experienced violence with a suicide attack on a paramilitary complex in Pakistan’s Peshawar, killing six. On the diplomatic front, the U.S. and Ukraine have agreed to revise a draft peace plan previously criticized for appeasing Russia, indicating a firmer stance against Moscow's aggression. A critical economic and security concern is the scramble among Wall Street banks to assess the fallout from a major hack of a real-estate data firm, highlighting the persistent vulnerability of financial infrastructure to cyberattacks.\n\nDomestically in the U.S., political and social issues remain prominent. Former President Trump is pushing a new Republican plan for Obamacare subsidies, signaling ongoing debate over healthcare policy. Meanwhile, Homeland Security Secretary Kristi Noem's delivery of bonus checks to specific TSA employees at MSP Airport sparked controversy, with the union calling the move \"illegal.\" In other notable developments, Morgan Geyser, one of the assailants in the notorious \"Slender Man\" stabbing, was taken into custody after fleeing a group home, while Macquarie Asset Management offered $7.5 billion to acquire Australian logistics firm Qube. On the sports front, the Rams defeated the Bucs to claim the NFC's top seed, and a social media rumor about \"Baylen Out Loud\" star Bechnir Dupree being missing was debunked.",
+    "fetchedAt": "2025-11-25T05:15:35.008Z",
+    "totalResults": 38
 }

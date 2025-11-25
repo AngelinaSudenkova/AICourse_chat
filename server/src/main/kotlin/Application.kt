@@ -34,6 +34,12 @@ import reminder.ReminderRepository
 import reminder.ReminderScheduler
 import research.ResearchPipeline
 import tutor.TutorService
+import wiki.WikiFetcher
+import wiki.WikiIndexer
+import wiki.WikiSearcher
+import indexing.TextChunker
+import indexing.EmbeddingsClient
+import indexing.OllamaEmbeddingsClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
@@ -111,6 +117,18 @@ fun Application.module() {
         
         // Tutor Service
         single { TutorService(get(), get(), get(), get()) }
+        
+        // Wiki Indexing Services
+        single { WikiFetcher() }
+        single { TextChunker(chunkSize = 1000, chunkOverlap = 200) }
+        single<EmbeddingsClient> { 
+            OllamaEmbeddingsClient(
+                baseUrl = System.getenv("OLLAMA_BASE_URL") ?: "http://localhost:11434",
+                model = System.getenv("OLLAMA_EMBEDDING_MODEL") ?: "all-minilm"
+            )
+        }
+        single { WikiIndexer(get(), get(), get()) }
+        single { WikiSearcher(get()) }
     }
     
     install(Koin) {
@@ -200,6 +218,7 @@ fun Application.module() {
             reminderRoutes()
             researchRoutes()
             tutorRoutes()
+            wikiRoutes()
         }
         get("/health") {
             call.respondText("OK")
