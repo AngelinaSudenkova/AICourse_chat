@@ -1,132 +1,147 @@
 {
     "articles": [
         {
-            "source": "BBC News",
-            "author": "https://www.facebook.com/bbcnews",
-            "title": "Live updates: Judge dismisses cases against James Comey and Letitia James - BBC",
-            "description": "A judge rules the US attorney, who brought the case against Trump's political foes, was improperly appointed.",
-            "url": "https://www.bbc.com/news/live/cr7m7nd4d2kt",
-            "publishedAt": "2025-11-24T20:29:48Z"
+            "source": "CBS News",
+            "author": "Scott  MacFarlane",
+            "title": "Rep. Eric Swalwell sues housing official who's made multiple criminal referrals for Trump critics - CBS News",
+            "description": "Trump housing official Bill Pulte also submitted criminal referrals for investigations into Sen. Adam Schiff, New York Attorney General Letitia James and Federal Reserve Board member Lisa Cook.",
+            "url": "https://www.cbsnews.com/news/eric-swalwell-lawsuit-bill-pulte-criminal-referral/",
+            "publishedAt": "2025-11-25T21:55:41Z"
         },
         {
-            "source": "Tom's Guide",
-            "author": "Alyse Stanley",
-            "title": "31 best Apple Black Friday deals live now — AirPods, MacBooks, iPads, iPhones and more - Tom's Guide",
-            "description": "The best Apple Black Friday deals happening right now",
-            "url": "https://www.tomsguide.com/live/news/black-friday-apple-deals-2025",
-            "publishedAt": "2025-11-24T20:29:45Z"
+            "source": "The Wall Street Journal",
+            "author": "WSJ Staff, Heard Editors, Richard Rubin, Sam Goldfarb, Dan Gallagher, Gunjan Banerji, Stephen Wilmot, Jesse Newman, Ed Ballard, Matt Grossman, Harriet Torry, Spencer Jakab, Eliot Brown",
+            "title": "Stock Market Today: Nasdaq Sinks; Nvidia Drops as Alphabet Rallies on AI Chip Rivalry — Live Updates - The Wall Street Journal",
+            "description": "Follow along for live updates on the Dow, S&P 500, Nasdaq and other markets.",
+            "url": "https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-11-25-2025",
+            "publishedAt": "2025-11-25T21:45:00Z"
+        },
+        {
+            "source": "Bloomberg",
+            "author": "Dina Bass",
+            "title": "HP Announces Job Cuts as Profit Outlook Falls Short of Estimates - Bloomberg.com",
+            "description": "HP Inc. gave a profit outlook for current year that fell short of estimates and the company said it will cut 4,000 to 6,000 employees through fiscal 2028 by using more AI tools.",
+            "url": "https://www.bloomberg.com/news/articles/2025-11-25/hp-announces-job-cuts-as-profit-outlook-falls-short-of-estimates",
+            "publishedAt": "2025-11-25T21:17:20Z"
+        },
+        {
+            "source": "NBC News",
+            "author": "Ryan J. Reilly, Frank Thorp V, Kyle Stewart, Brennan Leach",
+            "title": "FBI seeks interviews with six Democrats Trump accused of 'seditious behavior' - NBC News",
+            "description": "The lawmakers, who had released a video urging members of the military and intelligence community not to follow illegal orders, accused Trump of trying to intimidate them.",
+            "url": "https://www.nbcnews.com/politics/justice-department/fbi-seeks-interviews-six-democrats-trump-accused-seditious-behavior-rcna245880",
+            "publishedAt": "2025-11-25T20:58:13Z"
         },
         {
             "source": "The Washington Post",
-            "author": "Phil Davison",
-            "title": "Jimmy Cliff, who helped introduce reggae to the world, dies at 81 - The Washington Post",
-            "description": "The Jamaican reggae star had a breakout performance in the 1972 film “The Harder They Come,” playing a singer turned outlaw.",
-            "url": "https://www.washingtonpost.com/obituaries/2025/11/24/jimmy-cliff-reggae-dead/",
-            "publishedAt": "2025-11-24T20:23:39Z"
+            "author": "Leo Sands",
+            "title": "Four more detained in Louvre heist as fate of jewels remains unknown - The Washington Post",
+            "description": "Four others have already been charged over the Louvre jewelry theft. There is no sign that the jewels have been recovered as questions swirl about security lapses.",
+            "url": "https://www.washingtonpost.com/world/2025/11/25/louvre-heist-detentions/",
+            "publishedAt": "2025-11-25T20:43:26Z"
         },
         {
-            "source": "clevelandbrowns.com",
-            "title": "Shedeur Sanders to start Week 13 against the 49ers - Cleveland Browns",
-            "description": "Sanders made first career start in Week 12 win over the Raiders",
-            "url": "https://www.clevelandbrowns.com/news/shedeur-sanders-to-start-week-13-against-the-49ers",
-            "publishedAt": "2025-11-24T19:24:25Z"
-        },
-        {
-            "source": "TechCrunch",
-            "author": "Russell Brandom",
-            "title": "Anthropic releases Opus 4.5 with new Chrome and Excel integrations - TechCrunch",
-            "description": "Anthropic has launched Opus 4.5, the latest version of its flagship model, with new integrations into Chrome and Excel.",
-            "url": "https://techcrunch.com/2025/11/24/anthropic-releases-opus-4-5-with-new-chrome-and-excel-integrations/",
-            "publishedAt": "2025-11-24T19:08:48Z"
+            "source": "cleveland.com",
+            "author": "Terry Pluto, cleveland.com",
+            "title": "Shedeur Sanders: He’s No. 12. He’s No. 42. Let’s hope he can be No. 1 for a while – Terry Pluto - Cleveland.com",
+            "description": "Shedeur Sanders is the 42nd QB to start for the Browns since the franchise returned in 1999.",
+            "url": "https://www.cleveland.com/browns/2025/11/shedeur-sanders-hes-no-12-hes-no-42-lets-hope-be-can-be-no-1-for-a-while-terry-pluto.html",
+            "publishedAt": "2025-11-25T20:18:00Z"
         },
         {
             "source": "Ars Technica",
-            "author": "Eric Berger",
-            "title": "NASA confirms that Starliner’s next mission will be cargo only - Ars Technica",
-            "description": "As the space station nears its end, NASA also cuts some future Starliner flights.",
-            "url": "https://arstechnica.com/space/2025/11/nasa-confirms-that-starliners-next-mission-will-be-cargo-only/",
-            "publishedAt": "2025-11-24T18:55:29Z"
+            "author": "Andrew Cunningham",
+            "title": "Spiking memory prices mean that it is once again a horrible time to build a PC - Ars Technica",
+            "description": "Some RAM kits are over three times as expensive as they were three months ago.",
+            "url": "https://arstechnica.com/gadgets/2025/11/spiking-memory-prices-mean-that-it-is-once-again-a-horrible-time-to-build-a-pc/",
+            "publishedAt": "2025-11-25T20:15:37Z"
+        },
+        {
+            "source": "The Washington Post",
+            "author": "Meagan Flynn, Jonathan O'Connell, Jenny Gathright",
+            "title": "D.C. Mayor Bowser will not run for fourth term - The Washington Post",
+            "description": "Bowser, who has led D.C. over a turbulent decade, will not seek reelection in 2026, a decision bound to open up a highly competitive mayoral race.",
+            "url": "https://www.washingtonpost.com/dc-md-va/2025/11/25/bowser-dc-mayor-reelection/",
+            "publishedAt": "2025-11-25T19:34:09Z"
+        },
+        {
+            "source": "Investor's Business Daily",
+            "title": "Why Google's Challenge To Nvidia Is 'Intriguing' For Amazon's AI Chip Push - Investor's Business Daily",
+            "description": "Amazon stock is trying to bounce-back from a recent sell-off as its annual cloud conference approaches. Its AI chips will be in focus.",
+            "url": "https://www.investors.com/news/technology/amazon-stock-google-nvidia-ai-chips/",
+            "publishedAt": "2025-11-25T19:14:00Z"
+        },
+        {
+            "source": "CNBC",
+            "author": "Luke Fountain",
+            "title": "Trump pardons Thanksgiving turkeys, blasts Biden and says Ukraine peace deal is ‘very close’ - CNBC",
+            "description": "Thanksgiving turkey prices have climbed this year, the first of President Donald Trump's second term in the White House.",
+            "url": "https://www.cnbc.com/2025/11/25/trump-turkey-pardon-biden-ukraine-2025.html",
+            "publishedAt": "2025-11-25T18:43:41Z"
         },
         {
             "source": "NPR",
             "author": "Rachel Treisman",
-            "title": "'Just Google' me: Slender Man stabber is recaptured after fleeing her group home - NPR",
-            "description": "Geyser and a friend lured a classmate to the woods and stabbed her 19 times in 2014. She moved from a psychiatric facility to a group home in Wisconsin earlier this year.",
-            "url": "https://www.npr.org/2025/11/24/nx-s1-5619148/morgan-geyser-escape-slenderman",
-            "publishedAt": "2025-11-24T18:33:41Z"
+            "title": "The case against Comey failed because of Trump's prosecutor. Who is she? - NPR",
+            "description": "A federal judge dismissed the Justice Department's cases against James Comey and Letitia James, saying the prosecutor who led them was unlawfully appointed. Here's what to know about her.",
+            "url": "https://www.npr.org/2025/11/25/nx-s1-5620636/lindsey-halligan-us-attorney-unlawful-comey-james",
+            "publishedAt": "2025-11-25T18:43:33Z"
         },
         {
-            "source": "Politico",
-            "author": "Faith Wardwell",
-            "title": "Trump, Xi spoke by phone Monday - Politico",
-            "description": "The emerging talks come amid mounting tensions between China and Japan over the future of self-governed Taiwan, a former Japanese territory that China sees as its own.",
-            "url": "https://www.politico.com/news/2025/11/24/trump-xi-phone-taiwan-00666893",
-            "publishedAt": "2025-11-24T18:02:57Z"
+            "source": "Doi.gov",
+            "title": "Department of the Interior Announces Modernized, More Affordable National Park Access - U.S. Department of the Interior (.gov)",
+            "description": "The Department of the Interior today announced the most significant modernization of national park access in decades, delivering new digital America the Beautiful passes, updated annual pass artwork, expanded motorcycle access and a new resident-focused fee s…",
+            "url": "https://www.doi.gov/pressreleases/department-interior-announces-modernized-more-affordable-national-park-access",
+            "publishedAt": "2025-11-25T18:04:49Z"
         },
         {
-            "source": "The Washington Post",
-            "author": "Sabrina Malhi",
-            "title": "The complicated relationship between GLP-1s and pregnancy - The Washington Post",
-            "description": "A new study sheds light on the risks and benefits of taking GLP-1 weight-loss drugs before having a baby.",
-            "url": "https://www.washingtonpost.com/health/2025/11/24/glp-1s-pregnancy/",
-            "publishedAt": "2025-11-24T17:31:43Z"
-        },
-        {
-            "source": "CNN",
-            "author": "Daniel Dale",
-            "title": "Fact check: 78 times Zelensky has expressed gratitude to the US - CNN",
-            "description": "Ukrainian President Volodymyr Zelensky has expressed gratitude to the United States on dozens of occasions – 78 examples are listed below – since Russia launched its full-scale invasion of his country in early 2022.",
-            "url": "https://www.cnn.com/2025/11/24/politics/fact-check-zelensky-trump-ukraine",
-            "publishedAt": "2025-11-24T17:21:14Z"
-        },
-        {
-            "source": "BBC News",
-            "title": "Obesity drug semaglutide fails to slow Alzheimer's - BBC",
-            "description": "There were initial hopes that the drug in weight loss jab Wegovy could slow progression of dementia.",
-            "url": "https://www.bbc.com/news/articles/c0edn8v8yl3o",
-            "publishedAt": "2025-11-24T17:13:38Z"
-        },
-        {
-            "source": "Futurism",
-            "author": "Victor Tangermann",
-            "title": "Professor Says Mysterious Interstellar Object May Be Releasing Sentinels Around Jupiter - Yahoo",
-            "description": "Mysterious interstellar object 3I/ATLAS could be passing by Jupiter to \"seed\" the planet with \"technological devices.\"",
-            "url": "http://futurism.com/space/professor-interstellar-object-releasing-satellites-jupiter",
-            "publishedAt": "2025-11-24T16:25:27Z"
-        },
-        {
-            "source": "BBC News",
-            "title": "Niger state kidnap: Nigerian father felt helpless as he saw children taken from Catholic school in Papiri - BBC",
-            "description": "The authorities are trying to rescue more than 250 schoolchildren who were abducted by raiders on motorbikes.",
-            "url": "https://www.bbc.com/news/articles/cq5qen5gnzqo",
-            "publishedAt": "2025-11-24T16:11:12Z"
-        },
-        {
-            "source": "Variety",
-            "author": "Rebecca Rubin",
-            "title": "‘Wicked’: How Universal’s Risky Gamble to Split the Musical Into Two Movies Paid Off at the Box Office - Variety",
-            "description": "Universal's risky gamble to turn 'Wicked' into two movies ultimately paid off at the box office.",
-            "url": "https://variety.com/2025/film/box-office/wicked-universal-gamble-two-movies-box-office-results-1236590136/",
-            "publishedAt": "2025-11-24T15:30:00Z"
-        },
-        {
-            "source": "Yahoo Entertainment",
-            "author": "Associated Press Finance",
-            "title": "Kohl's promotes interim CEO and 30-year retail veteran Michael J. Bender to be its permanent chief - Yahoo Finance",
-            "description": "Kohl's has named its fourth CEO in as many years, attempting to staunch an extended sales slide.  The company named Michael Bender as its permanent CEO...",
-            "url": "https://finance.yahoo.com/news/kohls-promotes-interim-ceo-30-152815096.html",
-            "publishedAt": "2025-11-24T15:28:15Z"
+            "source": "Ars Technica",
+            "author": "Ashley Belanger",
+            "title": "RealPage agrees to change algorithm so landlords can’t collude on price hikes - Ars Technica",
+            "description": "RealPage agrees to settle suit over DOJ claims software raised rents across the US.",
+            "url": "https://arstechnica.com/tech-policy/2025/11/realpage-agrees-to-change-algorithm-so-landlords-cant-collude-on-price-hikes/",
+            "publishedAt": "2025-11-25T17:51:42Z"
         },
         {
             "source": "Hollywood Reporter",
-            "author": "Carly Thomas",
-            "title": "‘Stranger Things’: 10 Things The Duffer Brothers Want You to Know Before Watching the Final Season - The Hollywood Reporter",
-            "description": "Volume 1 of Netflix's mega-hit series releases Nov. 26.",
-            "url": "http://www.hollywoodreporter.com/lists/stranger-things-season-5-duffer-brothers-recommendations/",
-            "publishedAt": "2025-11-24T15:17:06Z"
+            "author": "McKinley Franklin",
+            "title": "Inside the ‘Dancing With the Stars’ Mega Comeback and Secret to Season 34’s Viral Success - The Hollywood Reporter",
+            "description": "In conversation with The Hollywood Reporter, showrunner Conrad Green and casting director Deena Katz dish on how much social media and TikTok have contributed to the season's virality, why influencers are their modern day “celebrity” and if Tom Bergeron could…",
+            "url": "http://www.hollywoodreporter.com/tv/tv-features/dwts-finale-season-34-viral-success-secrets-interview-1236433805/",
+            "publishedAt": "2025-11-25T17:36:27Z"
+        },
+        {
+            "source": "CBS News",
+            "author": "Duarte  Dias",
+            "title": "Australian Senator Pauline Hanson banned from parliament for 7 days for wearing burqa to demand they be banned - CBS News",
+            "description": "Senator Pauline Hanson banned from parliament for 7 days for wearing burqa in the chamber to demand they be banned nationally.",
+            "url": "https://www.cbsnews.com/news/australia-senator-pauline-hanson-banned-from-parliament-burqa-protest/",
+            "publishedAt": "2025-11-25T17:12:00Z"
+        },
+        {
+            "source": "Politico",
+            "author": "Diana Nerozzi",
+            "title": "Trump wants peace in Ukraine, no matter what a deal looks like - Politico",
+            "description": "Trump’s overriding desire to stop the bloodshed helps explain why the details of the plan remain fluid.",
+            "url": "https://www.politico.com/news/2025/11/25/trump-wants-peace-in-ukraine-no-matter-what-a-deal-looks-like-00668136",
+            "publishedAt": "2025-11-25T17:10:00Z"
+        },
+        {
+            "source": "NFL News",
+            "title": "NFL Power Rankings, Week 13: Patriots crack top five; Eagles, Bills, Steelers and Bucs all tumble - NFL.com",
+            "description": "More than two-thirds of teams are on the move in Eric Edholm's fresh batch of NFL Power Rankings. How high do the Patriots and Bears fly? How low do the Eagles and Bills go? Check out the fully updated pecking order, 1-32.",
+            "url": "https://www.nfl.com/news/nfl-power-rankings-week-13-2025-nfl-season",
+            "publishedAt": "2025-11-25T16:42:00Z"
+        },
+        {
+            "source": "NPR",
+            "title": "Syrians displaced by war are returning to find homes occupied by foreign fighters - NPR",
+            "description": "Fighters have settled across northern Syria, surprising displaced Syrians who've tried to return to their homes. Nearly a year after the war's end, sorting out property ownership remains a pressing issue.",
+            "url": "https://www.npr.org/2025/11/25/g-s1-98741/syria-displaced-return-foreign-fighters-uyghurs",
+            "publishedAt": "2025-11-25T16:35:24Z"
         }
     ],
-    "aiSummary": "Top news headlines reveal a dynamic landscape across politics, technology, and social issues, alongside emerging risks. In a significant legal development, a judge dismissed cases against high-profile figures like James Comey and Letitia James, citing an improperly appointed US attorney. Geopolitically, former President Trump and Chinese President Xi Jinping held phone discussions amidst mounting tensions between China and Japan over Taiwan, a critical situation underscored by Ukraine's President Zelensky's documented gratitude for consistent US support.\n\nTechnological advancements continue, with Anthropic launching Opus 4.5, featuring new integrations for Chrome and Excel. Concurrently, NASA announced a shift in its space strategy, confirming Starliner's next mission will be cargo-only and reducing future flights. Key concerns include the geopolitical instability surrounding Taiwan, the integrity of legal appointments, and public safety issues highlighted by the recapture of the 'Slender Man stabber' after fleeing a group home. Public health discussions also gained traction with new research exploring the complex relationship between popular GLP-1 weight-loss drugs and pregnancy. Additionally, the world mourned the passing of reggae legend Jimmy Cliff at 81, and consumer news saw a focus on Apple Black Friday deals.",
-    "fetchedAt": "2025-11-25T19:18:24.987Z",
+    "aiSummary": "The current news cycle is dominated by heightened political and legal tensions, notably set against the backdrop of President Donald Trump's second term. Legal battles are unfolding, with Rep. Eric Swalwell suing a former Trump housing official responsible for making criminal referrals against several Trump critics, including prominent figures like Sen. Adam Schiff and New York AG Letitia James. Simultaneously, the FBI is seeking interviews with six Democratic lawmakers whom Trump accused of \"seditious behavior,\" raising concerns about political intimidation. These developments highlight a deeply polarized political landscape, where legal mechanisms are increasingly intertwined with partisan conflict.\n\nIn the technology and business sectors, Artificial Intelligence is a major driving force, ushering in both opportunities and disruptions. The stock market experienced volatility, with the Nasdaq sinking and Nvidia's shares dropping amidst an intensifying AI chip rivalry, as Alphabet rallied and Amazon advanced its own AI chip initiatives. This technological shift is also impacting the workforce, with HP announcing significant job cuts – between 4,000 and 6,000 employees – partly due to a missed profit outlook and the increased adoption of AI tools for efficiency. For consumers, the rising cost of memory components has made building PCs considerably more expensive.\n\nOverall, the prevailing themes point to a dynamic period characterized by ongoing political contention, significant technological transformation driven by AI, and economic shifts affecting both corporations and consumers. Key concerns include the potential for continued political polarization, the economic impact of AI-driven job displacement, and market volatility. In other notable news, D.C. Mayor Muriel Bowser announced she would not seek a fourth term, while international investigators continue to make arrests in the high-profile Louvre jewelry heist, though the stolen jewels remain unrecovered.",
+    "fetchedAt": "2025-11-26T21:51:41.403Z",
     "totalResults": 36
 }

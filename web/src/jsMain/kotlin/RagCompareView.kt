@@ -34,7 +34,7 @@ fun RagCompareView(viewModel: RagCompareViewModel) {
                 color(Color("#666"))
             }
         }) {
-            Text("Compare answers with and without RAG (Retrieval-Augmented Generation). Enter a question to see how wiki context improves the answer.")
+            Text("Compare answers with and without RAG (Retrieval-Augmented Generation). Enter a question to see how wiki context improves the answer. Day 17: Now with relevance filtering to remove low-scoring chunks.")
         }
         
         // Input form
@@ -105,6 +105,91 @@ fun RagCompareView(viewModel: RagCompareViewModel) {
                 })
             }
             
+            // Filtering controls (Day 17)
+            Div(attrs = {
+                style {
+                    marginBottom(16.px)
+                    padding(16.px)
+                    backgroundColor(Color("#fff"))
+                    borderRadius(4.px)
+                    border(1.px, LineStyle.Solid, Color("#ddd"))
+                }
+            }) {
+                Div(attrs = {
+                    style {
+                        display(DisplayStyle.Flex)
+                        alignItems(AlignItems.Center)
+                        marginBottom(12.px)
+                    }
+                }) {
+                    Input(type = InputType.Checkbox, attrs = {
+                        checked(viewModel.enableFilter)
+                        onChange { ev ->
+                            viewModel.enableFilter = (ev.target as? org.w3c.dom.HTMLInputElement)?.checked ?: false
+                        }
+                        style {
+                            marginRight(8.px)
+                            width(20.px)
+                            height(20.px)
+                            cursor("pointer")
+                        }
+                    })
+                    Label(attrs = {
+                        style {
+                            fontWeight("bold")
+                            cursor("pointer")
+                        }
+                    }) {
+                        Text("Enable relevance filter")
+                    }
+                }
+                
+                if (viewModel.enableFilter) {
+                    Div(attrs = {
+                        style {
+                            marginTop(12.px)
+                        }
+                    }) {
+                        Label(attrs = {
+                            style {
+                                display(DisplayStyle.Block)
+                                marginBottom(8.px)
+                                fontWeight("bold")
+                            }
+                        }) {
+                            Text("Min Similarity Threshold: ${(kotlin.math.round(viewModel.minSimilarity * 1000) / 1000.0).toString()}")
+                        }
+                        Input(type = InputType.Range, attrs = {
+                            value(viewModel.minSimilarity.toString())
+                            attr("min", "0.0")
+                            attr("max", "1.0")
+                            attr("step", "0.05")
+                            onInput { ev ->
+                                val value = (ev.target as? org.w3c.dom.HTMLInputElement)?.value?.toDoubleOrNull() ?: 0.3
+                                viewModel.minSimilarity = value.coerceIn(0.0, 1.0)
+                            }
+                            style {
+                                width(100.percent)
+                                height(8.px)
+                                cursor("pointer")
+                            }
+                        })
+                        Div(attrs = {
+                            style {
+                                display(DisplayStyle.Flex)
+                                justifyContent(JustifyContent.SpaceBetween)
+                                fontSize(12.px)
+                                color(Color("#666"))
+                                marginTop(4.px)
+                            }
+                        }) {
+                            Text("0.0")
+                            Text("1.0")
+                        }
+                    }
+                }
+            }
+            
             Button(attrs = {
                 onClick { viewModel.submit() }
                 if (viewModel.loading) disabled()
@@ -119,7 +204,7 @@ fun RagCompareView(viewModel: RagCompareViewModel) {
                     fontWeight("bold")
                 }
             }) {
-                Text(if (viewModel.loading) "Comparing..." else "Compare RAG vs Baseline")
+                Text(if (viewModel.loading) "Comparing..." else "Compare (Baseline / Raw RAG / Filtered RAG)")
             }
         }
         
@@ -138,8 +223,8 @@ fun RagCompareView(viewModel: RagCompareViewModel) {
             }
         }
         
-        // Results display
-        viewModel.result?.let { result ->
+        // Results display - Day 17: filtering comparison
+        viewModel.filteringResult?.let { result ->
             Div(attrs = {
                 style {
                     display(DisplayStyle.Flex)
@@ -176,12 +261,12 @@ fun RagCompareView(viewModel: RagCompareViewModel) {
                     }
                 }
                 
-                // Two-column comparison
+                // Three-column comparison
                 Div(attrs = {
                     style {
                         display(DisplayStyle.Flex)
                         flexDirection(FlexDirection.Row)
-                        gap(24.px)
+                        gap(16.px)
                         alignItems(AlignItems.FlexStart)
                     }
                 }) {
@@ -200,7 +285,7 @@ fun RagCompareView(viewModel: RagCompareViewModel) {
                             style {
                                 marginTop(0.px)
                                 marginBottom(16.px)
-                                fontSize(20.px)
+                                fontSize(18.px)
                                 color(Color("#666"))
                             }
                         }) {
@@ -213,13 +298,49 @@ fun RagCompareView(viewModel: RagCompareViewModel) {
                                 borderRadius(4.px)
                                 property("line-height", "1.6")
                                 whiteSpace("pre-wrap")
+                                fontSize(14.px)
                             }
                         }) {
                             Text(result.baselineAnswer)
                         }
                     }
                     
-                    // RAG answer
+                    // RAG raw answer
+                    Div(attrs = {
+                        style {
+                            flex(1)
+                            padding(20.px)
+                            backgroundColor(Color.white)
+                            borderRadius(8.px)
+                            border(2.px, LineStyle.Solid, Color("#ff9800"))
+                            property("box-shadow", "0px 2px 8px rgba(255,152,0,0.2)")
+                        }
+                    }) {
+                        H3(attrs = {
+                            style {
+                                marginTop(0.px)
+                                marginBottom(16.px)
+                                fontSize(18.px)
+                                color(Color("#ff9800"))
+                            }
+                        }) {
+                            Text("RAG Raw (topK=${result.usedChunksRaw.size})")
+                        }
+                        Div(attrs = {
+                            style {
+                                padding(16.px)
+                                backgroundColor(Color("#fff3e0"))
+                                borderRadius(4.px)
+                                property("line-height", "1.6")
+                                whiteSpace("pre-wrap")
+                                fontSize(14.px)
+                            }
+                        }) {
+                            Text(result.ragRawAnswer)
+                        }
+                    }
+                    
+                    // RAG filtered answer
                     Div(attrs = {
                         style {
                             flex(1)
@@ -234,11 +355,26 @@ fun RagCompareView(viewModel: RagCompareViewModel) {
                             style {
                                 marginTop(0.px)
                                 marginBottom(16.px)
-                                fontSize(20.px)
+                                fontSize(18.px)
                                 color(Color("#4caf50"))
                             }
                         }) {
-                            Text("With RAG (Wiki context)")
+                            Text("RAG Filtered (${result.usedChunksFiltered.size} chunks)")
+                        }
+                        if (result.filterEnabled) {
+                            Span(attrs = {
+                                style {
+                                    fontSize(12.px)
+                                    color(Color("#666"))
+                                    backgroundColor(Color("#e8f5e9"))
+                                    padding(4.px, 8.px)
+                                    borderRadius(4.px)
+                                    marginBottom(8.px)
+                                    display(DisplayStyle.InlineBlock)
+                                }
+                            }) {
+                                Text("Threshold: ${(kotlin.math.round(result.minSimilarity * 1000) / 1000.0).toString()}")
+                            }
                         }
                         Div(attrs = {
                             style {
@@ -247,15 +383,17 @@ fun RagCompareView(viewModel: RagCompareViewModel) {
                                 borderRadius(4.px)
                                 property("line-height", "1.6")
                                 whiteSpace("pre-wrap")
+                                fontSize(14.px)
+                                marginTop(8.px)
                             }
                         }) {
-                            Text(result.ragAnswer)
+                            Text(result.ragFilteredAnswer)
                         }
                     }
                 }
                 
-                // Used chunks
-                if (result.usedChunks.isNotEmpty()) {
+                // Used chunks - Raw
+                if (result.usedChunksRaw.isNotEmpty()) {
                     Div(attrs = {
                         style {
                             marginTop(24.px)
@@ -265,9 +403,10 @@ fun RagCompareView(viewModel: RagCompareViewModel) {
                             style {
                                 marginBottom(16.px)
                                 fontSize(20.px)
+                                color(Color("#ff9800"))
                             }
                         }) {
-                            Text("Used Context Chunks (${result.usedChunks.size})")
+                            Text("Context Chunks (Raw topK=${result.usedChunksRaw.size})")
                         }
                         
                         Div(attrs = {
@@ -277,14 +416,16 @@ fun RagCompareView(viewModel: RagCompareViewModel) {
                                 gap(12.px)
                             }
                         }) {
-                            result.usedChunks.forEachIndexed { index, chunk ->
+                            result.usedChunksRaw.forEachIndexed { index, chunk ->
+                                val isFiltered = !result.usedChunksFiltered.any { it.chunkId == chunk.chunkId }
                                 Div(attrs = {
                                     style {
                                         padding(16.px)
-                                        backgroundColor(Color.white)
+                                        backgroundColor(if (isFiltered && result.filterEnabled) Color("#ffebee") else Color.white)
                                         borderRadius(8.px)
-                                        border(1.px, LineStyle.Solid, Color("#ddd"))
+                                        border(1.px, LineStyle.Solid, if (isFiltered && result.filterEnabled) Color("#f44336") else Color("#ddd"))
                                         property("box-shadow", "0px 1px 4px rgba(0,0,0,0.05)")
+                                        opacity(if (isFiltered && result.filterEnabled) 0.6 else 1.0)
                                     }
                                 }) {
                                     Div(attrs = {
@@ -309,7 +450,101 @@ fun RagCompareView(viewModel: RagCompareViewModel) {
                                             style {
                                                 fontSize(12.px)
                                                 color(Color("#666"))
-                                                backgroundColor(Color("#f0f0f0"))
+                                                backgroundColor(if (chunk.score >= result.minSimilarity) Color("#c8e6c9") else Color("#ffcdd2"))
+                                                padding(4.px, 8.px)
+                                                borderRadius(4.px)
+                                            }
+                                        }) {
+                                            Text("Score: ${(kotlin.math.round(chunk.score * 1000) / 1000.0).toString()}")
+                                        }
+                                    }
+                                    if (isFiltered && result.filterEnabled) {
+                                        Span(attrs = {
+                                            style {
+                                                fontSize(12.px)
+                                                color(Color("#d32f2f"))
+                                                fontWeight("bold")
+                                                marginBottom(4.px)
+                                                display(DisplayStyle.Block)
+                                            }
+                                        }) {
+                                            Text("⚠ Filtered out (score < ${(kotlin.math.round(result.minSimilarity * 1000) / 1000.0).toString()})")
+                                        }
+                                    }
+                                    Div(attrs = {
+                                        style {
+                                            fontSize(14.px)
+                                            color(Color("#555"))
+                                            property("line-height", "1.5")
+                                            fontFamily("monospace")
+                                            whiteSpace("pre-wrap")
+                                        }
+                                    }) {
+                                        Text(chunk.snippet)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // Used chunks - Filtered
+                if (result.usedChunksFiltered.isNotEmpty()) {
+                    Div(attrs = {
+                        style {
+                            marginTop(24.px)
+                        }
+                    }) {
+                        H3(attrs = {
+                            style {
+                                marginBottom(16.px)
+                                fontSize(20.px)
+                                color(Color("#4caf50"))
+                            }
+                        }) {
+                            Text("Context Chunks (After Filter=${result.usedChunksFiltered.size})")
+                        }
+                        
+                        Div(attrs = {
+                            style {
+                                display(DisplayStyle.Flex)
+                                flexDirection(FlexDirection.Column)
+                                gap(12.px)
+                            }
+                        }) {
+                            result.usedChunksFiltered.forEachIndexed { index, chunk ->
+                                Div(attrs = {
+                                    style {
+                                        padding(16.px)
+                                        backgroundColor(Color.white)
+                                        borderRadius(8.px)
+                                        border(1.px, LineStyle.Solid, Color("#4caf50"))
+                                        property("box-shadow", "0px 1px 4px rgba(76,175,80,0.2)")
+                                    }
+                                }) {
+                                    Div(attrs = {
+                                        style {
+                                            display(DisplayStyle.Flex)
+                                            flexDirection(FlexDirection.Row)
+                                            justifyContent(JustifyContent.SpaceBetween)
+                                            alignItems(AlignItems.Center)
+                                            marginBottom(8.px)
+                                        }
+                                    }) {
+                                        H4(attrs = {
+                                            style {
+                                                margin(0.px)
+                                                fontSize(16.px)
+                                                fontWeight("bold")
+                                            }
+                                        }) {
+                                            Text("${index + 1}. ${chunk.title}")
+                                        }
+                                        Span(attrs = {
+                                            style {
+                                                fontSize(12.px)
+                                                color(Color("#666"))
+                                                backgroundColor(Color("#c8e6c9"))
                                                 padding(4.px, 8.px)
                                                 borderRadius(4.px)
                                             }
@@ -332,7 +567,7 @@ fun RagCompareView(viewModel: RagCompareViewModel) {
                             }
                         }
                     }
-                } else {
+                } else if (result.usedChunksRaw.isEmpty()) {
                     Div(attrs = {
                         style {
                             padding(16.px)

@@ -48,6 +48,7 @@ import models.WikiSearchRequest
 import models.WikiSearchResponse
 import models.RagQuestionRequest
 import models.RagAnswerComparison
+import models.RagFilteringComparison
 import structured.ReadingSummary
 import structured.JournalResponse
 import structured.ReasonRequest
@@ -378,6 +379,45 @@ class HttpTransport(
     suspend fun compareRagAnswers(request: RagQuestionRequest): RagAnswerComparison {
         return try {
             val response = client.post("/api/rag/compare") {
+                setBody(request)
+            }
+            
+            if (response.status.value >= 400) {
+                val errorBody = response.bodyAsText()
+                val errorMessage = parseErrorMessage(errorBody)
+                throw Exception(errorMessage)
+            }
+            
+            response.body()
+        } catch (e: ClientRequestException) {
+            val errorMessage = try {
+                val errorBody = e.response.bodyAsText()
+                parseErrorMessage(errorBody)
+            } catch (ex: Exception) {
+                e.message ?: "Request failed with status ${e.response.status.value}"
+            }
+            throw Exception(errorMessage)
+        } catch (e: ServerResponseException) {
+            val errorMessage = try {
+                val errorBody = e.response.bodyAsText()
+                parseErrorMessage(errorBody)
+            } catch (ex: Exception) {
+                e.message ?: "Server error: ${e.response.status.value}"
+            }
+            throw Exception(errorMessage)
+        } catch (e: kotlinx.serialization.SerializationException) {
+            throw Exception("Invalid response format: ${e.message}")
+        } catch (e: Exception) {
+            if (e.message?.contains("required for type") == true || e.message?.contains("missing at path") == true) {
+                throw Exception("Server returned an error response. Please check backend logs for details.")
+            }
+            throw e
+        }
+    }
+    
+    suspend fun compareRagWithFiltering(request: RagQuestionRequest): RagFilteringComparison {
+        return try {
+            val response = client.post("/api/rag/filter-compare") {
                 setBody(request)
             }
             
