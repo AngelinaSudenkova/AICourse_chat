@@ -48,3 +48,42 @@ data class RagFilteringComparison(
     val minSimilarity: Double
 )
 
+// Day 18: Citations & Sources
+@Serializable
+data class RagCitedAnswerRequest(
+    val question: String,
+    val topK: Int = 5,
+    val enableFilter: Boolean = true,
+    val minSimilarity: Double = 0.3,
+    // Fallback parameters
+    val allowModelFallback: Boolean = true,
+    /**
+     * Minimum best similarity score to use RAG instead of fallback.
+     * If the best chunk score is below this threshold and allowModelFallback is true,
+     * the system will use the base model without RAG.
+     */
+    val minBestScoreForRag: Double = 0.25,
+    /**
+     * If true, when scores are low, automatically fetch relevant Wikipedia articles
+     * and add them to the index before falling back to model-only answer.
+     */
+    val autoFetchWiki: Boolean = false
+)
+
+@Serializable
+data class LabeledSource(
+    val label: String,          // e.g. "1", "2"
+    val chunkId: String,
+    val articleId: String,
+    val title: String,
+    val score: Double,
+    val snippet: String
+)
+
+@Serializable
+data class RagCitedAnswerResponse(
+    val question: String,
+    val answerWithCitations: String,
+    val labeledSources: List<LabeledSource>
+)
+

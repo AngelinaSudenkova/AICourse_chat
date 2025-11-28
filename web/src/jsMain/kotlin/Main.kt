@@ -36,6 +36,8 @@ import WikiSearchViewModel
 import WikiSearchView
 import RagCompareViewModel
 import RagCompareView
+import RagCitedViewModel
+import RagCitedView
 
 fun main() {
     renderComposable(rootElementId = "root") {
@@ -65,7 +67,7 @@ fun App() {
         mutableStateOf(
             try {
                 val stored = js("window.localStorage.getItem('mode')") as? String
-                val allowed = setOf("chat", "journal", "reasoning", "temperature", "modelComparison", "mcp", "notionFinance", "news", "reminders", "researchLog", "tutor", "wikiSearch", "ragCompare")
+                val allowed = setOf("chat", "journal", "reasoning", "temperature", "modelComparison", "mcp", "notionFinance", "news", "reminders", "researchLog", "tutor", "wikiSearch", "ragCompare", "ragCited")
                 if (stored != null && stored.isNotEmpty() && stored in allowed) stored else "chat"
             } catch (e: Exception) {
                 "chat"
@@ -85,6 +87,7 @@ fun App() {
     val tutorViewModel = remember { TutorViewModel(scope, httpTransport) }
     val wikiSearchViewModel = remember { WikiSearchViewModel(scope, httpTransport) }
     val ragCompareViewModel = remember { RagCompareViewModel(scope, httpTransport) }
+    val ragCitedViewModel = remember { RagCitedViewModel(scope, httpTransport) }
     
     // News notification panel state
     var isNewsNotificationOpen by remember { mutableStateOf(false) }
@@ -190,6 +193,9 @@ fun App() {
                 onRagCompareToggle = {
                     mode = "ragCompare"
                 },
+                onRagCitedToggle = {
+                    mode = "ragCited"
+                },
                 onExport = { viewModel.exportMessages() },
                 onNewsNotificationClick = {
                     isNewsNotificationOpen = true
@@ -227,6 +233,8 @@ fun App() {
                 WikiSearchView(wikiSearchViewModel)
             } else if (mode == "ragCompare") {
                 RagCompareView(ragCompareViewModel)
+            } else if (mode == "ragCited") {
+                RagCitedView(ragCitedViewModel)
             } else {
                 if (viewModel.messages.isEmpty() && !viewModel.isLoading && viewModel.currentConversationId == null) {
                     Div(attrs = {
@@ -530,6 +538,7 @@ fun TopBar(
     onTutorToggle: () -> Unit,
     onWikiSearchToggle: () -> Unit,
     onRagCompareToggle: () -> Unit,
+    onRagCitedToggle: () -> Unit,
     onExport: () -> Unit,
     onNewsNotificationClick: () -> Unit,
     hasNewNews: Boolean = false
@@ -554,6 +563,7 @@ fun TopBar(
                     "tutor" -> "🎓 Learning Tutor"
                     "wikiSearch" -> "📚 Wiki Search"
                     "ragCompare" -> "🧩 RAG Compare"
+                    "ragCited" -> "📎 RAG with Sources"
                     else -> "KMP AI Chat"
                 }
             )
@@ -665,6 +675,15 @@ fun TopBar(
                     onClick { onRagCompareToggle() }
                 }) {
                     Text("🧩 RAG Compare")
+                }
+            }
+            
+            if (mode != "ragCited") {
+                Button(attrs = {
+                    classes(AppStylesheet.button, AppStylesheet.modeButton)
+                    onClick { onRagCitedToggle() }
+                }) {
+                    Text("📎 RAG with Sources")
                 }
             }
             

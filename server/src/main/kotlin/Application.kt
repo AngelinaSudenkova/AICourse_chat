@@ -132,7 +132,7 @@ fun Application.module() {
         single { WikiSearcher(get()) }
         
         // RAG Service
-        single { rag.RagService(get(), get(), get(), get()) }
+        single { rag.RagService(get(), get(), get(), get(), get()) }
     }
     
     install(Koin) {

@@ -1,147 +1,155 @@
 {
     "articles": [
         {
-            "source": "CBS News",
-            "author": "Scott  MacFarlane",
-            "title": "Rep. Eric Swalwell sues housing official who's made multiple criminal referrals for Trump critics - CBS News",
-            "description": "Trump housing official Bill Pulte also submitted criminal referrals for investigations into Sen. Adam Schiff, New York Attorney General Letitia James and Federal Reserve Board member Lisa Cook.",
-            "url": "https://www.cbsnews.com/news/eric-swalwell-lawsuit-bill-pulte-criminal-referral/",
-            "publishedAt": "2025-11-25T21:55:41Z"
+            "source": "PEOPLE",
+            "author": "https://www.facebook.com/peoplemag",
+            "title": "Jackson Browne Announces the Death of His Son Ethan Browne, 52 - AOL.com",
+            "description": "Jackson Browne announced son Ethan Browne’s death on Wednesday, Nov. 26 in a statement shared to Facebook. Ethan, a model and actor, was 52.",
+            "url": "https://people.com/jackson-browne-son-ethan-dead-52-11858215",
+            "publishedAt": "2025-11-26T21:46:26Z"
         },
         {
-            "source": "The Wall Street Journal",
-            "author": "WSJ Staff, Heard Editors, Richard Rubin, Sam Goldfarb, Dan Gallagher, Gunjan Banerji, Stephen Wilmot, Jesse Newman, Ed Ballard, Matt Grossman, Harriet Torry, Spencer Jakab, Eliot Brown",
-            "title": "Stock Market Today: Nasdaq Sinks; Nvidia Drops as Alphabet Rallies on AI Chip Rivalry — Live Updates - The Wall Street Journal",
-            "description": "Follow along for live updates on the Dow, S&P 500, Nasdaq and other markets.",
-            "url": "https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-11-25-2025",
-            "publishedAt": "2025-11-25T21:45:00Z"
+            "source": "Yahoo Entertainment",
+            "author": "Chris McGraw",
+            "title": "Black Friday TV deals are live with huge discounts (and giant screens) from Samsung, Sony, Hisense and more — save up to 60% - Yahoo! Tech",
+            "description": "Sale prices start as low as $60 (really!) for the newest TVs, ready to stream you a world of entertainment and live sports.",
+            "url": "https://tech.yahoo.com/home-entertainment/tvs/deals/article/black-friday-tv-deals-are-live-with-huge-discounts-and-giant-screens-from-samsung-sony-hisense-and-more--save-up-to-60-224800957.html",
+            "publishedAt": "2025-11-26T21:21:43Z"
         },
         {
-            "source": "Bloomberg",
-            "author": "Dina Bass",
-            "title": "HP Announces Job Cuts as Profit Outlook Falls Short of Estimates - Bloomberg.com",
-            "description": "HP Inc. gave a profit outlook for current year that fell short of estimates and the company said it will cut 4,000 to 6,000 employees through fiscal 2028 by using more AI tools.",
-            "url": "https://www.bloomberg.com/news/articles/2025-11-25/hp-announces-job-cuts-as-profit-outlook-falls-short-of-estimates",
-            "publishedAt": "2025-11-25T21:17:20Z"
+            "source": "ABC News",
+            "author": "ABC News",
+            "title": "2 National Guard members shot near White House: Officials - ABC News",
+            "url": "https://abcnews.go.com/Politics/2-military-personnel-appearing-national-guard-shot-white/story?id\\\\u003d127905871",
+            "publishedAt": "2025-11-26T21:11:15Z"
+        },
+        {
+            "source": "NBCSports.com",
+            "author": "Mike Florio",
+            "title": "Frank Ragnow is coming out of retirement - NBC Sports",
+            "description": "Dan Campbell said earlier this month that \"the ship has sailed\" on a return.",
+            "url": "https://www.nbcsports.com/nfl/profootballtalk/rumor-mill/news/frank-ragnow-is-coming-out-of-retirement",
+            "publishedAt": "2025-11-26T21:01:59Z"
+        },
+        {
+            "source": "Yahoo Entertainment",
+            "author": "Brian Platt, Erik Hertzberg and Nojoud Al Mallees",
+            "title": "Canada to Add New Tariffs to US Steel, Curb Foreign Imports - Yahoo Finance",
+            "description": "The tariff will apply starting Dec. 26 to about C$10 billion ($7.1 billion) of imported products including wind towers, prefabricated buildings, fasteners...",
+            "url": "https://finance.yahoo.com/news/canada-add-tariffs-us-steel-201810656.html",
+            "publishedAt": "2025-11-26T20:18:10Z"
+        },
+        {
+            "source": "Business Insider",
+            "author": "Jacob Shamsian",
+            "title": "Campbell's exec is out after alleged rant mocking 'poor' customers, '3D-printed chicken' goes viral - Business Insider",
+            "description": "Campbell's was caught in a firestorm after a secret recording apparently caught an executive trashing its products — and customers.",
+            "url": "https://www.businessinsider.com/campbells-soup-executive-martin-bally-out-leaves-company-2025-11",
+            "publishedAt": "2025-11-26T20:09:00Z"
         },
         {
             "source": "NBC News",
-            "author": "Ryan J. Reilly, Frank Thorp V, Kyle Stewart, Brennan Leach",
-            "title": "FBI seeks interviews with six Democrats Trump accused of 'seditious behavior' - NBC News",
-            "description": "The lawmakers, who had released a video urging members of the military and intelligence community not to follow illegal orders, accused Trump of trying to intimidate them.",
-            "url": "https://www.nbcnews.com/politics/justice-department/fbi-seeks-interviews-six-democrats-trump-accused-seditious-behavior-rcna245880",
-            "publishedAt": "2025-11-25T20:58:13Z"
-        },
-        {
-            "source": "The Washington Post",
-            "author": "Leo Sands",
-            "title": "Four more detained in Louvre heist as fate of jewels remains unknown - The Washington Post",
-            "description": "Four others have already been charged over the Louvre jewelry theft. There is no sign that the jewels have been recovered as questions swirl about security lapses.",
-            "url": "https://www.washingtonpost.com/world/2025/11/25/louvre-heist-detentions/",
-            "publishedAt": "2025-11-25T20:43:26Z"
-        },
-        {
-            "source": "cleveland.com",
-            "author": "Terry Pluto, cleveland.com",
-            "title": "Shedeur Sanders: He’s No. 12. He’s No. 42. Let’s hope he can be No. 1 for a while – Terry Pluto - Cleveland.com",
-            "description": "Shedeur Sanders is the 42nd QB to start for the Browns since the franchise returned in 1999.",
-            "url": "https://www.cleveland.com/browns/2025/11/shedeur-sanders-hes-no-12-hes-no-42-lets-hope-be-can-be-no-1-for-a-while-terry-pluto.html",
-            "publishedAt": "2025-11-25T20:18:00Z"
-        },
-        {
-            "source": "Ars Technica",
-            "author": "Andrew Cunningham",
-            "title": "Spiking memory prices mean that it is once again a horrible time to build a PC - Ars Technica",
-            "description": "Some RAM kits are over three times as expensive as they were three months ago.",
-            "url": "https://arstechnica.com/gadgets/2025/11/spiking-memory-prices-mean-that-it-is-once-again-a-horrible-time-to-build-a-pc/",
-            "publishedAt": "2025-11-25T20:15:37Z"
-        },
-        {
-            "source": "The Washington Post",
-            "author": "Meagan Flynn, Jonathan O'Connell, Jenny Gathright",
-            "title": "D.C. Mayor Bowser will not run for fourth term - The Washington Post",
-            "description": "Bowser, who has led D.C. over a turbulent decade, will not seek reelection in 2026, a decision bound to open up a highly competitive mayoral race.",
-            "url": "https://www.washingtonpost.com/dc-md-va/2025/11/25/bowser-dc-mayor-reelection/",
-            "publishedAt": "2025-11-25T19:34:09Z"
-        },
-        {
-            "source": "Investor's Business Daily",
-            "title": "Why Google's Challenge To Nvidia Is 'Intriguing' For Amazon's AI Chip Push - Investor's Business Daily",
-            "description": "Amazon stock is trying to bounce-back from a recent sell-off as its annual cloud conference approaches. Its AI chips will be in focus.",
-            "url": "https://www.investors.com/news/technology/amazon-stock-google-nvidia-ai-chips/",
-            "publishedAt": "2025-11-25T19:14:00Z"
-        },
-        {
-            "source": "CNBC",
-            "author": "Luke Fountain",
-            "title": "Trump pardons Thanksgiving turkeys, blasts Biden and says Ukraine peace deal is ‘very close’ - CNBC",
-            "description": "Thanksgiving turkey prices have climbed this year, the first of President Donald Trump's second term in the White House.",
-            "url": "https://www.cnbc.com/2025/11/25/trump-turkey-pardon-biden-ukraine-2025.html",
-            "publishedAt": "2025-11-25T18:43:41Z"
-        },
-        {
-            "source": "NPR",
-            "author": "Rachel Treisman",
-            "title": "The case against Comey failed because of Trump's prosecutor. Who is she? - NPR",
-            "description": "A federal judge dismissed the Justice Department's cases against James Comey and Letitia James, saying the prosecutor who led them was unlawfully appointed. Here's what to know about her.",
-            "url": "https://www.npr.org/2025/11/25/nx-s1-5620636/lindsey-halligan-us-attorney-unlawful-comey-james",
-            "publishedAt": "2025-11-25T18:43:33Z"
-        },
-        {
-            "source": "Doi.gov",
-            "title": "Department of the Interior Announces Modernized, More Affordable National Park Access - U.S. Department of the Interior (.gov)",
-            "description": "The Department of the Interior today announced the most significant modernization of national park access in decades, delivering new digital America the Beautiful passes, updated annual pass artwork, expanded motorcycle access and a new resident-focused fee s…",
-            "url": "https://www.doi.gov/pressreleases/department-interior-announces-modernized-more-affordable-national-park-access",
-            "publishedAt": "2025-11-25T18:04:49Z"
-        },
-        {
-            "source": "Ars Technica",
-            "author": "Ashley Belanger",
-            "title": "RealPage agrees to change algorithm so landlords can’t collude on price hikes - Ars Technica",
-            "description": "RealPage agrees to settle suit over DOJ claims software raised rents across the US.",
-            "url": "https://arstechnica.com/tech-policy/2025/11/realpage-agrees-to-change-algorithm-so-landlords-cant-collude-on-price-hikes/",
-            "publishedAt": "2025-11-25T17:51:42Z"
+            "author": "Kaan Ozcan",
+            "title": "As Norovirus cases rise, here’s what to know about this year’s spread — and how to protect yourself - NBC News",
+            "description": "Norovirus has been rising in the U.S. since as early as mid-October, especially in states like Louisiana, Michigan and Indiana, according to data from WastewaterSCAN.",
+            "url": "https://www.nbcnews.com/health/health-news/norovirus-2025-spread-rise-contagious-symptoms-experts-what-know-rcna244719",
+            "publishedAt": "2025-11-26T20:02:03Z"
         },
         {
             "source": "Hollywood Reporter",
-            "author": "McKinley Franklin",
-            "title": "Inside the ‘Dancing With the Stars’ Mega Comeback and Secret to Season 34’s Viral Success - The Hollywood Reporter",
-            "description": "In conversation with The Hollywood Reporter, showrunner Conrad Green and casting director Deena Katz dish on how much social media and TikTok have contributed to the season's virality, why influencers are their modern day “celebrity” and if Tom Bergeron could…",
-            "url": "http://www.hollywoodreporter.com/tv/tv-features/dwts-finale-season-34-viral-success-secrets-interview-1236433805/",
-            "publishedAt": "2025-11-25T17:36:27Z"
-        },
-        {
-            "source": "CBS News",
-            "author": "Duarte  Dias",
-            "title": "Australian Senator Pauline Hanson banned from parliament for 7 days for wearing burqa to demand they be banned - CBS News",
-            "description": "Senator Pauline Hanson banned from parliament for 7 days for wearing burqa in the chamber to demand they be banned nationally.",
-            "url": "https://www.cbsnews.com/news/australia-senator-pauline-hanson-banned-from-parliament-burqa-protest/",
-            "publishedAt": "2025-11-25T17:12:00Z"
+            "author": "Tony Maglio",
+            "title": "Apple TV’s ‘The Hunt’ Premiere Pulled From Schedule Amid Plagiarism Accusations - The Hollywood Reporter",
+            "description": "As a matter of fact, any official existence of ‘The Hunt’ has been scrubbed from the web.",
+            "url": "http://www.hollywoodreporter.com/tv/tv-news/the-hunt-pulled-apple-tv-plagiarism-1236436257/",
+            "publishedAt": "2025-11-26T19:34:16Z"
         },
         {
             "source": "Politico",
-            "author": "Diana Nerozzi",
-            "title": "Trump wants peace in Ukraine, no matter what a deal looks like - Politico",
-            "description": "Trump’s overriding desire to stop the bloodshed helps explain why the details of the plan remain fluid.",
-            "url": "https://www.politico.com/news/2025/11/25/trump-wants-peace-in-ukraine-no-matter-what-a-deal-looks-like-00668136",
-            "publishedAt": "2025-11-25T17:10:00Z"
+            "author": "Rachel Shin",
+            "title": "21 states sue Trump admin over changes to immigrants’ SNAP eligibility - Politico",
+            "description": "Democratic attorneys general in states like California and New York argue that new guidance illegally blocks legal permanent residents from receiving food stamps.",
+            "url": "https://www.politico.com/news/2025/11/26/states-sue-trump-administration-snap-immigrants-eligibility-00669904",
+            "publishedAt": "2025-11-26T19:18:34Z"
         },
         {
-            "source": "NFL News",
-            "title": "NFL Power Rankings, Week 13: Patriots crack top five; Eagles, Bills, Steelers and Bucs all tumble - NFL.com",
-            "description": "More than two-thirds of teams are on the move in Eric Edholm's fresh batch of NFL Power Rankings. How high do the Patriots and Bears fly? How low do the Eagles and Bills go? Check out the fully updated pecking order, 1-32.",
-            "url": "https://www.nfl.com/news/nfl-power-rankings-week-13-2025-nfl-season",
-            "publishedAt": "2025-11-25T16:42:00Z"
+            "source": "Sports Illustrated",
+            "author": "Pat Forde",
+            "title": "The College Football Playoff Race Is Chaotic Because of Greed - Sports Illustrated",
+            "description": "College sports chased realignment money, bloated its leagues and broke competitive balance long before the 12-team playoff even got a chance.",
+            "url": "https://www.si.com/college-football/college-football-playoff-race-is-chaotic-because-of-greed",
+            "publishedAt": "2025-11-26T18:58:24Z"
+        },
+        {
+            "source": "ABC News",
+            "author": "ABC News",
+            "title": "Russia to send a NASA astronaut and 2 cosmonauts to the ISS on Thanksgiving morning - ABC News",
+            "url": "https://abcnews.go.com/Technology/russia-set-send-nasa-astronaut-cosmonauts-iss-thanksgiving/story?id\\\\u003d127902413",
+            "publishedAt": "2025-11-26T18:33:45Z"
+        },
+        {
+            "source": "Athlon Sports",
+            "author": "Ayomide Adeduyite",
+            "title": "Patrick Mahomes Had Words for Dallas Cowboys - Athlon Sports",
+            "description": "Patrick Mahomes and the Kansas City Chiefs will face the Dallas Cowboys on Thanksgiving.",
+            "url": "https://athlonsports.com/nfl/kansas-city-chiefs/chiefs-patrick-mahomes-message-cowboys-nfl-thanksgiving-game",
+            "publishedAt": "2025-11-26T18:21:59Z"
+        },
+        {
+            "source": "Associated Press",
+            "author": "Assana Sambu, Mark Banchereau",
+            "title": "Soldiers in Guinea-Bissau appear on state television saying they have seized power - AP News",
+            "description": "Soldiers in Guinea-Bissau have appeared on state television to say they have seized power in the country following reports of gunshots near the presidential palace. The president has told French media he has been deposed and arrested. Wednesday's events occur…",
+            "url": "https://apnews.com/article/guinea-bissau-presidential-palace-unrest-election-2a1371eb1ceb25596b99c4cc4062bc95",
+            "publishedAt": "2025-11-26T18:06:00Z"
+        },
+        {
+            "source": "The Washington Post",
+            "author": "Perry Stein",
+            "title": "Trump administration prosecutions focus new attention on grand juries - The Washington Post",
+            "description": "The administration has struggled with an unusual level of rejections in some cases and procedural stumbles in others.",
+            "url": "https://www.washingtonpost.com/national-security/2025/11/26/trump-halligan-grand-juries-rejection-stumbles/",
+            "publishedAt": "2025-11-26T18:00:51Z"
+        },
+        {
+            "source": "BBC News",
+            "author": "https://www.facebook.com/bbcnews",
+            "title": "Budget 2025 live: Ordinary people will pay 'a little bit more', says Reeves - BBC",
+            "description": "The chancellor says she has rejected austerity and \"reckless borrowing\" - but Tory leader Kemi Badenoch accuses her of having \"lost control\" of welfare spending.",
+            "url": "https://www.bbc.com/news/live/cy8vz032qgpt",
+            "publishedAt": "2025-11-26T17:24:37Z"
+        },
+        {
+            "source": "CBS News",
+            "title": "Mystery owner of 3-million-year-old foot found in Africa identified, scientists say - CBS News",
+            "description": "The discovery could cast some doubt on the status of Lucy's species as the direct ancestor of Homo sapiens.",
+            "url": "https://www.cbsnews.com/news/mystery-ancient-foot-found-in-africa-identified-scientists-say/",
+            "publishedAt": "2025-11-26T17:16:11Z"
+        },
+        {
+            "source": "Ars Technica",
+            "author": "Samuel Axon",
+            "title": "Vision Pro M5 review: It’s time for Apple to make some tough choices - Ars Technica",
+            "description": "A state of the union from someone who actually sort of uses the thing.",
+            "url": "https://arstechnica.com/gadgets/2025/11/where-apples-vision-pro-stands-today-post-m5-refresh/",
+            "publishedAt": "2025-11-26T17:00:14Z"
+        },
+        {
+            "source": "CNN",
+            "author": "Jennifer Hansler",
+            "title": "Trump will not invite South Africa to G20 in US - CNN",
+            "description": "The Trump administration will not invite South Africa to take part in G20 events hosted in the United States next year and will “immediately” stop payments to the African nation, President Donald Trump said Wednesday,",
+            "url": "https://www.cnn.com/2025/11/26/politics/trump-administration-not-planning-invite-south-africa-g20",
+            "publishedAt": "2025-11-26T16:42:44Z"
         },
         {
             "source": "NPR",
-            "title": "Syrians displaced by war are returning to find homes occupied by foreign fighters - NPR",
-            "description": "Fighters have settled across northern Syria, surprising displaced Syrians who've tried to return to their homes. Nearly a year after the war's end, sorting out property ownership remains a pressing issue.",
-            "url": "https://www.npr.org/2025/11/25/g-s1-98741/syria-displaced-return-foreign-fighters-uyghurs",
-            "publishedAt": "2025-11-25T16:35:24Z"
+            "title": "At long last, the mystery of lightning on Mars is solved - NPR",
+            "description": "A chance discovery by a NASA rover on Mars shows that the red planet has a form of lightning, which researchers had suspected for decades but never seen.",
+            "url": "https://www.npr.org/2025/11/26/nx-s1-5616433/mars-rover-lightening-space",
+            "publishedAt": "2025-11-26T16:00:00Z"
         }
     ],
-    "aiSummary": "The current news cycle is dominated by heightened political and legal tensions, notably set against the backdrop of President Donald Trump's second term. Legal battles are unfolding, with Rep. Eric Swalwell suing a former Trump housing official responsible for making criminal referrals against several Trump critics, including prominent figures like Sen. Adam Schiff and New York AG Letitia James. Simultaneously, the FBI is seeking interviews with six Democratic lawmakers whom Trump accused of \"seditious behavior,\" raising concerns about political intimidation. These developments highlight a deeply polarized political landscape, where legal mechanisms are increasingly intertwined with partisan conflict.\n\nIn the technology and business sectors, Artificial Intelligence is a major driving force, ushering in both opportunities and disruptions. The stock market experienced volatility, with the Nasdaq sinking and Nvidia's shares dropping amidst an intensifying AI chip rivalry, as Alphabet rallied and Amazon advanced its own AI chip initiatives. This technological shift is also impacting the workforce, with HP announcing significant job cuts – between 4,000 and 6,000 employees – partly due to a missed profit outlook and the increased adoption of AI tools for efficiency. For consumers, the rising cost of memory components has made building PCs considerably more expensive.\n\nOverall, the prevailing themes point to a dynamic period characterized by ongoing political contention, significant technological transformation driven by AI, and economic shifts affecting both corporations and consumers. Key concerns include the potential for continued political polarization, the economic impact of AI-driven job displacement, and market volatility. In other notable news, D.C. Mayor Muriel Bowser announced she would not seek a fourth term, while international investigators continue to make arrests in the high-profile Louvre jewelry heist, though the stolen jewels remain unrecovered.",
-    "fetchedAt": "2025-11-26T21:51:41.403Z",
-    "totalResults": 36
+    "aiSummary": "Here's a summary of the top news headlines:\n\nMajor domestic and international developments are in focus today, encompassing security, political disputes, and economic shifts. Two National Guard members were reportedly shot near the White House, marking a significant security incident. Politically, 21 states are suing the Trump administration over new guidance affecting immigrants' SNAP eligibility, arguing it illegally blocks legal permanent residents from receiving food stamps. On the economic front, Canada announced new tariffs on US steel and other imports, while domestically, Black Friday TV deals are widely available with substantial discounts. Corporate ethics are also under scrutiny, as a Campbell's executive is out following a viral alleged rant mocking \"poor\" customers and their products.\n\nPublic health remains a concern with Norovirus cases rising in the U.S. since mid-October, particularly in states like Louisiana, Michigan, and Indiana. In entertainment, Apple TV has pulled the premiere of its show 'The Hunt' amid plagiarism accusations, and musician Jackson Browne announced the death of his 52-year-old son, Ethan Browne. The sports world saw unexpected news with Frank Ragnow coming out of retirement, while the College Football Playoff system continues to draw criticism for its structure, driven by what Sports Illustrated describes as \"greed\" and its impact on competitive balance.",
+    "fetchedAt": "2025-11-28T01:00:39.421Z",
+    "totalResults": 32
 }

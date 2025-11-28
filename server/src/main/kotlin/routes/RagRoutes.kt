@@ -9,6 +9,8 @@ import rag.RagService
 import models.RagQuestionRequest
 import models.RagAnswerComparison
 import models.RagFilteringComparison
+import models.RagCitedAnswerRequest
+import models.RagCitedAnswerResponse
 
 fun Route.ragRoutes() {
     route("/rag") {
@@ -54,6 +56,31 @@ fun Route.ragRoutes() {
                 )
             } catch (e: Exception) {
                 println("RAG filtering error: ${e.message}")
+                e.printStackTrace()
+                call.respond(
+                    io.ktor.http.HttpStatusCode.InternalServerError,
+                    mapOf("error" to (e.message ?: "Unknown error occurred"))
+                )
+            }
+        }
+        
+        post("/cited") {
+            try {
+                val koin = GlobalContext.get()
+                val ragService: RagService = koin.get()
+                val req = call.receive<RagCitedAnswerRequest>()
+
+                val resp: RagCitedAnswerResponse = ragService.answerWithCitations(req)
+                call.respond(resp)
+            } catch (e: IllegalStateException) {
+                println("RAG cited error: ${e.message}")
+                e.printStackTrace()
+                call.respond(
+                    io.ktor.http.HttpStatusCode.BadRequest,
+                    mapOf("error" to (e.message ?: "RAG cited error"))
+                )
+            } catch (e: Exception) {
+                println("RAG cited error: ${e.message}")
                 e.printStackTrace()
                 call.respond(
                     io.ktor.http.HttpStatusCode.InternalServerError,
