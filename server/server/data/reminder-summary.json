@@ -2,6 +2,6 @@
     "pendingCount": 0,
     "overdueCount": 0,
     "reminders": [],
-    "aiSummary": "You currently have no pending or overdue reminders. This means your schedule is clear of outstanding tasks, allowing you to focus on new priorities. Consider adding any upcoming tasks or important dates to maintain your organized workflow.",
-    "generatedAt": 1764291639088
+    "aiSummary": "You currently have no pending or overdue reminders. All your tasks are up-to-date, so there are no urgent priorities to address at this time.",
+    "generatedAt": 1764522512822
 }

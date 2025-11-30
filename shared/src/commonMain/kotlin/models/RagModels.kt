@@ -87,3 +87,22 @@ data class RagCitedAnswerResponse(
     val labeledSources: List<LabeledSource>
 )
 
+// Day 19: RAG Chat with Memory
+@Serializable
+data class RagChatRequest(
+    val messages: List<ChatMessage>,
+    val conversationId: String? = null,
+    val topK: Int = 5,
+    val enableFilter: Boolean = true,
+    val minSimilarity: Double = 0.3,
+    val allowModelFallback: Boolean = true,
+    val minBestScoreForRag: Double = 0.25,
+    val autoFetchWiki: Boolean = false
+)
+
+@Serializable
+data class RagChatResponse(
+    val message: ChatMessage,
+    val labeledSources: List<LabeledSource>
+)
+

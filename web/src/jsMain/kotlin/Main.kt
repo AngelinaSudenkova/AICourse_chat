@@ -38,6 +38,8 @@ import RagCompareViewModel
 import RagCompareView
 import RagCitedViewModel
 import RagCitedView
+import RagChatViewModel
+import RagChatView
 
 fun main() {
     renderComposable(rootElementId = "root") {
@@ -67,7 +69,7 @@ fun App() {
         mutableStateOf(
             try {
                 val stored = js("window.localStorage.getItem('mode')") as? String
-                val allowed = setOf("chat", "journal", "reasoning", "temperature", "modelComparison", "mcp", "notionFinance", "news", "reminders", "researchLog", "tutor", "wikiSearch", "ragCompare", "ragCited")
+                val allowed = setOf("chat", "journal", "reasoning", "temperature", "modelComparison", "mcp", "notionFinance", "news", "reminders", "researchLog", "tutor", "wikiSearch", "ragCompare", "ragCited", "ragChat")
                 if (stored != null && stored.isNotEmpty() && stored in allowed) stored else "chat"
             } catch (e: Exception) {
                 "chat"
@@ -88,6 +90,7 @@ fun App() {
     val wikiSearchViewModel = remember { WikiSearchViewModel(scope, httpTransport) }
     val ragCompareViewModel = remember { RagCompareViewModel(scope, httpTransport) }
     val ragCitedViewModel = remember { RagCitedViewModel(scope, httpTransport) }
+    val ragChatViewModel = remember { RagChatViewModel(scope, httpTransport) }
     
     // News notification panel state
     var isNewsNotificationOpen by remember { mutableStateOf(false) }
@@ -130,15 +133,19 @@ fun App() {
             display(DisplayStyle.Flex)
         }
     }) {
-        if (mode == "chat") {
-            Sidebar(
-                conversations = viewModel.conversations,
-                currentConversationId = viewModel.currentConversationId,
-                onSelectConversation = { id -> viewModel.loadConversation(id) },
-                onNewChat = { viewModel.createNewChat() },
-                onDeleteConversation = { id -> viewModel.deleteConversation(id) },
-                isLoading = viewModel.isLoadingConversations
-            )
+        if (mode == "chat" || mode == "ragChat") {
+            // For ragChat mode, RagChatView handles its own sidebar
+            // But we still show sidebar here for chat mode
+            if (mode == "chat") {
+                Sidebar(
+                    conversations = viewModel.conversations,
+                    currentConversationId = viewModel.currentConversationId,
+                    onSelectConversation = { id -> viewModel.loadConversation(id) },
+                    onNewChat = { viewModel.createNewChat() },
+                    onDeleteConversation = { id -> viewModel.deleteConversation(id) },
+                    isLoading = viewModel.isLoadingConversations
+                )
+            }
         }
         
         Div(attrs = {
@@ -196,6 +203,9 @@ fun App() {
                 onRagCitedToggle = {
                     mode = "ragCited"
                 },
+                onRagChatToggle = {
+                    mode = "ragChat"
+                },
                 onExport = { viewModel.exportMessages() },
                 onNewsNotificationClick = {
                     isNewsNotificationOpen = true
@@ -235,6 +245,8 @@ fun App() {
                 RagCompareView(ragCompareViewModel)
             } else if (mode == "ragCited") {
                 RagCitedView(ragCitedViewModel)
+            } else if (mode == "ragChat") {
+                RagChatView(ragChatViewModel)
             } else {
                 if (viewModel.messages.isEmpty() && !viewModel.isLoading && viewModel.currentConversationId == null) {
                     Div(attrs = {
@@ -539,6 +551,7 @@ fun TopBar(
     onWikiSearchToggle: () -> Unit,
     onRagCompareToggle: () -> Unit,
     onRagCitedToggle: () -> Unit,
+    onRagChatToggle: () -> Unit,
     onExport: () -> Unit,
     onNewsNotificationClick: () -> Unit,
     hasNewNews: Boolean = false
@@ -564,6 +577,7 @@ fun TopBar(
                     "wikiSearch" -> "📚 Wiki Search"
                     "ragCompare" -> "🧩 RAG Compare"
                     "ragCited" -> "📎 RAG with Sources"
+                    "ragChat" -> "📚 RAG Chat"
                     else -> "KMP AI Chat"
                 }
             )
@@ -684,6 +698,15 @@ fun TopBar(
                     onClick { onRagCitedToggle() }
                 }) {
                     Text("📎 RAG with Sources")
+                }
+            }
+            
+            if (mode != "ragChat") {
+                Button(attrs = {
+                    classes(AppStylesheet.button, AppStylesheet.modeButton)
+                    onClick { onRagChatToggle() }
+                }) {
+                    Text("📚 RAG Chat")
                 }
             }
             

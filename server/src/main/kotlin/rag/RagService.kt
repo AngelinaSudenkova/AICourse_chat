@@ -10,6 +10,10 @@ import models.WikiSearchRequest
 import models.RagCitedAnswerRequest
 import models.RagCitedAnswerResponse
 import models.LabeledSource
+import models.RagChatRequest
+import models.RagChatResponse
+import models.ChatMessage
+import platform.currentTimeMillis
 import wiki.WikiIndexer
 import wiki.WikiSearcher
 import wiki.WikiFetcher
@@ -144,6 +148,122 @@ class RagService(
         return chunks.maxByOrNull { it.score }?.let { listOf(it) } ?: emptyList()
     }
 
+    /**
+     * Detects if there is no usable context from local RAG search.
+     * Returns true if:
+     * - No results found, OR
+     * - Best similarity score is below threshold (default 0.2)
+     */
+    private fun hasNoUsableContext(chunks: List<RagUsedChunk>, threshold: Double = 0.2): Boolean {
+        if (chunks.isEmpty()) return true
+        val bestScore = chunks.maxOfOrNull { it.score } ?: 0.0
+        return bestScore < threshold
+    }
+
+    /**
+     * Attempts to fetch Wikipedia articles for a question and update the index.
+     * Returns the updated index if successful, null otherwise.
+     * The index is automatically merged with existing articles and saved to disk.
+     */
+    private suspend fun tryFetchAndIndexWikiArticles(question: String): WikiIndex? {
+        return try {
+            println("[RAG] No usable local context found. Attempting to fetch Wikipedia articles for: $question")
+            
+            // Extract Wikipedia topics from question
+            val topics = extractWikipediaTopics(question)
+            if (topics.isEmpty()) {
+                println("[RAG] Could not extract Wikipedia topics from question")
+                return null
+            }
+            
+            println("[RAG] Extracted Wikipedia topics: ${topics.joinToString(", ")}")
+            
+            // Fetch and index new articles (automatically merges with existing index and saves)
+            val existingIndex = wikiIndexer.loadIndex()
+            val existingArticleCount = existingIndex?.articles?.size ?: 0
+            val updatedIndex = wikiIndexer.buildIndexForTopics(topics, mergeWithExisting = true)
+            val newArticleCount = updatedIndex.articles.size - existingArticleCount
+            println("[RAG] Successfully indexed $newArticleCount new articles (total: ${updatedIndex.articles.size} articles, ${updatedIndex.chunks.size} chunks)")
+            
+            return updatedIndex
+        } catch (e: Exception) {
+            println("[RAG] Failed to fetch and index Wikipedia articles: ${e.message}")
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    /**
+     * Searches for relevant chunks, automatically fetching Wikipedia articles if no usable context found.
+     * Returns a SearchResult with chunks and a flag indicating if Wikipedia fetch was used.
+     */
+    private data class SearchResult(
+        val chunks: List<RagUsedChunk>,
+        val index: WikiIndex,
+        val usedWikiFetch: Boolean
+    )
+
+    private suspend fun searchWithAutoFetch(
+        question: String,
+        topK: Int,
+        minBestScoreForRag: Double,
+        currentIndex: WikiIndex
+    ): SearchResult {
+        // First, try local search
+        val searchReq = WikiSearchRequest(query = question, topK = topK)
+        val searchResp = wikiSearcher.search(currentIndex, searchReq)
+        
+        val rawChunks = searchResp.results.map {
+            RagUsedChunk(
+                chunkId = it.chunkId,
+                articleId = it.articleId,
+                title = it.title,
+                score = it.score,
+                snippet = it.snippet
+            )
+        }
+        
+        val bestScore = rawChunks.maxOfOrNull { it.score } ?: 0.0
+        
+        // Check if we have usable context
+        if (!hasNoUsableContext(rawChunks, minBestScoreForRag)) {
+            println("[RAG] Using local RAG: Found ${rawChunks.size} chunks with best score $bestScore")
+            return SearchResult(rawChunks, currentIndex, usedWikiFetch = false)
+        }
+        
+        // No usable context - try to fetch Wikipedia articles
+        println("[RAG] Local RAG found no usable context (best score: $bestScore, threshold: $minBestScoreForRag)")
+        val updatedIndex = tryFetchAndIndexWikiArticles(question)
+        
+        if (updatedIndex == null) {
+            println("[RAG] Wikipedia fetch failed, using original results")
+            return SearchResult(rawChunks, currentIndex, usedWikiFetch = false)
+        }
+        
+        // Re-search with updated index
+        val updatedSearchResp = wikiSearcher.search(updatedIndex, searchReq)
+        val updatedChunks = updatedSearchResp.results.map {
+            RagUsedChunk(
+                chunkId = it.chunkId,
+                articleId = it.articleId,
+                title = it.title,
+                score = it.score,
+                snippet = it.snippet
+            )
+        }
+        
+        val updatedBestScore = updatedChunks.maxOfOrNull { it.score } ?: 0.0
+        println("[RAG] After Wikipedia fetch: Found ${updatedChunks.size} chunks with best score $updatedBestScore")
+        
+        if (!hasNoUsableContext(updatedChunks, minBestScoreForRag)) {
+            println("[RAG] Using wiki fetch + RAG: Successfully found relevant context after fetching")
+            return SearchResult(updatedChunks, updatedIndex, usedWikiFetch = true)
+        }
+        
+        println("[RAG] Still no usable context after Wikipedia fetch (best score: $updatedBestScore)")
+        return SearchResult(updatedChunks, updatedIndex, usedWikiFetch = true)
+    }
+
     private suspend fun extractWikipediaTopics(question: String): List<String> {
         val prompt = """
             Based on the following question, suggest 2-4 specific Wikipedia article titles that would be most relevant to answer it.
@@ -196,107 +316,25 @@ class RagService(
         val question = req.question.trim()
         require(question.isNotEmpty()) { "Question must not be empty" }
 
-        val index: WikiIndex = wikiIndexer.loadIndex()
+        val initialIndex: WikiIndex = wikiIndexer.loadIndex()
             ?: error("Wiki index not found. Please build it first.")
 
-        // 1) Search relevant chunks
-        val searchReq = WikiSearchRequest(
-            query = question,
-            topK = req.topK
+        // 1) Search with automatic Wikipedia fetch if needed
+        val searchResult = searchWithAutoFetch(
+            question = question,
+            topK = req.topK,
+            minBestScoreForRag = req.minBestScoreForRag,
+            currentIndex = initialIndex
         )
-        val searchResp = wikiSearcher.search(index, searchReq)
 
-        val rawChunks = searchResp.results.map {
-            RagUsedChunk(
-                chunkId = it.chunkId,
-                articleId = it.articleId,
-                title = it.title,
-                score = it.score,
-                snippet = it.snippet
-            )
-        }
-
-        // 2) Check if we should use fallback or auto-fetch
+        val rawChunks = searchResult.chunks
         val bestScore = rawChunks.maxOfOrNull { it.score } ?: 0.0
-        
-        if (rawChunks.isEmpty() || bestScore < req.minBestScoreForRag) {
-            // Try auto-fetch if enabled
-            if (req.autoFetchWiki) {
-                println("RAG auto-fetch: Best score ($bestScore) below threshold (${req.minBestScoreForRag}), attempting to fetch Wikipedia articles")
-                
-                try {
-                    // Extract Wikipedia topics from question
-                    val topics = extractWikipediaTopics(question)
-                    if (topics.isNotEmpty()) {
-                        println("RAG auto-fetch: Extracted topics: ${topics.joinToString(", ")}")
-                        
-                        // Fetch and index new articles
-                        val newIndex = wikiIndexer.buildIndexForTopics(topics)
-                        println("RAG auto-fetch: Indexed ${newIndex.articles.size} new articles, ${newIndex.chunks.size} chunks")
-                        
-                        // Re-search with updated index
-                        val updatedSearchResp = wikiSearcher.search(newIndex, searchReq)
-                        val updatedRawChunks = updatedSearchResp.results.map {
-                            RagUsedChunk(
-                                chunkId = it.chunkId,
-                                articleId = it.articleId,
-                                title = it.title,
-                                score = it.score,
-                                snippet = it.snippet
-                            )
-                        }
-                        
-                        val updatedBestScore = updatedRawChunks.maxOfOrNull { it.score } ?: 0.0
-                        println("RAG auto-fetch: After fetching, best score is $updatedBestScore")
-                        
-                        // If we got better results, use them
-                        if (updatedBestScore >= req.minBestScoreForRag || updatedRawChunks.isNotEmpty()) {
-                            // Continue with updated chunks
-                            val filteredChunks = filterChunks(
-                                chunks = updatedRawChunks,
-                                minSimilarity = req.minSimilarity,
-                                enable = req.enableFilter
-                            )
-                            
-                            if (filteredChunks.isNotEmpty()) {
-                                val labeledSources = filteredChunks.mapIndexed { index, chunk ->
-                                    LabeledSource(
-                                        label = "${index + 1}",
-                                        chunkId = chunk.chunkId,
-                                        articleId = chunk.articleId,
-                                        title = chunk.title,
-                                        score = chunk.score,
-                                        snippet = chunk.snippet
-                                    )
-                                }
-                                
-                                val labeledContext = buildLabeledContext(labeledSources)
-                                val citationPrompt = buildCitationPrompt(
-                                    question = question,
-                                    context = labeledContext
-                                )
-                                
-                                println("RAG with citations: Using ${labeledSources.size} sources from auto-fetched articles (best score: $updatedBestScore)")
-                                val answerWithCitations = geminiClient.generate(citationPrompt)
-                                
-                                return RagCitedAnswerResponse(
-                                    question = question,
-                                    answerWithCitations = answerWithCitations,
-                                    labeledSources = labeledSources
-                                )
-                            }
-                        }
-                    }
-                } catch (e: Exception) {
-                    println("RAG auto-fetch failed: ${e.message}")
-                    e.printStackTrace()
-                    // Continue to fallback
-                }
-            }
-            
-            // Use fallback: generate answer without RAG
+
+        // 2) Check if we have usable context after auto-fetch
+        if (hasNoUsableContext(rawChunks, req.minBestScoreForRag)) {
+            // Still no usable context - use fallback if allowed
             if (req.allowModelFallback) {
-                println("RAG fallback: Best score ($bestScore) below threshold (${req.minBestScoreForRag}), using model fallback")
+                println("[RAG] LLM fallback: No usable context found (best score: $bestScore), using model fallback")
                 val fallbackAnswer = geminiClient.generate(buildBaselinePrompt(question))
                 
                 return RagCitedAnswerResponse(
@@ -319,7 +357,7 @@ class RagService(
         if (filteredChunks.isEmpty()) {
             // After filtering, no chunks remain - use fallback if allowed
             if (req.allowModelFallback) {
-                println("RAG fallback: All chunks filtered out, using model fallback")
+                println("[RAG] LLM fallback: All chunks filtered out, using model fallback")
                 val fallbackAnswer = geminiClient.generate(buildBaselinePrompt(question))
                 
                 return RagCitedAnswerResponse(
@@ -327,6 +365,8 @@ class RagService(
                     answerWithCitations = fallbackAnswer,
                     labeledSources = emptyList()
                 )
+            } else {
+                error("No relevant sources found after filtering and fallback is disabled")
             }
         }
 
@@ -352,7 +392,8 @@ class RagService(
         )
 
         // 7) Generate answer with citations
-        println("RAG with citations: Using ${labeledSources.size} sources (best score: $bestScore)")
+        val sourceType = if (searchResult.usedWikiFetch) "wiki fetch + RAG" else "local RAG"
+        println("[RAG] Using $sourceType: ${labeledSources.size} sources (best score: $bestScore)")
         val answerWithCitations = geminiClient.generate(citationPrompt)
 
         return RagCitedAnswerResponse(
@@ -424,6 +465,164 @@ class RagService(
             Now answer the user's question using the context above.
 
             Question:
+            $question
+        """.trimIndent()
+    }
+
+    suspend fun answerChatWithSources(req: RagChatRequest): RagChatResponse {
+        // 1) Extract the latest user message
+        val latestUserMessage = req.messages.lastOrNull { it.role == "user" }
+            ?: error("No user message found in request")
+        
+        val question = latestUserMessage.content.trim()
+        require(question.isNotEmpty()) { "Question must not be empty" }
+
+        // 2) Build compact conversation history (last 4-6 messages for context)
+        val recentHistory = req.messages.takeLast(6).joinToString("\n") { msg ->
+            "${msg.role}: ${msg.content}"
+        }
+
+        val initialIndex: WikiIndex = wikiIndexer.loadIndex()
+            ?: error("Wiki index not found. Please build it first.")
+
+        // 3) Search with automatic Wikipedia fetch if needed
+        val searchResult = searchWithAutoFetch(
+            question = question,
+            topK = req.topK,
+            minBestScoreForRag = req.minBestScoreForRag,
+            currentIndex = initialIndex
+        )
+
+        val rawChunks = searchResult.chunks
+        val bestScore = rawChunks.maxOfOrNull { it.score } ?: 0.0
+
+        // 4) Check if we have usable context after auto-fetch
+        if (hasNoUsableContext(rawChunks, req.minBestScoreForRag)) {
+            // Still no usable context - use fallback if allowed
+            if (req.allowModelFallback) {
+                println("[RAG Chat] LLM fallback: No usable context found (best score: $bestScore), using model fallback")
+                val fallbackPrompt = buildChatPrompt(
+                    question = question,
+                    conversationHistory = recentHistory,
+                    context = "No external context available."
+                )
+                val fallbackAnswer = geminiClient.generate(fallbackPrompt)
+                
+                return RagChatResponse(
+                    message = ChatMessage(
+                        role = "assistant",
+                        content = fallbackAnswer,
+                        timestamp = currentTimeMillis()
+                    ),
+                    labeledSources = emptyList()
+                )
+            } else {
+                error("No relevant sources found and fallback is disabled")
+            }
+        }
+
+        // 5) Apply filtering
+        val filteredChunks = filterChunks(
+            chunks = rawChunks,
+            minSimilarity = req.minSimilarity,
+            enable = req.enableFilter
+        )
+
+        if (filteredChunks.isEmpty()) {
+            // After filtering, no chunks remain - use fallback if allowed
+            if (req.allowModelFallback) {
+                println("[RAG Chat] LLM fallback: All chunks filtered out, using model fallback")
+                val fallbackPrompt = buildChatPrompt(
+                    question = question,
+                    conversationHistory = recentHistory,
+                    context = "No external context available."
+                )
+                val fallbackAnswer = geminiClient.generate(fallbackPrompt)
+                
+                return RagChatResponse(
+                    message = ChatMessage(
+                        role = "assistant",
+                        content = fallbackAnswer,
+                        timestamp = currentTimeMillis()
+                    ),
+                    labeledSources = emptyList()
+                )
+            } else {
+                error("No relevant sources found after filtering and fallback is disabled")
+            }
+        }
+
+        // 6) Create labeled sources
+        val labeledSources = filteredChunks.mapIndexed { index, chunk ->
+            LabeledSource(
+                label = "${index + 1}",
+                chunkId = chunk.chunkId,
+                articleId = chunk.articleId,
+                title = chunk.title,
+                score = chunk.score,
+                snippet = chunk.snippet
+            )
+        }
+
+        // 7) Build labeled context
+        val labeledContext = buildLabeledContext(labeledSources)
+
+        // 8) Build chat prompt with conversation history
+        val chatPrompt = buildChatPrompt(
+            question = question,
+            conversationHistory = recentHistory,
+            context = labeledContext
+        )
+
+        // 9) Generate answer with citations
+        val sourceType = if (searchResult.usedWikiFetch) "wiki fetch + RAG" else "local RAG"
+        println("[RAG Chat] Using $sourceType: ${labeledSources.size} sources (best score: $bestScore)")
+        val answerWithCitations = geminiClient.generate(chatPrompt)
+
+        return RagChatResponse(
+            message = ChatMessage(
+                role = "assistant",
+                content = answerWithCitations,
+                timestamp = currentTimeMillis()
+            ),
+            labeledSources = labeledSources
+        )
+    }
+
+    private fun buildChatPrompt(
+        question: String,
+        conversationHistory: String,
+        context: String
+    ): String {
+        return """
+            You are a helpful assistant that must answer using the provided context from a local wiki index, while also considering the conversation history.
+            
+            CRITICAL REQUIREMENTS:
+            1. Use the information in the context below when available. You can also reference the conversation history for context.
+            2. For each sentence or claim you make that uses information from the context, add inline citations in square brackets at the end of that sentence.
+            3. Citations should reference the source labels [1], [2], [3], etc. that correspond to the numbered sources in the context.
+            4. You can cite multiple sources like [1,2] if information comes from multiple sources.
+            5. If the context does not contain enough information to answer the question, you can use your general knowledge, but still try to cite sources when possible.
+            6. At the end of your answer, add a "Sources:" section listing all cited sources in the format: [label] Title — Wikipedia
+            
+            Example citation format:
+            "Quantum computing uses qubits instead of classical bits [1]. Qubits can exist in superposition states [1,2]."
+            
+            Sources:
+            [1] Quantum computing — Wikipedia
+            [2] Qubit — Wikipedia
+
+            -------------------- CONVERSATION HISTORY --------------------
+            $conversationHistory
+            -------------------- CONVERSATION HISTORY END ----------------
+
+            -------------------- CONTEXT FROM DOCUMENTS --------------------
+            $context
+            -------------------- CONTEXT END ----------------------
+
+            Now answer the user's latest question using both the conversation history and the document context above. Remember to add citations [1], [2], etc. for each claim that uses document context, and include a Sources section at the end.
+
+            Latest Question:
             $question
         """.trimIndent()
     }

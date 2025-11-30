@@ -21,14 +21,35 @@ class WikiIndexer(
     }
 
     suspend fun buildIndexForTopics(topics: List<String>): WikiIndex {
-        val articles = mutableListOf<WikiArticleMeta>()
-        val allChunks = mutableListOf<WikiChunk>()
+        return buildIndexForTopics(topics, mergeWithExisting = true)
+    }
+
+    suspend fun buildIndexForTopics(topics: List<String>, mergeWithExisting: Boolean): WikiIndex {
+        // Load existing index if merging
+        val existingIndex = if (mergeWithExisting) loadIndex() else null
+        val existingArticleIds = existingIndex?.articles?.map { it.id }?.toSet() ?: emptySet()
+
+        val newArticles = mutableListOf<WikiArticleMeta>()
+        val newChunks = mutableListOf<WikiChunk>()
 
         for (topic in topics) {
+            // Skip if article already exists in index
+            val existingLocal = fetcher.listAllLocalArticles().find { it.title.equals(topic, ignoreCase = true) }
+            if (existingLocal != null && existingArticleIds.contains(existingLocal.id)) {
+                println("Article '${existingLocal.title}' already in index, skipping")
+                continue
+            }
+
             // Fetch if not already local
-            val existing = fetcher.listAllLocalArticles().find { it.title.equals(topic, ignoreCase = true) }
-            val article = existing ?: fetcher.fetchAndSave(topic)
-            articles.add(article)
+            val article = existingLocal ?: fetcher.fetchAndSave(topic)
+            
+            // Skip if we just fetched but it's already in the index (shouldn't happen, but safety check)
+            if (existingArticleIds.contains(article.id)) {
+                println("Article '${article.title}' already in index after fetch, skipping")
+                continue
+            }
+
+            newArticles.add(article)
 
             // Read article text
             val text = fetcher.readArticleText(article)
@@ -50,14 +71,27 @@ class WikiIndexer(
                     text = chunkText,
                     embedding = embedding
                 )
-                allChunks.add(chunk)
+                newChunks.add(chunk)
             }
+        }
+
+        // Merge with existing index if merging
+        val finalArticles = if (mergeWithExisting && existingIndex != null) {
+            existingIndex.articles + newArticles
+        } else {
+            newArticles
+        }
+
+        val finalChunks = if (mergeWithExisting && existingIndex != null) {
+            existingIndex.chunks + newChunks
+        } else {
+            newChunks
         }
 
         val index = WikiIndex(
             createdAt = currentTimeMillis(),
-            articles = articles,
-            chunks = allChunks
+            articles = finalArticles,
+            chunks = finalChunks
         )
 
         // Save index to file

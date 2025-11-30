@@ -1,155 +1,154 @@
 {
     "articles": [
         {
-            "source": "PEOPLE",
-            "author": "https://www.facebook.com/peoplemag",
-            "title": "Jackson Browne Announces the Death of His Son Ethan Browne, 52 - AOL.com",
-            "description": "Jackson Browne announced son Ethan Browne’s death on Wednesday, Nov. 26 in a statement shared to Facebook. Ethan, a model and actor, was 52.",
-            "url": "https://people.com/jackson-browne-son-ethan-dead-52-11858215",
-            "publishedAt": "2025-11-26T21:46:26Z"
-        },
-        {
-            "source": "Yahoo Entertainment",
-            "author": "Chris McGraw",
-            "title": "Black Friday TV deals are live with huge discounts (and giant screens) from Samsung, Sony, Hisense and more — save up to 60% - Yahoo! Tech",
-            "description": "Sale prices start as low as $60 (really!) for the newest TVs, ready to stream you a world of entertainment and live sports.",
-            "url": "https://tech.yahoo.com/home-entertainment/tvs/deals/article/black-friday-tv-deals-are-live-with-huge-discounts-and-giant-screens-from-samsung-sony-hisense-and-more--save-up-to-60-224800957.html",
-            "publishedAt": "2025-11-26T21:21:43Z"
-        },
-        {
-            "source": "ABC News",
-            "author": "ABC News",
-            "title": "2 National Guard members shot near White House: Officials - ABC News",
-            "url": "https://abcnews.go.com/Politics/2-military-personnel-appearing-national-guard-shot-white/story?id\\\\u003d127905871",
-            "publishedAt": "2025-11-26T21:11:15Z"
-        },
-        {
-            "source": "NBCSports.com",
-            "author": "Mike Florio",
-            "title": "Frank Ragnow is coming out of retirement - NBC Sports",
-            "description": "Dan Campbell said earlier this month that \"the ship has sailed\" on a return.",
-            "url": "https://www.nbcsports.com/nfl/profootballtalk/rumor-mill/news/frank-ragnow-is-coming-out-of-retirement",
-            "publishedAt": "2025-11-26T21:01:59Z"
-        },
-        {
-            "source": "Yahoo Entertainment",
-            "author": "Brian Platt, Erik Hertzberg and Nojoud Al Mallees",
-            "title": "Canada to Add New Tariffs to US Steel, Curb Foreign Imports - Yahoo Finance",
-            "description": "The tariff will apply starting Dec. 26 to about C$10 billion ($7.1 billion) of imported products including wind towers, prefabricated buildings, fasteners...",
-            "url": "https://finance.yahoo.com/news/canada-add-tariffs-us-steel-201810656.html",
-            "publishedAt": "2025-11-26T20:18:10Z"
-        },
-        {
-            "source": "Business Insider",
-            "author": "Jacob Shamsian",
-            "title": "Campbell's exec is out after alleged rant mocking 'poor' customers, '3D-printed chicken' goes viral - Business Insider",
-            "description": "Campbell's was caught in a firestorm after a secret recording apparently caught an executive trashing its products — and customers.",
-            "url": "https://www.businessinsider.com/campbells-soup-executive-martin-bally-out-leaves-company-2025-11",
-            "publishedAt": "2025-11-26T20:09:00Z"
-        },
-        {
-            "source": "NBC News",
-            "author": "Kaan Ozcan",
-            "title": "As Norovirus cases rise, here’s what to know about this year’s spread — and how to protect yourself - NBC News",
-            "description": "Norovirus has been rising in the U.S. since as early as mid-October, especially in states like Louisiana, Michigan and Indiana, according to data from WastewaterSCAN.",
-            "url": "https://www.nbcnews.com/health/health-news/norovirus-2025-spread-rise-contagious-symptoms-experts-what-know-rcna244719",
-            "publishedAt": "2025-11-26T20:02:03Z"
-        },
-        {
-            "source": "Hollywood Reporter",
-            "author": "Tony Maglio",
-            "title": "Apple TV’s ‘The Hunt’ Premiere Pulled From Schedule Amid Plagiarism Accusations - The Hollywood Reporter",
-            "description": "As a matter of fact, any official existence of ‘The Hunt’ has been scrubbed from the web.",
-            "url": "http://www.hollywoodreporter.com/tv/tv-news/the-hunt-pulled-apple-tv-plagiarism-1236436257/",
-            "publishedAt": "2025-11-26T19:34:16Z"
-        },
-        {
-            "source": "Politico",
-            "author": "Rachel Shin",
-            "title": "21 states sue Trump admin over changes to immigrants’ SNAP eligibility - Politico",
-            "description": "Democratic attorneys general in states like California and New York argue that new guidance illegally blocks legal permanent residents from receiving food stamps.",
-            "url": "https://www.politico.com/news/2025/11/26/states-sue-trump-administration-snap-immigrants-eligibility-00669904",
-            "publishedAt": "2025-11-26T19:18:34Z"
-        },
-        {
-            "source": "Sports Illustrated",
-            "author": "Pat Forde",
-            "title": "The College Football Playoff Race Is Chaotic Because of Greed - Sports Illustrated",
-            "description": "College sports chased realignment money, bloated its leagues and broke competitive balance long before the 12-team playoff even got a chance.",
-            "url": "https://www.si.com/college-football/college-football-playoff-race-is-chaotic-because-of-greed",
-            "publishedAt": "2025-11-26T18:58:24Z"
-        },
-        {
-            "source": "ABC News",
-            "author": "ABC News",
-            "title": "Russia to send a NASA astronaut and 2 cosmonauts to the ISS on Thanksgiving morning - ABC News",
-            "url": "https://abcnews.go.com/Technology/russia-set-send-nasa-astronaut-cosmonauts-iss-thanksgiving/story?id\\\\u003d127902413",
-            "publishedAt": "2025-11-26T18:33:45Z"
-        },
-        {
-            "source": "Athlon Sports",
-            "author": "Ayomide Adeduyite",
-            "title": "Patrick Mahomes Had Words for Dallas Cowboys - Athlon Sports",
-            "description": "Patrick Mahomes and the Kansas City Chiefs will face the Dallas Cowboys on Thanksgiving.",
-            "url": "https://athlonsports.com/nfl/kansas-city-chiefs/chiefs-patrick-mahomes-message-cowboys-nfl-thanksgiving-game",
-            "publishedAt": "2025-11-26T18:21:59Z"
-        },
-        {
-            "source": "Associated Press",
-            "author": "Assana Sambu, Mark Banchereau",
-            "title": "Soldiers in Guinea-Bissau appear on state television saying they have seized power - AP News",
-            "description": "Soldiers in Guinea-Bissau have appeared on state television to say they have seized power in the country following reports of gunshots near the presidential palace. The president has told French media he has been deposed and arrested. Wednesday's events occur…",
-            "url": "https://apnews.com/article/guinea-bissau-presidential-palace-unrest-election-2a1371eb1ceb25596b99c4cc4062bc95",
-            "publishedAt": "2025-11-26T18:06:00Z"
-        },
-        {
-            "source": "The Washington Post",
-            "author": "Perry Stein",
-            "title": "Trump administration prosecutions focus new attention on grand juries - The Washington Post",
-            "description": "The administration has struggled with an unusual level of rejections in some cases and procedural stumbles in others.",
-            "url": "https://www.washingtonpost.com/national-security/2025/11/26/trump-halligan-grand-juries-rejection-stumbles/",
-            "publishedAt": "2025-11-26T18:00:51Z"
-        },
-        {
             "source": "BBC News",
-            "author": "https://www.facebook.com/bbcnews",
-            "title": "Budget 2025 live: Ordinary people will pay 'a little bit more', says Reeves - BBC",
-            "description": "The chancellor says she has rejected austerity and \"reckless borrowing\" - but Tory leader Kemi Badenoch accuses her of having \"lost control\" of welfare spending.",
-            "url": "https://www.bbc.com/news/live/cy8vz032qgpt",
-            "publishedAt": "2025-11-26T17:24:37Z"
+            "title": "Pope Leo visits Istanbul's Blue Mosque - BBC",
+            "description": "It is the first time Leo has attended a Muslim place of worship since he took up the papacy in May.",
+            "url": "https://www.bbc.com/news/articles/c4gp917zr8no",
+            "publishedAt": "2025-11-29T15:37:57Z"
+        },
+        {
+            "source": "Formula 1",
+            "author": "F1",
+            "title": "Piastri charges to dominant Sprint victory in Qatar ahead of Russell and Norris - Formula 1",
+            "description": "Oscar Piastri stormed to a commanding victory in the Qatar Sprint, comprehensively beating George Russell and the second McLaren of Lando Norris in the 19-lap event.",
+            "url": "https://www.formula1.com/en/latest/article/piastri-charges-to-dominant-sprint-victory-in-qatar-ahead-of-russell-and.5XW6yngL9eTjArBU97yDdu",
+            "publishedAt": "2025-11-29T14:54:23Z"
         },
         {
             "source": "CBS News",
-            "title": "Mystery owner of 3-million-year-old foot found in Africa identified, scientists say - CBS News",
-            "description": "The discovery could cast some doubt on the status of Lucy's species as the direct ancestor of Homo sapiens.",
-            "url": "https://www.cbsnews.com/news/mystery-ancient-foot-found-in-africa-identified-scientists-say/",
-            "publishedAt": "2025-11-26T17:16:11Z"
+            "title": "Louisiana prison \"father-daughter dance\" restores family bonds and heals wounds - CBS News",
+            "description": "The prison picked nearly 30 inmates to participate in the \"father-daughter\" dance at the Louisiana State Penitentiary.",
+            "url": "https://www.cbsnews.com/news/louisiana-prison-father-daughter-dance-family/",
+            "publishedAt": "2025-11-29T14:12:59Z"
         },
         {
-            "source": "Ars Technica",
-            "author": "Samuel Axon",
-            "title": "Vision Pro M5 review: It’s time for Apple to make some tough choices - Ars Technica",
-            "description": "A state of the union from someone who actually sort of uses the thing.",
-            "url": "https://arstechnica.com/gadgets/2025/11/where-apples-vision-pro-stands-today-post-m5-refresh/",
-            "publishedAt": "2025-11-26T17:00:14Z"
+            "source": "mlive.com",
+            "author": "Mark Torregrossa | mtorregr@mlive.com",
+            "title": "Michigan Snowstorm: Saturday update increases Winter Storm Warnings, slight tweak for Detroit, Ann Arbor - MLive.com",
+            "description": "Here's a complete look at the snowstorm heading into the Great Lakes State today, tonight and Sunday.",
+            "url": "https://www.mlive.com/weather/2025/11/michigan-snowstorm-saturday-update-increases-winter-storm-warnings-slight-tweak-for-detroit-ann-arbor.html",
+            "publishedAt": "2025-11-29T14:05:00Z"
+        },
+        {
+            "source": "Politico",
+            "author": "Dustin Racioppi",
+            "title": "Seton Hall abuse investigation stalls after ex-president’s aborted interview - Politico",
+            "description": "An attorney for former president Joseph Nyre said the New Jersey school is trying to “silence the truth.”",
+            "url": "https://www.politico.com/news/2025/11/29/seton-hall-abuse-investigation-former-president-00668657",
+            "publishedAt": "2025-11-29T14:00:00Z"
+        },
+        {
+            "source": "The Washington Post",
+            "author": "Dan Diamond, Rachel Roubein",
+            "title": "FDA to impose strict new vaccine requirements, claiming child covid shot deaths - The Washington Post",
+            "description": "Vinay Prasad, the nation’s top vaccine regulator, said his team concluded that coronavirus shots were linked to children’s deaths, necessitating a new approach.",
+            "url": "https://www.washingtonpost.com/health/2025/11/29/fda-vaccine-approval-child-covid-deaths/",
+            "publishedAt": "2025-11-29T13:05:35Z"
+        },
+        {
+            "source": "CBS News",
+            "author": "Kerry  Breen",
+            "title": "A toddler was given just 3 years to live after his mom noticed worrying symptoms. He proved everyone wrong. - CBS News",
+            "description": "Meghan Jenkins' son was 2 years old when he was diagnosed with cancer in 2021. His prognosis was grim, but aggressive treatment saved his life.",
+            "url": "https://www.cbsnews.com/news/pediatric-cancer-acute-lymphoblastic-leukemia-miami-florida/",
+            "publishedAt": "2025-11-29T13:00:14Z"
         },
         {
             "source": "CNN",
-            "author": "Jennifer Hansler",
-            "title": "Trump will not invite South Africa to G20 in US - CNN",
-            "description": "The Trump administration will not invite South Africa to take part in G20 events hosted in the United States next year and will “immediately” stop payments to the African nation, President Donald Trump said Wednesday,",
-            "url": "https://www.cnn.com/2025/11/26/politics/trump-administration-not-planning-invite-south-africa-g20",
-            "publishedAt": "2025-11-26T16:42:44Z"
+            "author": "Mike Andronico",
+            "title": "I’ve found the 19 best Black Friday laptop and computer deals that are still alive - CNN",
+            "description": "Don’t buy just any computer this Black Friday. Our PC expert picked out the laptop and computer deals that are actually worth shopping based on his extensive hands-on experience.",
+            "url": "https://www.cnn.com/cnn-underscored/deals/black-friday-laptop-computer-deals-2025-11-28",
+            "publishedAt": "2025-11-29T12:36:00Z"
+        },
+        {
+            "source": "Live Science",
+            "author": "Ben Turner",
+            "title": "Science news this week: An enigmatic human relative, dark matter discovery and mysterious lights in the sky during nuclear weapons tests - Live Science",
+            "description": "Nov. 29, 2025: Our weekly roundup of the latest science in the news, as well as a few fascinating articles to keep you entertained over the weekend.",
+            "url": "https://www.livescience.com/health/science-news-this-week-an-enigmatic-human-relative-dark-matter-discovery-and-mysterious-lights-in-the-sky-during-nuclear-weapons-tests",
+            "publishedAt": "2025-11-29T12:00:00Z"
+        },
+        {
+            "source": "BBC News",
+            "title": "Andriy Yermak: How Zelensky's right-hand man fell from power - BBC",
+            "description": "A widening corruption scandal has forced the resignation of Ukraine's second most powerful person.",
+            "url": "https://www.bbc.com/news/articles/cz0nljm4y74o",
+            "publishedAt": "2025-11-29T11:29:35Z"
+        },
+        {
+            "source": "Futurism",
+            "author": "Frank Landymore",
+            "title": "Scientists Claim to Detect Dark Matter for the First Time Ever - Futurism",
+            "description": "A team of astronomers say they've made the first ever detection of dark matter by examining gamma rays near the center of the Milky Way.",
+            "url": "http://futurism.com/space/scientists-detected-dark-matter-first-time",
+            "publishedAt": "2025-11-29T11:00:00Z"
+        },
+        {
+            "source": "BBC News",
+            "title": "Airbus: Flights resume as normal after software update warning - BBC",
+            "description": "Around 6,000 planes were affected after an issue that could corrupt data was discovered.",
+            "url": "https://www.bbc.com/news/articles/c4gp9d28p74o",
+            "publishedAt": "2025-11-29T10:54:24Z"
+        },
+        {
+            "source": "Athlon Sports",
+            "author": "Athlon Sports",
+            "title": "College Football Picks: Predictions for Week 14’s Biggest Saturday Games - Athlon Sports",
+            "url": "https://athlonsports.com/college-football/picks-predictions-for-week-14s-biggest-saturday-games",
+            "publishedAt": "2025-11-29T10:11:00Z"
+        },
+        {
+            "source": "The Washington Post",
+            "author": "Allyson Chiu",
+            "title": "The common vaccines that can prevent chronic disease or some cancers - The Washington Post",
+            "description": "In addition to cancer, a growing body of research has shown that vaccines can reduce the risk of developing dementia and heart conditions.",
+            "url": "https://www.washingtonpost.com/health/2025/11/29/vaccines-chronic-disease-prevent-cancer/",
+            "publishedAt": "2025-11-29T10:07:40Z"
         },
         {
             "source": "NPR",
-            "title": "At long last, the mystery of lightning on Mars is solved - NPR",
-            "description": "A chance discovery by a NASA rover on Mars shows that the red planet has a form of lightning, which researchers had suspected for decades but never seen.",
-            "url": "https://www.npr.org/2025/11/26/nx-s1-5616433/mars-rover-lightening-space",
-            "publishedAt": "2025-11-26T16:00:00Z"
+            "author": "Sarah Ventre",
+            "title": "Where things stand with the National Guard shooting in D.C. - NPR",
+            "description": "The Trump administration has halted the processing of immigration requests from Afghans and the president vowed to tighten his immigration crackdown after the shooting of two National Guard members.",
+            "url": "https://www.npr.org/2025/11/29/nx-s1-5624477/where-things-stand-with-the-national-guard-shooting-in-d-c",
+            "publishedAt": "2025-11-29T10:00:00Z"
+        },
+        {
+            "source": "Variety",
+            "author": "Ellise Shafer",
+            "title": "Jenna Ortega Says It’s ‘Very Easy to Be Terrified’ of AI: ‘It Feels Like We’ve Opened Pandora’s Box,’ but ‘There’s Certain Things It’s Just Not Able to Replicate’ - Variety",
+            "description": "Jenna Ortega sounded off on artificial intelligence at the Marrakech Film Festival, saying \"it's very easy to be terrified\" of it.",
+            "url": "https://variety.com/2025/film/festivals/jenna-ortega-ai-film-easy-to-be-terrified-1236594676/",
+            "publishedAt": "2025-11-29T09:55:00Z"
+        },
+        {
+            "source": "NBCSports.com",
+            "author": "Michael David Smith",
+            "title": "Ben Johnson: Bears’ win over Eagles doesn’t happen without our offensive line - NBC Sports",
+            "description": "Johnson made a point after the game of mentioning left tackle Ozzy Trapilo, left guard Joe Thuney, center Drew Dallman, right guard Jonah Jackson and right tackle Darnell Wright.",
+            "url": "https://www.nbcsports.com/nfl/profootballtalk/rumor-mill/news/ben-johnson-bears-win-over-eagles-doesnt-happen-without-our-offensive-line",
+            "publishedAt": "2025-11-29T09:31:56Z"
+        },
+        {
+            "source": "The Washington Post",
+            "author": "Frances Vinall, David Nakamura",
+            "title": "U.S. halts all asylum decisions, pauses visas for Afghan nationals - The Washington Post",
+            "description": "The decisions come a day after President Donald Trump vowed to “permanently pause migration from all Third World Countries,” among other threats.",
+            "url": "https://www.washingtonpost.com/immigration/2025/11/28/asylum-decisions-pause-trump-immigration/",
+            "publishedAt": "2025-11-29T07:22:15Z"
+        },
+        {
+            "source": "The Verge",
+            "author": "Sheena Vasani",
+            "title": "The best Black Friday deals you can still get on AirTags, iPad, and other Apple gear - The Verge",
+            "description": "Black Friday 2025 is bringing steep discounts on both current and last-gen Apple gadgets. From AirPods to iPads, here are the best Apple deals still available.",
+            "url": "https://www.theverge.com/gadgets/827826/best-black-friday-apple-deals-sale-2025",
+            "publishedAt": "2025-11-29T06:59:00Z"
         }
     ],
-    "aiSummary": "Here's a summary of the top news headlines:\n\nMajor domestic and international developments are in focus today, encompassing security, political disputes, and economic shifts. Two National Guard members were reportedly shot near the White House, marking a significant security incident. Politically, 21 states are suing the Trump administration over new guidance affecting immigrants' SNAP eligibility, arguing it illegally blocks legal permanent residents from receiving food stamps. On the economic front, Canada announced new tariffs on US steel and other imports, while domestically, Black Friday TV deals are widely available with substantial discounts. Corporate ethics are also under scrutiny, as a Campbell's executive is out following a viral alleged rant mocking \"poor\" customers and their products.\n\nPublic health remains a concern with Norovirus cases rising in the U.S. since mid-October, particularly in states like Louisiana, Michigan, and Indiana. In entertainment, Apple TV has pulled the premiere of its show 'The Hunt' amid plagiarism accusations, and musician Jackson Browne announced the death of his 52-year-old son, Ethan Browne. The sports world saw unexpected news with Frank Ragnow coming out of retirement, while the College Football Playoff system continues to draw criticism for its structure, driven by what Sports Illustrated describes as \"greed\" and its impact on competitive balance.",
-    "fetchedAt": "2025-11-28T01:00:39.421Z",
-    "totalResults": 32
+    "aiSummary": "Top news headlines reveal a mix of significant geopolitical developments, critical health policy shifts, and domestic concerns.\n\nInternationally, Pope Leo made a historic visit to Istanbul's Blue Mosque, marking his first attendance at a Muslim place of worship since taking the papacy, signaling efforts in interfaith dialogue. Concurrently, Ukraine faces political instability as a widening corruption scandal forced the resignation of Andriy Yermak, Zelensky's powerful right-hand man. A major health policy shift is anticipated in the U.S. as the FDA plans to impose strict new vaccine requirements, with the nation's top vaccine regulator claiming a link between child COVID shots and deaths.\n\nDomestically, a stalled abuse investigation at Seton Hall University is drawing scrutiny, with accusations that the school is attempting to \"silence the truth\" from its former president. Meanwhile, a positive human interest story emerged from a Louisiana prison, where a \"father-daughter dance\" aimed to restore family bonds. On the weather front, Michigan is bracing for a significant snowstorm with increased winter storm warnings. Other news includes Oscar Piastri's dominant Formula 1 Sprint victory, a toddler's inspiring recovery from a grim cancer prognosis, and the ongoing push for Black Friday tech deals. Scientific headlines rounded out the week with discussions on an enigmatic human relative, dark matter, and mysterious lights during nuclear weapons tests.",
+    "fetchedAt": "2025-11-30T17:08:33.424Z",
+    "totalResults": 34
 }
